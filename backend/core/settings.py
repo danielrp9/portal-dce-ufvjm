@@ -1,16 +1,20 @@
 import os
 from pathlib import Path
+from dj_database_url import parse as db_url # Necessário: pip install dj-database-url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-substitua-isso-por-uma-chave-segura'
+# Em produção, o serviço de hospedagem fornecerá uma SECRET_KEY real
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-substitua-isso-por-uma-chave-segura')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Muda para False automaticamente se houver uma variável de ambiente DEBUG=False
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+# Configuração de Hosts: Aceita localhost e domínios da Vercel/Railway/Render
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 .vercel.app .railway.app .render.com').split()
 
 # Application definition
 INSTALLED_APPS = [
@@ -31,8 +35,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # Deve vir antes do CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware', # Deve ser o primeiro
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Necessário para arquivos estáticos em produção
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,8 +67,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
+# Em produção, utiliza a DATABASE_URL (PostgreSQL). Em local, utiliza SQLite.
 DATABASES = {
-    'default': {
+    'default': os.environ.get('DATABASE_URL') and db_url(os.environ.get('DATABASE_URL')) or {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
@@ -86,6 +92,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# Armazenamento otimizado para produção
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuração de arquivos de mídia (Uploads)
 MEDIA_URL = '/media/'
@@ -94,8 +102,20 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS Config
+# Em desenvolvimento (DEBUG=True) libera tudo. Em produção, libera apenas o frontend oficial.
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOW_ALL_ORIGINS = False
+    CORS_ALLOWED_ORIGINS = [
+        os.environ.get('FRONTEND_URL', 'http://localhost:3000'),
+    ]
+
+# CSRF Config para produção
+CSRF_TRUSTED_ORIGINS = [
+    os.environ.get('FRONTEND_URL', 'http://localhost:3000'),
+]
 
 # CKEditor Config
 CKEDITOR_CONFIGS = {
@@ -112,4 +132,4 @@ REST_FRAMEWORK = {
 }
 
 # URL DO FRONTEND PARA REDIRECIONAMENTO DO ADMIN
-FRONTEND_URL = "http://localhost:3000"
+FRONTEND_URL = os.environ.get('FRONTEND_URL', "http://localhost:3000")
