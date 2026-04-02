@@ -1,0 +1,7 @@
+django>=5.0
+django-cors-headers
+djangorestframework
+django-ckeditor
+Pillow
+gunicorn
+psycopg2-binary
