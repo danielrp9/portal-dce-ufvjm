@@ -1,5 +1,3 @@
-# 📑 README.md
-
 # Portal DCE UFVJM — Sistema de Gestão e Transparência Estudantil
 
 Este é o repositório oficial do novo **Portal do Diretório Central dos Estudantes (DCE) da UFVJM**. O projeto une uma estética de **Editorial de Jornal Clássico** com uma arquitetura moderna, escalável e de alta disponibilidade, focada em fornecer informações oficiais, editais e transparência financeira para a comunidade discente.
