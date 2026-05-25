@@ -18,12 +18,11 @@ router.register(r'documentos', DocumentoViewSet)
 router.register(r'financeiro', FinanceiroViewSet)
 
 urlpatterns = [
-    # 1. Painel Administrativo e API de dados (Sempre no topo)
+    # 1. Painel Administrativo e API de dados (Devem responder estritamente isolados)
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     
-    # 2. Rotas Fixas Mapeadas para os arquivos HTML exatos gerados pelo build do Next.js
-    # Isso impede que o Django confunda as requisições de páginas reais do sistema
+    # 2. Rotas visuais explícitas mapeadas diretamente para os arquivos HTML reais do build
     path('', TemplateView.as_view(template_name='index.html'), name='frontend-home'),
     path('noticias', TemplateView.as_view(template_name='noticias.html'), name='frontend-noticias'),
     path('noticias/', TemplateView.as_view(template_name='noticias.html'), name='frontend-noticias-slash'),
@@ -36,9 +35,13 @@ urlpatterns = [
     path('sobre', TemplateView.as_view(template_name='sobre.html'), name='frontend-sobre'),
     path('sobre/', TemplateView.as_view(template_name='sobre.html'), name='frontend-sobre-slash'),
 
-    # 3. ROTA CORINGA RESTRETA: Captura apenas os arquivos internos (.txt, payloads e sub-rotas dinâmicas como slugs)
-    # Evita que o Django intercepte as requisições legítimas do roteador do Next.js de forma agressiva
-    re_path(r'^(?P<path>.*)/?$', TemplateView.as_view(template_name='index.html'), name='frontend-fallback'),
+    # 3. ROTA CORINGA RESTRITA: Captura sub-rotas legítimas do usuário (ex: /noticias/slug-da-noticia)
+    # Mas ignora requisições do painel admin, api, ou arquivos estáticos para não gerar falsos positivos 200
+    re_path(
+        r'^(?!admin|api|static|media)(?P<path>.*)/?$', 
+        TemplateView.as_view(template_name='index.html'), 
+        name='frontend-fallback'
+    ),
 ]
 
 if settings.DEBUG:

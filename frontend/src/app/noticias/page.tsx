@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import api from '@/services/api';
 import { Noticia } from '@/types';
 import Image from 'next/image';
@@ -10,21 +12,33 @@ interface PaginatedNoticias {
   results: Noticia[];
 }
 
-// Força a página a compilar de forma totalmente estática
-export const dynamic = 'force-static';
+export default function NoticiasPage() {
+  // Estado local para gerenciar as notícias em tempo real vindas da API do Django
+  const [data, setData] = useState<PaginatedNoticias>({ count: 0, results: [] });
+  const [loading, setLoading] = useState<boolean>(true);
 
-async function getNoticias() {
-  try {
-    // Como estamos em exportação estática pura, geramos o build com a página inicial padrão
-    const res = await api.get<PaginatedNoticias>('noticias/?page=1');
-    return res.data;
-  } catch (error) {
-    return { count: 0, results: [] };
+  useEffect(() => {
+    async function fetchNoticias() {
+      try {
+        // Busca os dados diretamente da API em runtime no navegador de forma relativa
+        const res = await api.get<PaginatedNoticias>('noticias/?page=1');
+        setData(res.data);
+      } catch (error) {
+        console.error("Erro ao buscar notícias em tempo real:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchNoticias();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#FDFDFB] flex items-center justify-center font-sans text-xs font-bold uppercase tracking-widest text-slate-400">
+        Carregando Edições...
+      </div>
+    );
   }
-}
-
-export default async function NoticiasPage() {
-  const data = await getNoticias();
 
   return (
     <main className="min-h-screen bg-[#FDFDFB] pb-32 selection:bg-black selection:text-white font-serif">
