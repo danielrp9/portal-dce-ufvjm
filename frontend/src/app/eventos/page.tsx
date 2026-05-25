@@ -4,6 +4,9 @@ import { Evento } from '@/types';
 import EventCard from '@/components/EventCard';
 import Link from 'next/link';
 
+// Força a página a compilar de forma totalmente estática condizente com a exportação
+export const dynamic = 'force-static';
+
 interface PaginatedEventos {
   count: number;
   next: string | null;
@@ -23,13 +26,9 @@ async function getEventos(page: string = '1') {
   }
 }
 
-export default async function EventosPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
-  const params = await searchParams;
-  const currentPage = params.page || '1';
+export default async function EventosPage() {
+  // Em builds com output: export, fixamos a página inicial no build.
+  const currentPage = '1';
   const { eventos, count } = await getEventos(currentPage);
   const totalPages = Math.ceil(count / 6);
 

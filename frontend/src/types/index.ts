@@ -32,3 +32,13 @@ export interface ResumoFinanceiro {
   saldo: number;
   status: 'AZUL' | 'VERMELHO';
 }
+
+export interface Transacao {
+  id: number;
+  descricao: string;
+  valor: number;
+  tipo: 'ENTRADA' | 'SAIDA';
+  data: string;
+  categoria?: string;
+  comprovante?: string;
+}

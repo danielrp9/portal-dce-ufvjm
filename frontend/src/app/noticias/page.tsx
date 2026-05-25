@@ -10,24 +10,21 @@ interface PaginatedNoticias {
   results: Noticia[];
 }
 
-async function getNoticias(page: string = '1') {
+// Força a página a compilar de forma totalmente estática
+export const dynamic = 'force-static';
+
+async function getNoticias() {
   try {
-    const res = await api.get<PaginatedNoticias>(`noticias/?page=${page}`);
+    // Como estamos em exportação estática pura, geramos o build com a página inicial padrão
+    const res = await api.get<PaginatedNoticias>('noticias/?page=1');
     return res.data;
   } catch (error) {
     return { count: 0, results: [] };
   }
 }
 
-export default async function NoticiasPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
-  const params = await searchParams;
-  const currentPage = params.page || '1';
-  const data = await getNoticias(currentPage);
-  const totalPages = Math.ceil(data.count / 6);
+export default async function NoticiasPage() {
+  const data = await getNoticias();
 
   return (
     <main className="min-h-screen bg-[#FDFDFB] pb-32 selection:bg-black selection:text-white font-serif">
@@ -95,17 +92,6 @@ export default async function NoticiasPage({
             </article>
           ))}
         </div>
-
-        {/* 3. PAGINAÇÃO JORNALÍSTICA */}
-        {totalPages > 1 && (
-          <div className="mt-24 pt-8 border-t border-black/10 flex justify-center gap-4">
-            {Array.from({ length: totalPages }, (_, i) => (
-              <Link key={i + 1} href={`/noticias?page=${i + 1}`} className={`text-lg font-black px-3 ${currentPage === String(i + 1) ? 'text-[#0073B7] border-b-2 border-[#0073B7]' : 'text-slate-300 hover:text-black'}`}>
-                {String(i + 1).padStart(2, '0')}
-              </Link>
-            ))}
-          </div>
-        )}
       </div>
     </main>
   );

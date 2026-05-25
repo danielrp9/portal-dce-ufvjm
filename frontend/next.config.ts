@@ -1,11 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    reactCompiler: true,
-  },
+  output: 'export', 
+  distDir: 'out', // Garante o nome da pasta de saída
+  
+  // CORREÇÃO ESSENCIAL: Altera o nome da pasta '_next' para 'assets' para o Django/WhiteNoise lerem sem travas
+  assetPrefix: '/static/',
+
+  reactCompiler: true, 
   images: {
-    // Permite carregar de IPs locais sem a trava de segurança do SSR
+    unoptimized: true, 
     remotePatterns: [
       {
         protocol: 'http',
@@ -20,8 +24,6 @@ const nextConfig: NextConfig = {
         pathname: '/media/**',
       },
     ],
-    // Adicione esta linha para evitar o erro de "private ip" em desenvolvimento
-    unoptimized: process.env.NODE_ENV === 'development',
   },
 };
 

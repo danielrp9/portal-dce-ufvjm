@@ -1,7 +1,23 @@
 import React from 'react';
 import api from '@/services/api';
-import { Transacao, ResumoFinanceiro } from '@/types';
+import { Transacao } from '@/types';
 import Link from 'next/link';
+
+// Força a página a compilar de forma totalmente estática condizente com a exportação
+export const dynamic = 'force-static';
+
+// Interface estendida localmente para refletir o retorno real da API de Resumo Financeiro com auditoria
+interface ResumoFinanceiroCompleto {
+  ano: number;
+  aberto: boolean;
+  relatorio_pdf: string | null;
+  saldo_anterior: number;
+  total_entrada: number;
+  total_saida: number;
+  saldo_exercicio: number;
+  saldo_final: number;
+  status: 'AZUL' | 'VERMELHO';
+}
 
 interface PaginatedResponse {
   count: number;
@@ -12,7 +28,7 @@ async function getFinanceiroData(ano: string) {
   try {
     const [listaRes, resumoRes] = await Promise.all([
       api.get<PaginatedResponse>(`financeiro/?ano=${ano}`),
-      api.get<ResumoFinanceiro>(`financeiro/resumo/?ano=${ano}`)
+      api.get<ResumoFinanceiroCompleto>(`financeiro/resumo/?ano=${ano}`)
     ]);
     
     const movimentacoes = Array.isArray(listaRes.data) 
@@ -28,21 +44,23 @@ async function getFinanceiroData(ano: string) {
     return { 
       movimentacoes: [], 
       resumo: { 
-        ano: Number(ano), aberto: true, relatorio_pdf: null, 
-        saldo_anterior: 0, total_entrada: 0, total_saida: 0, 
-        saldo_exercicio: 0, saldo_final: 0, status: 'AZUL' as const 
+        ano: Number(ano), 
+        aberto: true, 
+        relatorio_pdf: null, 
+        saldo_anterior: 0, 
+        total_entrada: 0, 
+        total_saida: 0, 
+        saldo_exercicio: 0, 
+        saldo_final: 0, 
+        status: 'AZUL' as const 
       } 
     };
   }
 }
 
-export default async function TransparenciaPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ ano?: string }>;
-}) {
-  const resolvedSearchParams = await searchParams;
-  const currentYear = resolvedSearchParams.ano || '2026';
+export default async function TransparenciaPage() {
+  // Em builds com output: export, fixamos o ano do exercício corrente no build estático.
+  const currentYear = '2026';
   const { movimentacoes, resumo } = await getFinanceiroData(currentYear);
   
   const isNegative = resumo.status === 'VERMELHO';

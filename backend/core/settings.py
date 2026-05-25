@@ -6,14 +6,12 @@ from dj_database_url import parse as db_url # Necessário: pip install dj-databa
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# Em produção, o serviço de hospedagem fornecerá uma SECRET_KEY real
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-substitua-isso-por-uma-chave-segura')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Muda para False automaticamente se houver uma variável de ambiente DEBUG=False
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# Configuração de Hosts: Aceita localhost e domínios da Vercel/Railway/Render
+# Configuração de Hosts
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 .vercel.app .railway.app .render.com').split()
 
 # Application definition
@@ -31,13 +29,16 @@ INSTALLED_APPS = [
     'ckeditor',
     
     # Apps Locais
-    'dce_portal',
+    'noticias',
+    'agenda',
+    'documentos',
+    'financeiro',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', # Deve ser o primeiro
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # Necessário para arquivos estáticos em produção
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Essencial para servir o build estático com performance
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -51,7 +52,8 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        # Configura o Django para buscar as páginas HTML diretamente na pasta de build do Next.js
+        'DIRS': [os.path.join(BASE_DIR, '../frontend/out')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -67,7 +69,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
-# Em produção, utiliza a DATABASE_URL (PostgreSQL). Em local, utiliza SQLite.
 DATABASES = {
     'default': os.environ.get('DATABASE_URL') and db_url(os.environ.get('DATABASE_URL')) or {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -92,18 +93,29 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# Armazenamento otimizado para produção
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Mapeia onde estão os arquivos estáticos internos gerados pelo Next.js
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, '../frontend/out'),
+]
+
+# Correção para o WhiteNoise não ignorar pastas ocultas do compilador se houver resquícios
+WHITENOISE_ALLOW_ALL_ORIGINS = True
+
+# Armazenamento otimizado para produção e desenvolvimento local unificado
+if DEBUG:
+    # Em desenvolvimento, evita compressões rígidas que barram o carregamento imediato do runserver
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuração de arquivos de mídia (Uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS Config
-# Em desenvolvimento (DEBUG=True) libera tudo. Em produção, libera apenas o frontend oficial.
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
 else:
@@ -112,12 +124,10 @@ else:
         os.environ.get('FRONTEND_URL', 'http://localhost:3000'),
     ]
 
-# CSRF Config para produção
 CSRF_TRUSTED_ORIGINS = [
     os.environ.get('FRONTEND_URL', 'http://localhost:3000'),
 ]
 
-# CKEditor Config
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
@@ -131,5 +141,4 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 6,
 }
 
-# URL DO FRONTEND PARA REDIRECIONAMENTO DO ADMIN
 FRONTEND_URL = os.environ.get('FRONTEND_URL', "http://localhost:3000")

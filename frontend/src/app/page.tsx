@@ -22,7 +22,7 @@ async function getHomeData() {
     const editalDestaque = listaDocs.find((doc: Documento) => doc.tipo === 'EDITAL') || null;
 
     return { 
-      noticias: listaNoticias, 
+      noticias: listaNoticias as Noticia[], 
       eventoDestaque: listaEventos[0] || null,
       editalDestaque 
     };
@@ -142,7 +142,7 @@ export default async function HomePage() {
       {/* SEÇÃO INFERIOR - GRID DE NOTÍCIAS SECUNDÁRIAS */}
       <div className="max-w-7xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {secundarias.map((news) => (
+          {secundarias.map((news: Noticia) => (
             <article key={news.id} className="group flex flex-col">
               <div className="h-[2px] bg-black/5 w-full mb-8"></div>
               <Link href={`/noticias/${news.slug}`} className="flex flex-col gap-4">
