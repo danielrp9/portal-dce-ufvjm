@@ -5,53 +5,47 @@ import Image from 'next/image';
 import Link from 'next/link';
 import PrintButton from '@/components/PrintButton'; 
 
-// 1. FORÇA O MODO ESTÁTICO PURO
+// Força o arquivo a ser compilado de forma estática no build
 export const dynamic = 'force-static';
 
-// 2. OBRIGATÓRIO PARA 'output: export': Impede o Next.js de buscar slugs sob demanda em runtime
+// OBRIGATÓRIO PARA 'output: export': Garante que o Turbopack valide a árvore de arquivos estáticos
 export const dynamicParams = false;
 
 interface NoticiaDetailPageProps {
   params: Promise<{ slug: string }>;
 }
 
-// 3. SE A SUA API ESTIVER FORA DO AR NO MOMENTO DO BUILD, O ARRAY VAZIO GERA O ERRO.
-// Para testar o build local e isolar o erro, você pode descomentar o mock abaixo:
+interface DjangoPaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
+// Executa no build para registrar os slugs existentes
 export async function generateStaticParams() {
   try {
-    const res = await api.get<any>('noticias/');
-    const noticias: Noticia[] = Array.isArray(res.data) ? res.data : res.data?.results || [];
+    const res = await api.get<DjangoPaginatedResponse<Noticia> | Noticia[]>('noticias/');
+    const noticias: Noticia[] = Array.isArray(res.data) 
+      ? res.data 
+      : (res.data && 'results' in res.data ? res.data.results : []);
     
-    // Se o banco/API retornar vazio por estar desligado localmente, insira um slug de teste para o build passar:
     if (noticias.length === 0) {
-      return [{ slug: 'slug-de-teste' }];
+      return [{ slug: 'fallback' }];
     }
 
     return noticias.map((noticia) => ({
       slug: noticia.slug,
     }));
   } catch (error) {
-    console.error('Erro ao gerar caminhos estáticos para notícias, usando fallback de build:', error);
-    // Retorna um slug fictício para evitar que o compilador quebre dizendo que a função falhou/está ausente
-    return [{ slug: 'slug-de-teste' }];
+    console.error('Erro ao gerar caminhos estáticos para notícias:', error);
+    return [{ slug: 'fallback' }];
   }
 }
 
 async function getNoticiaDetail(slug: string): Promise<Noticia | null> {
+  if (slug === 'fallback') return null;
   try {
-    // Se for o slug de teste do build, evita fazer uma requisição desnecessária que falharia
-    if (slug === 'slug-de-teste') {
-      return {
-        id: 0,
-        slug: 'slug-de-teste',
-        titulo: 'Notícia de Teste do Build',
-        conteudo: '<p>Conteúdo de teste</p>',
-        autor: 'Admin',
-        data_publicacao: new Date().toISOString(),
-        capa: ''
-      } as any;
-    }
-
     const res = await api.get<Noticia>(`noticias/${slug}/`);
     return res.data;
   } catch (e) { 
@@ -64,7 +58,14 @@ export default async function NoticiaDetailPage({ params }: NoticiaDetailPagePro
   if (!resolvedParams?.slug) return null;
 
   const noticia = await getNoticiaDetail(resolvedParams.slug);
-  if (!noticia) return null;
+  if (!noticia) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center font-sans gap-4">
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Matéria não encontrada</p>
+        <Link href="/noticias" className="px-6 py-3 bg-[#0073B7] text-white text-[9px] font-black uppercase tracking-widest rounded-sm">Voltar para notícias</Link>
+      </div>
+    );
+  }
 
   const shareUrl = `http://dce.ufvjm.edu.br/noticias/${noticia.slug}`;
   const shareText = encodeURIComponent(`Portal do DCE: ${noticia.titulo}`);
@@ -88,7 +89,7 @@ export default async function NoticiaDetailPage({ params }: NoticiaDetailPagePro
             <div className="flex items-center gap-4 text-[10px] font-black uppercase text-slate-400">
                 <span className="text-[#0073B7]">Informativo Oficial</span>
                 <span className="w-px h-3 bg-slate-200"></span>
-                <span>Por {noticia.autor}</span>
+                <span>Por {noticia.autor || 'Redação DCE'}</span>
             </div>
         </header>
 
@@ -107,7 +108,7 @@ export default async function NoticiaDetailPage({ params }: NoticiaDetailPagePro
         <footer className="mt-32 pt-16 border-t border-slate-100 flex justify-between items-center print:hidden">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-slate-950 flex items-center justify-center text-[10px] font-black text-white italic">
-                {noticia.autor.substring(0,2).toUpperCase()}
+                {(noticia.autor || 'DC').substring(0,2).toUpperCase()}
             </div>
             <p className="text-[11px] font-black text-slate-950 uppercase">DCE UFVJM</p>
           </div>

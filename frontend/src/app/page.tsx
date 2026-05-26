@@ -6,17 +6,36 @@ import Link from 'next/link';
 import he from 'he';
 import EventCard from '@/components/EventCard';
 
+// Interface interna para mapear o formato de paginação padrão do Django REST Framework
+interface DjangoPaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 async function getHomeData() {
   try {
+    // Fazemos a chamada tipando como 'any' temporariamente para extrair os dados com segurança, 
+    // já que o Django pode retornar a lista pura ou o objeto paginado.
     const [newsRes, eventsRes, docsRes] = await Promise.all([
-      api.get<Noticia[]>('noticias/'),
-      api.get<Evento[]>('eventos/'),
-      api.get<Documento[]>('documentos/')
+      api.get<DjangoPaginatedResponse<Noticia> | Noticia[]>('noticias/'),
+      api.get<DjangoPaginatedResponse<Evento> | Evento[]>('eventos/'),
+      api.get<DjangoPaginatedResponse<Documento> | Documento[]>('documentos/')
     ]);
 
-    const listaNoticias = Array.isArray(newsRes.data) ? newsRes.data : (newsRes.data as any).results || [];
-    const listaEventos = Array.isArray(eventsRes.data) ? eventsRes.data : (eventsRes.data as any).results || [];
-    const listaDocs = Array.isArray(docsRes.data) ? docsRes.data : (docsRes.data as any).results || [];
+    // Tratamento seguro para extrair o array de resultados, seja ele paginado ou lista pura
+    const listaNoticias = Array.isArray(newsRes.data) 
+      ? newsRes.data 
+      : (newsRes.data && 'results' in newsRes.data ? newsRes.data.results : []);
+
+    const listaEventos = Array.isArray(eventsRes.data) 
+      ? eventsRes.data 
+      : (eventsRes.data && 'results' in eventsRes.data ? eventsRes.data.results : []);
+
+    const listaDocs = Array.isArray(docsRes.data) 
+      ? docsRes.data 
+      : (docsRes.data && 'results' in docsRes.data ? docsRes.data.results : []);
 
     // Filtra o edital mais recente entre os documentos
     const editalDestaque = listaDocs.find((doc: Documento) => doc.tipo === 'EDITAL') || null;

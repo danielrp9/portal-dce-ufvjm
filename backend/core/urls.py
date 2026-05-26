@@ -17,26 +17,34 @@ router.register(r'eventos', EventoViewSet)
 router.register(r'documentos', DocumentoViewSet)
 router.register(r'financeiro', FinanceiroViewSet)
 
+# Custom TemplateView para resolver o caminho do slug dinamicamente
+class DinamicNoticiaTemplateView(TemplateView):
+    def get_template_names(self):
+        slug = self.kwargs.get('slug')
+        return [f'noticias/{slug}/index.html']
+
 urlpatterns = [
-    # 1. Painel Administrativo e API de dados (Devem responder estritamente isolados)
+    # 1. Painel Administrativo e API de dados (Sempre no topo)
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     
-    # 2. Rotas visuais explícitas mapeadas diretamente para os arquivos HTML reais do build
-    path('', TemplateView.as_view(template_name='index.html'), name='frontend-home'),
-    path('noticias', TemplateView.as_view(template_name='noticias.html'), name='frontend-noticias'),
-    path('noticias/', TemplateView.as_view(template_name='noticias.html'), name='frontend-noticias-slash'),
-    path('documentos', TemplateView.as_view(template_name='documentos.html'), name='frontend-documentos'),
-    path('documentos/', TemplateView.as_view(template_name='documentos.html'), name='frontend-documentos-slash'),
-    path('eventos', TemplateView.as_view(template_name='eventos.html'), name='frontend-eventos'),
-    path('eventos/', TemplateView.as_view(template_name='eventos.html'), name='frontend-eventos-slash'),
-    path('transparencia', TemplateView.as_view(template_name='transparencia.html'), name='frontend-transparencia'),
-    path('transparencia/', TemplateView.as_view(template_name='transparencia.html'), name='frontend-transparencia-slash'),
-    path('sobre', TemplateView.as_view(template_name='sobre.html'), name='frontend-sobre'),
-    path('sobre/', TemplateView.as_view(template_name='sobre.html'), name='frontend-sobre-slash'),
+    # 2. Rotas visuais explícitas de listagens fixas
+    path('noticias', TemplateView.as_view(template_name='noticias/index.html'), name='frontend-noticias'),
+    path('noticias/', TemplateView.as_view(template_name='noticias/index.html'), name='frontend-noticias-slash'),
+    path('documentos', TemplateView.as_view(template_name='documentos/index.html'), name='frontend-documentos'),
+    path('documentos/', TemplateView.as_view(template_name='documentos/index.html'), name='frontend-documentos-slash'),
+    path('eventos', TemplateView.as_view(template_name='eventos/index.html'), name='frontend-eventos'),
+    path('eventos/', TemplateView.as_view(template_name='eventos/index.html'), name='frontend-eventos-slash'),
+    path('transparencia', TemplateView.as_view(template_name='transparencia/index.html'), name='frontend-transparencia'),
+    path('transparencia/', TemplateView.as_view(template_name='transparencia/index.html'), name='frontend-transparencia-slash'),
+    path('sobre', TemplateView.as_view(template_name='sobre/index.html'), name='frontend-sobre'),
+    path('sobre/', TemplateView.as_view(template_name='sobre/index.html'), name='frontend-sobre-slash'),
 
-    # 3. ROTA CORINGA RESTRITA: Captura sub-rotas legítimas do usuário (ex: /noticias/slug-da-noticia)
-    # Mas ignora requisições do painel admin, api, ou arquivos estáticos para não gerar falsos positivos 200
+    # 3. ROTA DINÂMICA CORRIGIDA: Mapeia o slug capturado direto para a pasta correspondente exportada pelo Next.js
+    path('noticias/<slug:slug>', DinamicNoticiaTemplateView.as_view(), name='frontend-noticia-detail'),
+    path('noticias/<slug:slug>/', DinamicNoticiaTemplateView.as_view(), name='frontend-noticia-detail-slash'),
+
+    # 4. ROTA CORINGA RESTRITA: Fallback para caminhos gerais sem colidir com assets ou admin
     re_path(
         r'^(?!admin|api|static|media)(?P<path>.*)/?$', 
         TemplateView.as_view(template_name='index.html'), 

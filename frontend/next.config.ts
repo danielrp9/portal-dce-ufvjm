@@ -1,11 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export', 
-  distDir: 'out', // Garante o nome da pasta de saída
+  output: 'export', // Força o Next.js a gerar uma pasta com arquivos estáticos (HTML/CSS/JS)
   
-  // CORREÇÃO ESSENCIAL: Altera o nome da pasta '_next' para 'assets' para o Django/WhiteNoise lerem sem travas
-  assetPrefix: '/static/',
+  // CORREÇÃO DE ROTAS ESTÁTICAS: Faz o Next gerar pastas individuais para cada rota (ex: out/noticias/index.html)
+  // Isso resolve permanentemente o conflito de roteamento híbrido no Django
+  trailingSlash: true,
+  
+  assetPrefix: '/static/', 
 
   reactCompiler: true, 
   images: {
