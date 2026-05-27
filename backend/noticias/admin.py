@@ -3,7 +3,7 @@ from .models import Noticia
 
 @admin.register(Noticia)
 class NoticiaAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'autor', 'data_publicacao')
+    list_display = ('titulo', 'autor', 'campus', 'data_publicacao')
     prepopulated_fields = {'slug': ('titulo',)}
-    search_fields = ('titulo', 'conteudo')
-    list_filter = ('data_publicacao', 'autor')
+    search_fields = ('titulo', 'conteudo', 'tags')
+    list_filter = ('campus', 'data_publicacao', 'autor')

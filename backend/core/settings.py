@@ -52,8 +52,11 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Configura o Django para buscar as páginas HTML diretamente na pasta de build do Next.js
-        'DIRS': [os.path.join(BASE_DIR, '../frontend/out')],
+        # Configura o Django para buscar no build do Next.js e também aceitar uma pasta raiz de templates no backend se necessário
+        'DIRS': [
+            os.path.join(BASE_DIR, '../frontend/out'),
+            os.path.join(BASE_DIR, 'templates'),
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

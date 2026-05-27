@@ -17,12 +17,6 @@ router.register(r'eventos', EventoViewSet)
 router.register(r'documentos', DocumentoViewSet)
 router.register(r'financeiro', FinanceiroViewSet)
 
-# Custom TemplateView para resolver o caminho do slug dinamicamente
-class DinamicNoticiaTemplateView(TemplateView):
-    def get_template_names(self):
-        slug = self.kwargs.get('slug')
-        return [f'noticias/{slug}/index.html']
-
 urlpatterns = [
     # 1. Painel Administrativo e API de dados (Sempre no topo)
     path('admin/', admin.site.urls),
@@ -40,11 +34,11 @@ urlpatterns = [
     path('sobre', TemplateView.as_view(template_name='sobre/index.html'), name='frontend-sobre'),
     path('sobre/', TemplateView.as_view(template_name='sobre/index.html'), name='frontend-sobre-slash'),
 
-    # 3. ROTA DINÂMICA CORRIGIDA: Mapeia o slug capturado direto para a pasta correspondente exportada pelo Next.js
-    path('noticias/<slug:slug>', DinamicNoticiaTemplateView.as_view(), name='frontend-noticia-detail'),
-    path('noticias/<slug:slug>/', DinamicNoticiaTemplateView.as_view(), name='frontend-noticia-detail-slash'),
+    # 3. INTERCEPTADOR DINÂMICO PLANO: Qualquer notícia (nova ou antiga) carrega a pasta estática limpa
+    # O Next.js no navegador acorda, lê a URL /noticias/olimpiadas-universitarias e renderiza a matéria
+    re_path(r'^noticias/[a-zA-Z0-9_-]+/?$', TemplateView.as_view(template_name='noticias/detalhe/index.html'), name='frontend-noticia-detail'),
 
-    # 4. ROTA CORINGA RESTRITA: Fallback para caminhos gerais sem colidir com assets ou admin
+    # 4. ROTA CORINGA RESTRITA: Fallback geral do ecossistema
     re_path(
         r'^(?!admin|api|static|media)(?P<path>.*)/?$', 
         TemplateView.as_view(template_name='index.html'), 
