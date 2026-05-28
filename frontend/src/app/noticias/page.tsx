@@ -16,6 +16,7 @@ export default function NoticiasPage() {
   const [allNoticias, setAllNoticias] = useState<Noticia[]>([]);
   const [filteredNoticias, setFilteredNoticias] = useState<Noticia[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [mounted, setMounted] = useState<boolean>(false);
 
   // Estados de controle da interface expandida
   const [showCampusFilters, setShowCampusFilters] = useState<boolean>(false);
@@ -34,6 +35,7 @@ export default function NoticiasPage() {
   ];
 
   useEffect(() => {
+    setMounted(true);
     async function fetchNoticias() {
       try {
         const res = await api.get<PaginatedNoticias>('noticias/?page=1');
@@ -68,7 +70,7 @@ export default function NoticiasPage() {
     setFilteredNoticias(result);
   }, [selectedCampus, searchQuery, allNoticias]);
 
-  if (loading) {
+  if (!mounted || loading) {
     return (
       <div className="min-h-screen bg-[#F8F9FA] flex flex-col gap-4 items-center justify-center font-sans">
         <div className="w-10 h-10 border-4 border-[#0073B7] border-t-transparent rounded-full animate-spin"></div>
@@ -96,7 +98,7 @@ export default function NoticiasPage() {
 
       <div className="max-w-7xl mx-auto px-4 md:px-6">
         
-        {/* HEADER DA SEÇÃO: Com identidade da Home e alinhamento tridimensional */}
+        {/* HEADER DA SEÇÃO */}
         <div className="mb-10 border-b border-neutral-200 pb-5 flex flex-col sm:flex-row sm:items-end justify-between gap-4 relative">
           <div>
             <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#0073B7] mb-1">
@@ -107,10 +109,9 @@ export default function NoticiasPage() {
             </h1>
           </div>
           
-          {/* PAINEL DE CONTROLES LATERAIS (Pesquisa Expandível + Filtro de Campus) */}
+          {/* PAINEL DE CONTROLES LATERAIS */}
           <div className="flex items-center gap-2 self-end sm:self-auto relative z-20">
             
-            {/* INPUT DE PESQUISA EXPANDÍVEL HORIZONTALMENTE */}
             <div className="flex items-center gap-2">
               {showSearchInput && (
                 <input
@@ -141,10 +142,8 @@ export default function NoticiasPage() {
               </button>
             </div>
 
-            {/* Separador Minimalista */}
             <div className="w-px h-6 bg-neutral-200 mx-1"></div>
 
-            {/* Botão Gatilho para Abrir o Painel de Tags de Localidades */}
             <button
               onClick={() => setShowCampusFilters(!showCampusFilters)}
               className={`flex items-center gap-2 px-4 py-2.5 border text-[10px] font-black uppercase tracking-wider rounded-xl transition-all duration-300 transform active:scale-95 ${
@@ -161,7 +160,7 @@ export default function NoticiasPage() {
           </div>
         </div>
 
-        {/* PAINEL DE TAGS REORGANIZADO ESTETICAMENTE (Glassmorphism sutil e rounded-[2rem]) */}
+        {/* PAINEL DE TAGS */}
         {showCampusFilters && (
           <div className="w-full bg-white border border-neutral-200/50 p-6 rounded-[2rem] mb-12 flex flex-col sm:flex-row gap-4 items-center justify-between shadow-[0_12px_40px_rgba(0,0,0,0.03)] animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
@@ -207,7 +206,7 @@ export default function NoticiasPage() {
           </div>
         )}
 
-        {/* ================= SEÇÃO 1: GRID DE DESTAQUES FILTRADOS (EFEITO 3D APLICADO) ================= */}
+        {/* GRID DE DESTAQUES */}
         {principais.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
             {principais.map((noticia: any) => (
@@ -222,7 +221,6 @@ export default function NoticiasPage() {
                     fill 
                     className="object-cover transition-all duration-700 ease-out scale-100 group-hover:scale-105 group-hover:opacity-90"
                   />
-                  {/* Badge Flutuante no Card */}
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-neutral-950 text-[8px] px-3 py-1.5 font-black uppercase tracking-[0.15em] z-10 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.15)] border border-white/40">
                     {noticia.campus_display || 'Geral'}
                   </div>
@@ -255,7 +253,7 @@ export default function NoticiasPage() {
           </div>
         )}
 
-        {/* ================= SEÇÃO 2: HISTÓRICO FILTRADO EM LISTA ================= */}
+        {/* HISTÓRICO EM LISTA */}
         {emLista.length > 0 && (
           <div className="w-full flex flex-col gap-6 border-t border-neutral-200 pt-10">
             <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400 mb-2">

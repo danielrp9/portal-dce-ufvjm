@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { Instagram, Linkedin, Github } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -24,14 +25,16 @@ export default function Footer() {
               Atuamos pela transparência, assistência estudantil e pelo fortalecimento da universidade pública em todos os campi.
             </p>
             
-            <div className="flex gap-4 pt-4">
-               {/* Espaço para Redes Sociais se houver */}
-               <div className="w-8 h-8 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center hover:border-[#0073B7] transition-colors cursor-pointer group">
-                  <span className="text-neutral-500 group-hover:text-white transition-colors">in</span>
-               </div>
-               <div className="w-8 h-8 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center hover:border-[#8CC63F] transition-colors cursor-pointer group">
-                  <span className="text-neutral-500 group-hover:text-white transition-colors">ig</span>
-               </div>
+          <div className="flex gap-4 pt-4">
+                        {/* Redes Sociais DCE */}
+                        <Link 
+                          href="https://www.instagram.com/dceufvjm/" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="w-8 h-8 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center hover:border-[#8CC63F] transition-colors cursor-pointer group"
+                        >
+                            <Instagram size={16} className="text-neutral-500 group-hover:text-white transition-colors" />
+                        </Link>
             </div>
           </div>
 
@@ -89,10 +92,38 @@ export default function Footer() {
             </p>
           </div>
           
-          <div className="flex items-center md:border-l border-neutral-900 md:pl-10">
+          <div className="flex flex-col items-center md:items-start md:border-l border-neutral-900 md:pl-10 gap-3">
              <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest leading-none">
                Desenvolvido por <span className="text-white border-b border-neutral-800 hover:border-[#0073B7] transition-all cursor-pointer">Daniel Rodrigues Pereira</span>
              </p>
+             
+             {/* Ícones das Redes Sociais Pessoais */}
+             <div className="flex items-center gap-4">
+               <Link 
+                 href="https://github.com/danielrp9" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="text-neutral-500 hover:text-white transition-colors"
+               >
+                 <Github size={14} />
+               </Link>
+               <Link 
+                 href="https://www.linkedin.com/in/daniel-rodrigues-pereira-29b1b7243/" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="text-neutral-500 hover:text-[#0073B7] transition-colors"
+               >
+                 <Linkedin size={14} />
+               </Link>
+               <Link 
+                 href="https://www.instagram.com/daniel_rodrigues9/" 
+                 target="_blank" 
+                 rel="noopener noreferrer"
+                 className="text-neutral-500 hover:text-[#8CC63F] transition-colors"
+               >
+                 <Instagram size={14} />
+               </Link>
+             </div>
           </div>
         </div>
 

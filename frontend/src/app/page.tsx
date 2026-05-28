@@ -20,8 +20,10 @@ export default function HomePage() {
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [editalDestaque, setEditalDestaque] = useState<Documento | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
+    setMounted(true);
     async function loadHomeData() {
       try {
         const [newsRes, eventsRes, docsRes] = await Promise.all([
@@ -57,7 +59,9 @@ export default function HomePage() {
     loadHomeData();
   }, []);
 
-  if (loading) {
+  // Força o Next.js a renderizar APENAS o loading no build estático.
+  // Isso garante que o conteúdo real NUNCA seja "congelado" no HTML do build.
+  if (!mounted || loading) {
     return (
       <div className="min-h-screen bg-[#F8F9FA] flex flex-col gap-4 items-center justify-center font-sans">
         <div className="w-10 h-10 border-4 border-[#0073B7] border-t-transparent rounded-full animate-spin"></div>
@@ -73,7 +77,7 @@ export default function HomePage() {
     <main className="min-h-screen bg-[#F8F9FA] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-20">
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 flex flex-col gap-12">
         
-        {/* Bloco Superior: Banner de Destaque com efeito parallax/profundidade simulado */}
+        {/* Bloco Superior: Banner de Destaque */}
         {principal ? (
           <article className="group cursor-pointer relative w-full aspect-[16/9] md:aspect-[21/9] rounded-[2rem] overflow-hidden bg-neutral-950 shadow-[0_24px_60px_rgba(0,0,0,0.18)] border border-neutral-800/20 transform transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_32px_70px_rgba(0,115,183,0.15)]">
             <Link href={`/noticias/${principal.slug}/`}>
@@ -170,9 +174,8 @@ export default function HomePage() {
           {/* Sidebar Auxiliar (Direita) */}
           <aside className="lg:col-span-4 flex flex-col gap-10">
             
-            {/* Bloco de Editais - Elevado e Futurista com Profundidade Sombria */}
+            {/* Bloco de Editais */}
             <div className="flex flex-col bg-gradient-to-br from-neutral-900 to-neutral-950 text-white rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.25)] relative overflow-hidden border border-neutral-800">
-              {/* Elemento de iluminação decorativo superior de fundo */}
               <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#8CC63F]/10 blur-3xl pointer-events-none rounded-full"></div>
               
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">

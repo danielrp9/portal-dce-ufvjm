@@ -1,11 +1,10 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import api from '@/services/api';
 import { Evento } from '@/types';
 import EventCard from '@/components/EventCard';
 import Link from 'next/link';
-
-// Força a página a compilar de forma totalmente estática condizente com a exportação
-export const dynamic = 'force-static';
 
 interface PaginatedEventos {
   count: number;
@@ -14,23 +13,39 @@ interface PaginatedEventos {
   results: Evento[];
 }
 
-async function getEventos(page: string = '1') {
-  try {
-    const res = await api.get<PaginatedEventos | Evento[]>(`eventos/?page=${page}`);
-    const dados = Array.isArray(res.data) ? res.data : (res.data as any).results || [];
-    const count = Array.isArray(res.data) ? res.data.length : (res.data as any).count || 0;
-    return { eventos: dados, count };
-  } catch (error) {
-    console.error("Erro ao carregar lista de eventos:", error);
-    return { eventos: [], count: 0 };
-  }
-}
+export default function EventosPage() {
+  const [eventos, setEventos] = useState<Evento[]>([]);
+  const [count, setCount] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<string>('1');
 
-export default async function EventosPage() {
-  // Em builds com output: export, fixamos a página inicial no build.
-  const currentPage = '1';
-  const { eventos, count } = await getEventos(currentPage);
+  useEffect(() => {
+    async function getEventosData() {
+      setLoading(true);
+      try {
+        const res = await api.get<PaginatedEventos | Evento[]>(`eventos/?page=${currentPage}`);
+        const dados = Array.isArray(res.data) ? res.data : (res.data as any).results || [];
+        const total = Array.isArray(res.data) ? res.data.length : (res.data as any).count || 0;
+        setEventos(dados);
+        setCount(total);
+      } catch (error) {
+        console.error("Erro ao carregar lista de eventos dinâmicos:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    getEventosData();
+  }, [currentPage]);
+
   const totalPages = Math.ceil(count / 6);
+
+  if (loading && eventos.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#F4F4F2] flex items-center justify-center font-sans text-xs font-bold uppercase tracking-widest text-neutral-400">
+        Sincronizando Agenda...
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#F4F4F2] pb-32 text-neutral-900 selection:bg-neutral-950 selection:text-white font-sans antialiased">
@@ -80,9 +95,9 @@ export default async function EventosPage() {
               <div className="mt-20 pt-10 border-t border-neutral-200/60 flex flex-col items-center">
                 <div className="flex items-center gap-4">
                   {Array.from({ length: totalPages }, (_, i) => (
-                    <Link
+                    <button
                       key={i + 1}
-                      href={`/eventos?page=${i + 1}`}
+                      onClick={() => setCurrentPage(String(i + 1))}
                       className={`text-xs font-bold uppercase tracking-widest transition-all px-4 py-2 rounded-xl ${
                         currentPage === String(i + 1) 
                         ? 'bg-neutral-950 text-white' 
@@ -90,7 +105,7 @@ export default async function EventosPage() {
                       }`}
                     >
                       {String(i + 1).padStart(2, '0')}
-                    </Link>
+                    </button>
                   ))}
                 </div>
               </div>

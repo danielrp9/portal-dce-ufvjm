@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useState } from 'react';
 import api from '@/services/api';
 import Link from 'next/link';
 import { Documento } from '@/types';
@@ -8,23 +10,36 @@ interface PaginatedDocs {
   results: Documento[];
 }
 
-async function getDocumentosData() {
-  try {
-    const res = await api.get<PaginatedDocs>(`documentos/`);
-    const todos = res.data.results || [];
-    
-    return {
-      institucionais: todos.filter(d => d.tipo !== 'EDITAL'),
-      editais: todos.filter(d => d.tipo === 'EDITAL')
-    };
-  } catch (error) {
-    console.error("Erro ao carregar documentos:", error);
-    return { institucionais: [], editais: [] };
-  }
-}
+export default function DocumentosPage() {
+  const [institucionais, setInstitucionais] = useState<Documento[]>([]);
+  const [editais, setEditais] = useState<Documento[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-export default async function DocumentosPage() {
-  const { institucionais, editais } = await getDocumentosData();
+  useEffect(() => {
+    async function getDocumentosData() {
+      try {
+        const res = await api.get<PaginatedDocs>(`documentos/`);
+        const todos = res.data.results || [];
+        
+        setInstitucionais(todos.filter(d => d.tipo !== 'EDITAL'));
+        setEditais(todos.filter(d => d.tipo === 'EDITAL'));
+      } catch (error) {
+        console.error("Erro ao carregar documentos dinâmicos:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    getDocumentosData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F4F4F2] flex items-center justify-center font-sans text-xs font-bold uppercase tracking-widest text-neutral-400">
+        Sincronizando Repositório...
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#F4F4F2] pb-32 text-neutral-900 selection:bg-neutral-950 selection:text-white font-sans antialiased">
@@ -162,4 +177,3 @@ export default async function DocumentosPage() {
     </main>
   );
 }
- 
