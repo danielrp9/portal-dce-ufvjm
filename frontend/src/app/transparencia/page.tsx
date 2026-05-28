@@ -101,7 +101,7 @@ export default function TransparenciaPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center font-sans text-xs font-bold uppercase tracking-widest text-slate-400">
+      <div className="min-h-screen bg-[#F4F4F2] flex items-center justify-center font-sans text-xs font-bold uppercase tracking-widest text-neutral-400">
         Carregando Balanços e Auditoria Bancária...
       </div>
     );
@@ -109,9 +109,9 @@ export default function TransparenciaPage() {
 
   if (errorZeroAnos || !resumo || !anoExercicio) {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center font-sans gap-4 p-6 text-center">
-        <p className="text-xs font-black uppercase tracking-widest text-slate-900">Nenhum Balanço Cadastrado no Sistema</p>
-        <Link href="/" className="px-5 py-2.5 bg-slate-950 text-white text-[9px] font-black uppercase tracking-widest rounded-xs">
+      <div className="min-h-screen bg-[#F4F4F2] flex flex-col items-center justify-center font-sans gap-4 p-6 text-center">
+        <p className="text-xs font-bold uppercase tracking-widest text-neutral-400">Nenhum Balanço Cadastrado no Sistema</p>
+        <Link href="/" className="px-6 py-3 bg-neutral-950 text-white text-[10px] font-bold uppercase tracking-widest rounded-xl transition-all hover:bg-neutral-800">
           Voltar ao início
         </Link>
       </div>
@@ -128,26 +128,26 @@ export default function TransparenciaPage() {
   const isAnoAtivoOcultado = !anosExpostos.includes(Number(anoExercicio));
 
   return (
-    <main className="min-h-screen bg-white pb-32 text-slate-950 selection:bg-slate-950 selection:text-white font-sans antialiased print:pb-0 print:bg-white">
+    <main className="min-h-screen bg-[#F4F4F2] pb-32 text-neutral-900 selection:bg-neutral-950 selection:text-white font-sans antialiased print:pb-0 print:bg-white">
       
-      {/* SELETOR DE EXERCÍCIOS FISCAIS */}
-      <div className="w-full bg-slate-50 border-b border-slate-200/80 print:hidden">
-        <div className="max-w-6xl mx-auto px-6 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <nav className="flex items-center gap-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-            <Link href="/" className="hover:text-black transition-colors">Início</Link>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-900 font-extrabold">Demonstrativo Contábil</span>
+      {/* 1. BREADCRUMB EDITORIAL SUTIL */}
+      <div className="w-full border-b border-neutral-200/60 mb-8 print:hidden">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <nav className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400">
+            <Link href="/" className="hover:text-neutral-950 transition-colors">Início</Link>
+            <span>/</span>
+            <span className="text-neutral-950 font-bold">Transparência</span>
           </nav>
 
           <div className="flex items-center gap-3 relative">
-            <span className="text-[10px] font-black uppercase text-slate-500 tracking-wider">Exercício Fiscal:</span>
-            <div className="flex border border-slate-300 bg-white shadow-3xs rounded-xs">
+            <span className="text-[9px] font-bold uppercase text-neutral-400 tracking-[0.15em]">Exercício Fiscal:</span>
+            <div className="flex bg-white border border-neutral-200/60 shadow-2xs rounded-xl overflow-hidden">
               {anosExpostos.map((ano) => (
                 <button 
                   key={ano} 
                   onClick={() => { window.location.search = `?ano=${ano}`; }}
-                  className={`text-[10px] font-black px-4 py-2 uppercase tracking-wider transition-all border-r border-slate-200 last:border-r-0 focus:outline-none ${
-                    anoExercicio === String(ano) ? 'bg-slate-950 text-white border-slate-950' : 'text-slate-600 hover:text-black hover:bg-slate-50'
+                  className={`text-[9px] font-bold px-4 py-2 uppercase tracking-widest transition-all border-r border-neutral-100 last:border-r-0 focus:outline-none ${
+                    anoExercicio === String(ano) ? 'bg-neutral-950 text-white border-neutral-950' : 'text-neutral-500 hover:text-neutral-950 hover:bg-neutral-50'
                   }`}
                 >
                   {ano}
@@ -155,27 +155,27 @@ export default function TransparenciaPage() {
               ))}
 
               {anosOcultos.length > 0 && (
-                <div className="relative Harman-Layout flex items-center">
+                <div className="relative flex items-center">
                   <button 
                     onClick={(e) => { e.stopPropagation(); setShowDropdown(!showDropdown); }}
-                    className={`text-[10px] font-black px-4 py-2 uppercase tracking-wider focus:outline-none flex items-center gap-1.5 h-full ${
-                      isAnoAtivoOcultado ? 'bg-[#0073B7] text-white' : 'text-slate-600 hover:text-black'
+                    className={`text-[9px] font-bold px-4 py-2 uppercase tracking-widest focus:outline-none flex items-center gap-1.5 h-full transition-colors ${
+                      isAnoAtivoOcultado ? 'bg-[#0073B7] text-white' : 'text-neutral-500 hover:text-neutral-950 hover:bg-neutral-50'
                     }`}
                   >
-                    {isAnoAtivoOcultado ? `Ano: ${anoExercicio}` : "Outros Anos"}
+                    {isAnoAtivoOcultado ? `Ano: ${anoExercicio}` : "Outros"}
                     <svg className={`w-3 h-3 transition-transform duration-200 ${showDropdown ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                     </svg>
                   </button>
 
                   {showDropdown && (
-                    <div className="absolute right-0 top-full mt-1.5 w-44 bg-white border border-slate-300 rounded-xs shadow-md py-1 z-50 flex flex-col animate-in fade-in slide-in-from-top-1 duration-150">
+                    <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-neutral-200 shadow-md rounded-xl py-2 z-50 flex flex-col animate-in fade-in slide-in-from-top-1 duration-150">
                       {anosOcultos.map((ano) => (
                         <button
                           key={ano}
                           onClick={() => { window.location.search = `?ano=${ano}`; }}
-                          className={`text-left text-[10px] font-black px-4 py-2.5 uppercase tracking-wider border-b border-slate-100 last:border-b-0 ${
-                            anoExercicio === String(ano) ? 'bg-slate-950 text-white' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-950'
+                          className={`text-left text-[9px] font-bold px-4 py-2.5 uppercase tracking-widest transition-colors ${
+                            anoExercicio === String(ano) ? 'bg-neutral-950 text-white' : 'text-neutral-500 hover:bg-neutral-50 hover:text-neutral-950'
                           }`}
                         >
                           Exercício {ano}
@@ -190,28 +190,27 @@ export default function TransparenciaPage() {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-6 pt-12 print:pt-0 print:px-0">
+      <div className="max-w-7xl mx-auto px-6">
         
-        {/* CABEÇALHO DO EXTRATO BANCÁRIO */}
-        <header className="mb-10 border-b-2 border-slate-950 pb-5 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
+        {/* HEADER DA SEÇÃO */}
+        <header className="mb-10 border-b border-neutral-300 pb-5 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
           <div>
-            <span className="text-[10px] font-black text-[#0073B7] uppercase tracking-[0.25em] block mb-1">
-              Diretório Central dos Estudantes — UFVJM
-            </span>
-            <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-slate-950 leading-none">
-              Extrato de Conta Consolidado
+            <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-[#0073B7] mb-1">
+              Portal de Transparência DCE
+            </h3>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-neutral-950 uppercase">
+              Demonstrativo de Contas
             </h1>
-            <p className="mt-1 text-[11px] uppercase tracking-wider text-slate-500 font-bold">
+            <p className="mt-1 text-[10px] uppercase tracking-widest text-neutral-400 font-bold">
               Auditoria de Fluxo de Caixa • Exercício Fiscal {resumo.ano}
             </p>
           </div>
 
-          {/* BOTÃO EXPORTAR PDF COMPACTO (Aproveita a estilização nativa de impressão) */}
           <button
             onClick={() => window.print()}
-            className="print:hidden inline-flex items-center gap-2 bg-white border border-slate-300 hover:border-slate-950 text-slate-900 px-4 py-2 text-[10px] font-black uppercase tracking-wider rounded-xs transition-all shadow-3xs"
+            className="print:hidden inline-flex items-center gap-2 bg-white border border-neutral-200/60 hover:border-neutral-400 text-neutral-950 px-5 py-2.5 text-[10px] font-bold uppercase tracking-wider rounded-xl transition-all shadow-2xs group"
           >
-            <svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5 text-neutral-400 group-hover:text-neutral-950 transition-colors" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.82l2.12-2.12m0 0l2.12 2.12m-2.12-2.12V19.5M18 12a3 3 0 100-6M5.433 13.184l1.32-.44a1.205 1.205 0 011.53.642l.147.441a1.205 1.205 0 001.53.641l1.319-.44" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 12h-4.5m4.5 0a3 3 0 01-3 3h-3M1.5 12a3 3 0 013-3h3m-3 3a3 3 0 003 3h3M9 1.5v3M15 1.5v3" />
             </svg>
@@ -219,32 +218,32 @@ export default function TransparenciaPage() {
           </button>
         </header>
 
-        {/* COMPONENTE DA DISPONIBILIDADE LÍQUIDA BANCÁRIA */}
-        <div className="grid grid-cols-1 md:grid-cols-12 border border-slate-950 mb-10 bg-white shadow-2xs rounded-xs overflow-hidden">
-          <div className="md:col-span-7 p-6 md:p-8 flex flex-col justify-between items-start gap-6 border-b md:border-b-0 md:border-r border-slate-950 bg-white">
+        {/* CARD DE DISPONIBILIDADE LÍQUIDA */}
+        <div className="grid grid-cols-1 md:grid-cols-12 bg-white border border-neutral-200/60 mb-10 shadow-2xs rounded-3xl overflow-hidden group hover:shadow-md transition-all duration-300">
+          <div className="md:col-span-7 p-8 md:p-10 flex flex-col justify-between items-start gap-6 border-b md:border-b-0 md:border-r border-neutral-100 bg-white">
             <div>
-              <div className="flex items-center gap-2.5 mb-3 select-none">
-                <span className={`w-2.5 h-2.5 rounded-full ${resumo.aberto ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`}></span>
-                <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                  {resumo.aberto ? 'Livro Caixa Aberto (Operação Real)' : 'Contas Auditadas (Cofre Selado)'}
+              <div className="flex items-center gap-2.5 mb-4 select-none">
+                <span className={`w-2.5 h-2.5 rounded-full ${resumo.aberto ? 'bg-[#8CC63F] animate-pulse' : 'bg-neutral-300'}`}></span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-neutral-400">
+                  {resumo.aberto ? 'Livro Caixa Aberto' : 'Contas Auditadas (Encerrado)'}
                 </span>
               </div>
-              <h2 className="text-2xl font-black uppercase tracking-tight text-slate-900 leading-tight">
+              <h2 className="text-2xl font-bold uppercase tracking-tight text-neutral-950 leading-tight mb-2">
                 Disponibilidade Financeira Líquida
               </h2>
-              <p className="text-[11px] text-slate-400 mt-1 max-w-md font-medium">
-                Recursos totais líquidos sob custódia e responsabilidade legal da gestão corrente do diretório central.
+              <p className="text-xs text-neutral-500 max-w-md leading-relaxed font-light">
+                Recursos totais líquidos sob custódia e responsabilidade legal da gestão corrente do diretório central no exercício de {resumo.ano}.
               </p>
             </div>
           </div>
           
-          <div className="md:col-span-5 p-6 md:p-8 flex flex-col justify-center bg-slate-50/50">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1">Saldo Final Consolidado</p>
-            <p className={`text-3xl md:text-4xl font-black tracking-tight font-mono ${isNegative ? 'text-red-600' : 'text-slate-950'}`}>
+          <div className="md:col-span-5 p-8 md:p-10 flex flex-col justify-center bg-neutral-50/40">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400 mb-2">Saldo Final Consolidado</p>
+            <p className={`text-3xl md:text-4xl font-bold tracking-tight ${isNegative ? 'text-red-600' : 'text-neutral-950'}`}>
               {formatCurrency(Number(resumo.saldo_final || 0))}
             </p>
-            <div className="mt-2.5">
-              <span className={`text-[9px] font-black uppercase px-2.5 py-1 rounded-xs border ${isNegative ? 'bg-red-50 text-red-600 border-red-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'}`}>
+            <div className="mt-4">
+              <span className={`text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border transition-colors ${isNegative ? 'bg-red-50 text-red-600 border-red-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100'}`}>
                 {isNegative ? 'BALANÇO EM DÉFICIT' : 'BALANÇO EM SUPERÁVIT'}
               </span>
             </div>
@@ -253,124 +252,119 @@ export default function TransparenciaPage() {
 
         {/* TEXTO DE PARECER / ATA CASO O ANO ESTEJA FECHADO */}
         {!resumo.aberto && (
-          <div className="w-full bg-slate-950 text-white p-6 md:p-8 mb-10 rounded-xs shadow-2xs font-sans border border-slate-950">
-            <div className="max-w-3xl border-b border-white/10 pb-4 mb-4">
-              <h3 className="text-sm font-black uppercase tracking-wide text-white">Ata de Encerramento e Homologação Automática</h3>
-              <p className="text-[10px] text-slate-400 uppercase tracking-wider font-light">Demonstrativo Imutável Gerado pelo Sistema de Integridade</p>
+          <div className="w-full bg-neutral-950 text-white p-8 md:p-10 mb-10 rounded-3xl shadow-2xs border border-neutral-950">
+            <div className="max-w-3xl border-b border-white/10 pb-4 mb-5">
+              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-white">Ata de Encerramento e Homologação</h3>
+              <p className="text-[9px] text-neutral-500 uppercase tracking-widest mt-1">Demonstrativo Imutável Gerado pelo Sistema de Integridade</p>
             </div>
-            <p className="text-xs text-slate-300 font-light leading-relaxed max-w-4xl">
+            <p className="text-sm text-neutral-300 font-light leading-relaxed max-w-4xl">
               {isNegative 
                 ? `O Diretório Central dos Estudantes encerrou as atividades financeiras de ${resumo.ano} em DÉFICIT. O prejuízo acumulado de ${formatCurrency(Math.abs(resumo.saldo_final))} foi computado em definitivo e transportado compulsoriamente como dívida ativa (passivo) para abertura do balanço inicial do próximo exercício.`
-                : `O Diretório Central dos Estudantes encerrou as Atividades financeiras de ${resumo.ano} em SUPERÁVIT. O lucro remanescente líquido de ${formatCurrency(resumo.saldo_final)} foi auditado e transportado de forma automática como aporte inicial em caixa para aplicação no próximo ano.`
+                : `O Diretório Central dos Estudantes encerrou as atividades financeiras de ${resumo.ano} em SUPERÁVIT. O lucro remanescente líquido de ${formatCurrency(resumo.saldo_final)} foi auditado e transportado de forma automática como aporte inicial em caixa para aplicação no próximo ano.`
               }
             </p>
           </div>
         )}
 
         {/* RESUMO DE TRANSPORTE CONTÁBIL */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <div className="border border-slate-200 bg-slate-50/30 p-5 rounded-xs flex flex-col justify-between">
-            <div>
-              <h3 className="text-[10px] font-black uppercase text-slate-500 tracking-wider mb-1">
-                {resumo.saldo_anterior >= 0 ? "Aporte Inicial (Lucro Herdado)" : "Passivo Inicial (Dívida Herdada)"}
-              </h3>
-              <p className={`text-xl font-black font-mono ${resumo.saldo_anterior < 0 ? 'text-red-600' : 'text-slate-950'}`}>
-                {formatCurrency(Number(resumo.saldo_anterior || 0))}
-              </p>
-            </div>
-            <p className="text-[10px] text-slate-400 mt-2 leading-tight">Valor contábil líquido herdado diretamente da virada de lote do exercício passado.</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+          <div className="bg-white border border-neutral-200/60 p-6 rounded-3xl shadow-2xs group hover:shadow-md transition-all duration-300">
+            <h3 className="text-[10px] font-bold uppercase text-neutral-400 tracking-[0.2em] mb-3">
+              {resumo.saldo_anterior >= 0 ? "Aporte Inicial (Herança)" : "Passivo Inicial (Dívida)"}
+            </h3>
+            <p className={`text-2xl font-bold tracking-tight ${resumo.saldo_anterior < 0 ? 'text-red-600' : 'text-neutral-950'}`}>
+              {formatCurrency(Number(resumo.saldo_anterior || 0))}
+            </p>
+            <p className="text-[10px] text-neutral-400 mt-4 leading-relaxed font-medium">Valor líquido herdado diretamente da virada de lote do exercício passado.</p>
           </div>
 
-          <div className="border border-slate-200 bg-slate-50/30 p-5 rounded-xs flex flex-col justify-between">
-            <div>
-              <h3 className="text-[10px] font-black uppercase text-slate-500 tracking-wider mb-1">Resultado Líquido das Operações de {resumo.ano}</h3>
-              <p className={`text-xl font-black font-mono ${resumo.saldo_exercicio < 0 ? 'text-red-600' : 'text-[#0073B7]'}`}>
-                {formatCurrency(Number(resumo.saldo_exercicio || 0))}
-              </p>
-            </div>
-            <p className="text-[10px] text-slate-400 mt-2 leading-tight">Diferença matemática bruta entre as receitas e as despesas operadas exclusivamente este ano.</p>
+          <div className="bg-white border border-neutral-200/60 p-6 rounded-3xl shadow-2xs group hover:shadow-md transition-all duration-300">
+            <h3 className="text-[10px] font-bold uppercase text-neutral-400 tracking-[0.2em] mb-3">Resultado Líquido Operacional {resumo.ano}</h3>
+            <p className={`text-2xl font-bold tracking-tight ${resumo.saldo_exercicio < 0 ? 'text-red-600' : 'text-[#0073B7]'}`}>
+              {formatCurrency(Number(resumo.saldo_exercicio || 0))}
+            </p>
+            <p className="text-[10px] text-neutral-400 mt-4 leading-relaxed font-medium">Diferença matemática entre as receitas e as despesas operadas exclusivamente este ano.</p>
           </div>
         </div>
 
-        {/* LIVRO CAIXA COMPLETO (Visível na rolagem mesmo com o ano encerrado para transparência pública) */}
-        <div className="mb-12">
-          <div className="flex items-center gap-4 mb-5 select-none">
-            <h3 className="text-[10px] font-black uppercase tracking-wider text-slate-900">
-              Livro Caixa / Histórico Completo de Lançamentos
+        {/* LIVRO CAIXA COMPLETO */}
+        <div className="mb-16">
+          <div className="flex items-center gap-4 mb-8">
+            <h3 className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-400">
+              Histórico de Lançamentos
             </h3>
-            <div className="flex-1 h-px bg-slate-200"></div>
+            <div className="flex-1 h-px bg-neutral-300"></div>
           </div>
 
-          <div className="w-full border border-slate-300 rounded-xs overflow-hidden shadow-3xs bg-white">
-            {/* Cabeçalho da Tabela Tipo Extrato */}
-            <div className="grid grid-cols-12 bg-slate-100 border-b border-slate-300 py-3 px-4 md:px-6 text-[9px] font-black uppercase tracking-wider text-slate-500 select-none">
+          <div className="w-full bg-white border border-neutral-200/60 rounded-3xl overflow-hidden shadow-2xs">
+            {/* Cabeçalho da Tabela */}
+            <div className="hidden md:grid grid-cols-12 bg-neutral-50/50 border-b border-neutral-100 py-5 px-8 text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400 select-none">
               <div className="col-span-2">Data</div>
-              <div className="col-span-6 md:col-span-7">Histórico / Descrição da Operação</div>
-              <div className="col-span-2 md:col-span-1 text-center">Fluxo</div>
+              <div className="col-span-6">Descrição da Operação</div>
+              <div className="col-span-2 text-center">Natureza</div>
               <div className="col-span-2 text-right">Valor</div>
             </div>
 
-            {/* Listagem de Linhas do Extrato */}
-            <div className="divide-y divide-slate-200 bg-white">
+            {/* Listagem de Movimentações */}
+            <div className="divide-y divide-neutral-100">
               {movimentacoes && movimentacoes.length > 0 ? (
                 movimentacoes.map((item: Transacao) => {
                   const isDespesa = item.tipo === 'SAIDA';
                   return (
-                    <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 items-center py-4 px-4 md:px-6 hover:bg-slate-50/50 transition-colors border-b border-slate-100 last:border-b-0">
-                      {/* Data da movimentação */}
-                      <div className="col-span-2 text-[10px] font-bold text-slate-400 font-mono mb-1 md:mb-0">
+                    <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 items-center py-6 px-6 md:px-8 hover:bg-neutral-50/30 transition-colors group">
+                      <div className="col-span-2 text-[10px] font-bold text-neutral-400 mb-2 md:mb-0">
                         {new Date(item.data).toLocaleDateString('pt-BR')}
                       </div>
                       
-                      {/* Descrição em alta visibilidade */}
-                      <div className="col-span-6 md:col-span-7 font-bold text-slate-900 text-sm tracking-tight mb-2 md:mb-0 uppercase text-left truncate max-w-xl">
+                      <div className="col-span-6 font-bold text-neutral-950 text-sm tracking-tight mb-3 md:mb-0 uppercase">
                         {item.descricao}
                       </div>
                       
-                      {/* Badge Contábil de Natureza */}
-                      <div className="col-span-2 md:col-span-1 flex md:justify-center mb-2 md:mb-0 select-none">
-                        <span className={`text-[8px] font-black uppercase px-2 py-0.5 rounded-xs border tracking-wide ${
-                          isDespesa ? 'border-red-200 text-red-700 bg-red-50' : 'border-blue-200 text-[#0073B7] bg-blue-50'
+                      <div className="col-span-2 flex md:justify-center mb-4 md:mb-0">
+                        <span className={`text-[8px] font-bold uppercase px-3 py-1 rounded-full border tracking-widest ${
+                          isDespesa ? 'border-red-100 text-red-600 bg-red-50/50' : 'border-blue-100 text-[#0073B7] bg-blue-50/50'
                         }`}>
                           {isDespesa ? 'DESPESA' : 'RECEITA'}
                         </span>
                       </div>
                       
-                      {/* Valor monetário formatado em fonte monoespaçada */}
-                      <div className={`col-span-2 text-left md:text-right text-base font-black font-mono tracking-tight ${isDespesa ? 'text-red-600' : 'text-slate-950'}`}>
+                      <div className={`col-span-2 text-left md:text-right text-base font-bold tracking-tight ${isDespesa ? 'text-red-600' : 'text-neutral-950'}`}>
                         {isDespesa ? '−' : '+'} {formatCurrency(Number(item.valor))}
                       </div>
                     </div>
                   );
                 })
               ) : (
-                <div className="py-20 text-center bg-white">
-                  <p className="text-slate-300 font-black text-xs uppercase tracking-wider">Nenhum registro contábil efetuado neste lote anual.</p>
+                <div className="py-20 text-center flex flex-col items-center justify-center">
+                   <svg className="w-6 h-6 text-neutral-200 mb-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <p className="text-neutral-400 font-bold text-[10px] uppercase tracking-widest">Nenhum registro para este exercício</p>
                 </div>
               )}
             </div>
           </div>
         </div>
 
-        {/* TOTAIS DO RAZONETE (RODAPÉ DO EXTRATO BANCÁRIO) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border-t border-slate-300 pt-8 print:mt-10">
-          <div className="space-y-1 bg-white border border-slate-200 p-5 rounded-xs shadow-3xs flex justify-between items-center">
-            <h3 className="text-[10px] font-black uppercase tracking-wider text-slate-400">Arrecadação Bruta (Receitas)</h3>
-            <p className="text-xl md:text-2xl font-black font-mono text-slate-900">
+        {/* TOTAIS DO RODAPÉ */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-neutral-300 pt-10">
+          <div className="bg-white border border-neutral-200/60 p-6 rounded-3xl shadow-2xs flex justify-between items-center group hover:shadow-md transition-all duration-300">
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400">Total de Receitas</h3>
+            <p className="text-xl md:text-2xl font-bold tracking-tight text-neutral-950">
                {formatCurrency(Number(resumo.total_entrada || 0))}
             </p>
           </div>
-          <div className="space-y-1 bg-white border border-slate-200 p-5 rounded-xs shadow-3xs flex justify-between items-center">
-            <h3 className="text-[10px] font-black uppercase tracking-wider text-slate-400">Custo Acumulado (Despesas)</h3>
-            <p className="text-xl md:text-2xl font-black font-mono text-slate-900">
+          <div className="bg-white border border-neutral-200/60 p-6 rounded-3xl shadow-2xs flex justify-between items-center group hover:shadow-md transition-all duration-300">
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-400">Total de Despesas</h3>
+            <p className="text-xl md:text-2xl font-bold tracking-tight text-neutral-950">
                {formatCurrency(Number(resumo.total_saida || 0))}
             </p>
           </div>
         </div>
       </div>
 
-      <footer className="mt-40 text-center py-16 border-t border-slate-100 mx-6 print:mt-20">
-         <p className="text-[10px] font-black uppercase tracking-[0.6em] text-slate-300 select-none">DCE UFVJM • Transparência Pública Continuada</p>
+      <footer className="mt-40 text-center py-20 border-t border-neutral-200/60 mx-6">
+         <p className="text-[10px] font-bold uppercase tracking-[0.6em] text-neutral-300 select-none">DCE UFVJM • Transparência Pública Continuada</p>
       </footer>
     </main>
   );

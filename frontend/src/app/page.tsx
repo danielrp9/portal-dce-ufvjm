@@ -59,8 +59,9 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F4F4F2] flex items-center justify-center font-sans text-xs font-bold uppercase tracking-widest text-neutral-400">
-        Carregando Atualizações do Portal...
+      <div className="min-h-screen bg-[#F8F9FA] flex flex-col gap-4 items-center justify-center font-sans">
+        <div className="w-10 h-10 border-4 border-[#0073B7] border-t-transparent rounded-full animate-spin"></div>
+        <span className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">Sincronizando Portal...</span>
       </div>
     );
   }
@@ -69,91 +70,91 @@ export default function HomePage() {
   const secundarias = noticias.slice(1, 4);
 
   return (
-    <main className="min-h-screen bg-[#F4F4F2] text-neutral-900 selection:bg-neutral-900 selection:text-white font-sans antialiased">
-      <div className="max-w-7xl mx-auto px-6 py-12 flex flex-col gap-8">
+    <main className="min-h-screen bg-[#F8F9FA] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-20">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 flex flex-col gap-12">
         
-        {/* Bloco Superior: Banner de Destaque Principal */}
+        {/* Bloco Superior: Banner de Destaque com efeito parallax/profundidade simulado */}
         {principal ? (
-          <article className="group cursor-pointer relative w-full aspect-[16/8] md:aspect-[21/9] rounded-3xl overflow-hidden shadow-sm bg-neutral-950 transition-all duration-500 hover:shadow-xl">
+          <article className="group cursor-pointer relative w-full aspect-[16/9] md:aspect-[21/9] rounded-[2rem] overflow-hidden bg-neutral-950 shadow-[0_24px_60px_rgba(0,0,0,0.18)] border border-neutral-800/20 transform transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_32px_70px_rgba(0,115,183,0.15)]">
             <Link href={`/noticias/${principal.slug}/`}>
               <div className="absolute inset-0 z-0">
                 <Image 
                   src={principal.capa.startsWith('http') ? principal.capa : `http://127.0.0.1:8000${principal.capa}`}
                   alt={principal.titulo} 
                   fill 
-                  className="object-cover transition-all duration-700 ease-out opacity-85 group-hover:scale-102 group-hover:opacity-100" 
+                  className="object-cover transition-all duration-700 ease-out opacity-75 scale-100 group-hover:scale-105 group-hover:opacity-90" 
                   priority
                 />
               </div>
 
-              {/* Tag Arredondada no topo */}
-              <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-neutral-950 text-[10px] px-4 py-1.5 font-bold uppercase tracking-widest z-20 rounded-full shadow-xs">
+              {/* Tag Superior 3D */}
+              <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-neutral-950 text-[10px] px-4 py-2 font-black uppercase tracking-[0.2em] z-20 rounded-full shadow-[0_8px_20px_rgba(0,0,0,0.2)] border border-white/40">
                 Notícia em Destaque
               </div>
 
-              {/* Gradiente e Conteúdo Textual inferior */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8 md:p-12 z-10">
-                <div className="flex items-center gap-3 text-[10px] font-medium text-neutral-300 mb-3 uppercase tracking-wider opacity-90">
-                  <span>Por {principal.autor || 'Redação DCE'}</span>
+              {/* Gradiente Acentuado de Profundidade */}
+              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent flex flex-col justify-end p-6 md:p-14 z-10">
+                <div className="flex items-center gap-3 text-[10px] font-bold text-[#8CC63F] mb-4 uppercase tracking-[0.15em]">
+                  <span className="text-white">Por {principal.autor || 'Redação DCE'}</span>
                   <span className="text-white/30">•</span>
                   <span>{new Date(principal.data_publicacao).toLocaleDateString('pt-BR')}</span>
                 </div>
 
-                <h2 className="text-2xl md:text-5xl font-bold text-white leading-tight tracking-tight mb-4 max-w-4xl transition-colors duration-300">
+                <h2 className="text-xl md:text-5xl font-black text-white leading-tight tracking-tight mb-4 max-w-4xl drop-shadow-md">
                   {principal.titulo}
                 </h2>
 
-                <p className="text-sm md:text-base text-neutral-300 font-light line-clamp-2 max-w-3xl leading-relaxed opacity-90">
+                <p className="text-xs md:text-base text-neutral-300 font-normal line-clamp-2 max-w-3xl leading-relaxed opacity-90">
                   {he.decode(principal.conteudo.replace(/<[^>]*>?/gm, ''))}
                 </p>
               </div>
             </Link>
           </article>
         ) : (
-          <div className="w-full min-h-[300px] bg-white rounded-3xl border border-neutral-200/60 flex items-center justify-center text-xs text-neutral-400 uppercase tracking-widest shadow-2xs">
-            Nenhum destaque publicado.
+          <div className="w-full min-h-[350px] bg-white rounded-3xl border border-neutral-200/60 flex flex-col gap-2 items-center justify-center text-xs text-neutral-400 font-bold uppercase tracking-widest shadow-xs">
+            <span>Nenhum destaque publicado.</span>
           </div>
         )}
 
-        {/* Layout de Duas Colunas Inferior (Feed e Sidebar) */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Layout de Duas Colunas */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           
           {/* Seção de Notícias Recentes (Esquerda) */}
-          <section className="lg:col-span-8 bg-white rounded-3xl p-6 md:p-8 border border-neutral-200/60 shadow-2xs flex flex-col gap-6">
-            <div>
-              <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400 mb-1">
+          <section className="lg:col-span-8 bg-white rounded-[2rem] p-6 md:p-10 border border-neutral-200/50 shadow-[0_12px_40px_rgba(0,0,0,0.03)] flex flex-col gap-8">
+            <div className="border-b border-neutral-100 pb-5">
+              <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#0073B7] mb-1">
                 Feed Informativo
               </h3>
-              <h2 className="text-2xl font-bold tracking-tight text-neutral-950">
+              <h2 className="text-3xl font-black tracking-tight text-neutral-950">
                 Últimas Atualizações
               </h2>
             </div>
 
             {secundarias.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {secundarias.map((news: Noticia) => (
                   <article 
                     key={news.id} 
-                    className="group flex flex-col bg-neutral-50/50 rounded-2xl overflow-hidden border border-neutral-100 hover:bg-neutral-50 hover:shadow-md transition-all duration-300 h-full"
+                    className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-neutral-100 shadow-[0_4px_15px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_35px_rgba(0,0,0,0.07)] transform hover:-translate-y-1 transition-all duration-400 h-full"
                   >
                     <Link href={`/noticias/${news.slug}/`} className="flex flex-col h-full">
-                      <div className="aspect-video relative overflow-hidden bg-neutral-200">
+                      <div className="aspect-video relative overflow-hidden bg-neutral-100">
                         <Image 
                           src={news.capa.startsWith('http') ? news.capa : `http://127.0.0.1:8000${news.capa}`} 
                           alt={news.titulo} 
                           fill 
-                          className="object-cover transition-transform duration-500 ease-out group-hover:scale-102" 
+                          className="object-cover transition-transform duration-500 ease-out group-hover:scale-105" 
                         />
                       </div>
 
                       <div className="p-6 flex flex-col flex-1">
-                        <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-2 block">
+                        <span className="text-[10px] font-black text-[#0073B7] uppercase tracking-wider mb-2.5 block">
                           {new Date(news.data_publicacao).toLocaleDateString('pt-BR')}
                         </span>
-                        <h4 className="text-lg font-bold leading-snug text-neutral-950 group-hover:text-neutral-700 transition-colors mb-2 line-clamp-2 tracking-tight">
+                        <h4 className="text-base font-bold leading-snug text-neutral-950 group-hover:text-[#0073B7] transition-colors mb-3 line-clamp-2 tracking-tight">
                           {news.titulo}
                         </h4>
-                        <p className="text-xs text-neutral-500 leading-relaxed line-clamp-2 mt-auto font-light">
+                        <p className="text-xs text-neutral-500 leading-relaxed line-clamp-2 mt-auto font-normal">
                           {he.decode(news.conteudo.replace(/<[^>]*>?/gm, ''))}
                         </p>
                       </div>
@@ -167,16 +168,19 @@ export default function HomePage() {
           </section>
 
           {/* Sidebar Auxiliar (Direita) */}
-          <aside className="lg:col-span-4 flex flex-col gap-8">
+          <aside className="lg:col-span-4 flex flex-col gap-10">
             
-            {/* Bloco de Editais - Estilo Dark Minimalista da Imagem */}
-            <div className="flex flex-col bg-[#121212] text-white rounded-3xl p-6 md:p-8 shadow-sm relative overflow-hidden">
+            {/* Bloco de Editais - Elevado e Futurista com Profundidade Sombria */}
+            <div className="flex flex-col bg-gradient-to-br from-neutral-900 to-neutral-950 text-white rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.25)] relative overflow-hidden border border-neutral-800">
+              {/* Elemento de iluminação decorativo superior de fundo */}
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#8CC63F]/10 blur-3xl pointer-events-none rounded-full"></div>
+              
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
-                <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-neutral-400">
                   Editais e Documentos
                 </h3>
                 {editalDestaque && (
-                  <span className="bg-white text-black text-[9px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full shadow-sm">
+                  <span className="bg-[#8CC63F] text-neutral-950 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_12px_rgba(140,198,63,0.4)] animate-pulse">
                     Novo
                   </span>
                 )}
@@ -187,19 +191,18 @@ export default function HomePage() {
                   <Link 
                     href={editalDestaque.arquivo.startsWith('http') ? editalDestaque.arquivo : `http://127.0.0.1:8000${editalDestaque.arquivo}`}
                     target="_blank"
-                    className="group/doc flex gap-4 items-center p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all duration-200"
+                    className="group/doc flex gap-4 items-center p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/20 hover:bg-white/10 transition-all duration-300 transform hover:scale-[1.02]"
                   >
-                    {/* Ícone Minimalista Redondo */}
-                    <div className="flex-shrink-0 w-12 h-12 bg-white rounded-xl flex items-center justify-center font-bold text-xs text-neutral-950 shadow-xs select-none">
-                      PDF
+                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex flex-col items-center justify-center font-black text-[10px] text-white shadow-md select-none tracking-tighter">
+                      <span>DOC</span>
+                      <span className="text-[7px] font-medium opacity-80">PDF</span>
                     </div>
                     
-                    {/* Informações do Edital */}
                     <div className="flex-1 min-w-0">
-                      <span className="text-[10px] font-medium text-neutral-400 uppercase tracking-wide block mb-0.5">
+                      <span className="text-[9px] font-bold text-[#8CC63F] uppercase tracking-wide block mb-0.5">
                         {new Date(editalDestaque.data_upload).toLocaleDateString('pt-BR')}
                       </span>
-                      <h4 className="text-sm font-semibold text-white leading-snug line-clamp-2 tracking-tight group-hover/doc:text-neutral-300 transition-colors">
+                      <h4 className="text-xs font-bold text-white leading-snug line-clamp-2 tracking-tight group-hover/doc:text-[#8CC63F] transition-colors">
                         {editalDestaque.titulo}
                       </h4>
                     </div>
@@ -215,26 +218,26 @@ export default function HomePage() {
               
               <Link 
                 href="/documentos/" 
-                className="w-full bg-white text-neutral-950 py-3.5 text-xs font-bold uppercase tracking-widest hover:bg-neutral-200 transition-all rounded-xl shadow-xs text-center"
+                className="w-full bg-white text-neutral-950 py-4 text-xs font-black uppercase tracking-widest hover:bg-[#8CC63F] hover:text-neutral-950 transition-all duration-300 rounded-xl shadow-lg text-center"
               >
                 Ver todos os editais
               </Link>
             </div>
 
             {/* Bloco de Agenda */}
-            <section className="bg-white rounded-3xl p-6 md:p-8 border border-neutral-200/60 shadow-2xs flex flex-col gap-6">
-              <div className="flex justify-between items-center pb-2 border-b border-neutral-100">
-                <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400">
+            <section className="bg-white rounded-[2rem] p-6 md:p-8 border border-neutral-200/50 shadow-[0_12px_40px_rgba(0,0,0,0.03)] flex flex-col gap-6">
+              <div className="flex justify-between items-center pb-4 border-b border-neutral-100">
+                <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#0073B7]">
                   Agenda Universitária
                 </h3>
-                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span className="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse"></span>
               </div>
 
               {eventos.length > 0 ? (
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-5">
                   {eventos.map((evento: Evento, index: number) => (
-                    <div key={evento.id} className="flex flex-col gap-4">
-                      <div className="hover:opacity-85 transition-opacity">
+                    <div key={evento.id} className="flex flex-col gap-5">
+                      <div className="hover:opacity-90 transition-opacity transform hover:translate-x-0.5 transition-transform duration-200">
                         <EventCard evento={evento} />
                       </div>
                       {index < eventos.length - 1 && (

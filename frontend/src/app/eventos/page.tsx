@@ -33,57 +33,60 @@ export default async function EventosPage() {
   const totalPages = Math.ceil(count / 6);
 
   return (
-    <main className="min-h-screen bg-[#FDFDFB] pb-32 selection:bg-black selection:text-white font-serif">
+    <main className="min-h-screen bg-[#F4F4F2] pb-32 text-neutral-900 selection:bg-neutral-950 selection:text-white font-sans antialiased">
       
       {/* 1. BREADCRUMB EDITORIAL SUTIL */}
-      <div className="w-full border-b border-black/5 mb-8">
+      <div className="w-full border-b border-neutral-200/60 mb-8">
         <div className="max-w-7xl mx-auto px-6 py-4">
-          <nav className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-400 font-sans">
-            <Link href="/" className="hover:text-black transition-colors">Início</Link>
+          <nav className="flex items-center gap-3 text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-400">
+            <Link href="/" className="hover:text-neutral-950 transition-colors">Início</Link>
             <span>/</span>
-            <span className="text-black font-bold">Eventos</span>
+            <span className="text-neutral-950 font-bold">Eventos</span>
           </nav>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6">
         
-        {/* TÍTULO DA PÁGINA - REFORMULADO (SUTIL E ELEGANTE) */}
-        <div className="mb-12 border-b border-black pb-4">
-          <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-black leading-none">
-            Agenda <span className="text-[#0073B7]">Acadêmica</span>
+        {/* HEADER DA SEÇÃO */}
+        <div className="mb-12 border-b border-neutral-300 pb-5">
+          <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-neutral-400 mb-1">
+            Agenda Acadêmica
+          </h3>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-neutral-950 uppercase">
+            Calendário de <span className="text-[#0073B7]">Mobilizações</span>
           </h1>
-          <p className="mt-1 text-[10px] font-sans uppercase tracking-[0.3em] text-slate-400 font-bold">
-            Calendário de Mobilizações, Palestras e Cultura
+          <p className="mt-1 text-[10px] uppercase tracking-widest text-neutral-400 font-bold">
+            Palestras, Cultura e Atividades Institucionais
           </p>
         </div>
 
         {eventos.length > 0 ? (
           <>
-            {/* 2. GRID EDITORIAL (GRID DE CÉLULAS COM LINHAS) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-black/10 border border-black/10">
+            {/* 2. GRID DE EVENTOS (ESTILO NEWS) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
               {eventos.map((evento: Evento) => (
-                <div 
+                <article 
                   key={evento.id} 
-                  className="bg-[#FDFDFB] p-6 transition-all duration-500 hover:bg-[#F9F9F7]"
+                  className="bg-white border border-neutral-200/60 rounded-3xl p-6 shadow-2xs hover:shadow-md transition-all duration-300 group"
                 >
                   <EventCard evento={evento} />
-                </div>
+                </article>
               ))}
             </div>
 
-            {/* 3. PAGINAÇÃO JORNALÍSTICA */}
+            {/* 3. PAGINAÇÃO MINIMALISTA */}
             {totalPages > 1 && (
-              <div className="mt-24 pt-8 border-t border-black/10 flex flex-col items-center gap-6">
+              <div className="mt-20 pt-10 border-t border-neutral-200/60 flex flex-col items-center">
                 <div className="flex items-center gap-4">
                   {Array.from({ length: totalPages }, (_, i) => (
                     <Link
                       key={i + 1}
                       href={`/eventos?page=${i + 1}`}
-                      className={`text-lg font-black transition-all px-4 py-1 ${
+                      className={`text-xs font-bold uppercase tracking-widest transition-all px-4 py-2 rounded-xl ${
                         currentPage === String(i + 1) 
-                        ? 'text-[#0073B7] border-b-2 border-[#0073B7]' 
-                        : 'text-slate-300 hover:text-black'
+                        ? 'bg-neutral-950 text-white' 
+                        : 'text-neutral-400 hover:text-neutral-950 hover:bg-white'
                       }`}
                     >
                       {String(i + 1).padStart(2, '0')}
@@ -94,18 +97,21 @@ export default async function EventosPage() {
             )}
           </>
         ) : (
-          <div className="py-32 text-center border-2 border-dashed border-black/5">
-            <p className="text-slate-300 font-bold text-sm uppercase tracking-[0.2em] italic font-sans opacity-50">
-              Nenhum evento agendado no radar.
+          <div className="py-24 text-center border border-dashed border-neutral-300 rounded-3xl bg-white/50">
+            <svg className="w-8 h-8 text-neutral-200 mx-auto mb-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+            </svg>
+            <p className="text-neutral-400 font-bold text-[10px] uppercase tracking-widest">
+              Nenhum evento agendado para o período
             </p>
           </div>
         )}
       </div>
 
-      <footer className="mt-40 text-center py-20 border-t border-black/5 mx-6">
-         <div className="text-[10px] font-bold uppercase tracking-[1em] text-slate-200 select-none font-sans italic">
-           DCE UFVJM
-         </div>
+      <footer className="mt-40 text-center py-20 border-t border-neutral-200/60 mx-6">
+         <p className="text-[10px] font-bold uppercase tracking-[0.6em] text-neutral-300 select-none">
+           DCE UFVJM • Agenda Aberta
+         </p>
       </footer>
     </main>
   );

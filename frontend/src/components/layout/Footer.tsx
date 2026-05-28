@@ -5,92 +5,102 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-white text-neutral-950 pt-20 pb-10 mt-20 border-t border-neutral-200/60 font-sans antialiased">
+    <footer className="bg-neutral-950 text-white pt-24 pb-12 mt-20 font-sans antialiased border-t-4 border-[#8CC63F]">
       <div className="max-w-7xl mx-auto px-6">
         
         {/* Grid Principal */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16 text-left">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 text-left">
           
-          {/* Coluna 1: Branding (Manchete do Rodapé) */}
-          <div className="lg:col-span-2 space-y-4">
+          {/* Coluna 1: Branding */}
+          <div className="lg:col-span-2 space-y-6">
             <div className="flex flex-col">
-              <span className="text-[10px] font-bold tracking-[0.2em] text-neutral-400 uppercase mb-2">Publicação Oficial</span>
-              <h2 className="text-xl md:text-2xl font-black tracking-[0.16em] text-neutral-950 uppercase leading-none select-none">
-                PORTAL <span className="text-neutral-400 font-light">DCE</span>
+              <span className="text-[10px] font-bold tracking-[0.3em] text-[#8CC63F] uppercase mb-3">Voz e Representação</span>
+              <h2 className="text-2xl md:text-3xl font-black tracking-[0.15em] text-white uppercase leading-none select-none">
+                PORTAL <span className="text-neutral-600 font-light">DCE</span>
               </h2>
             </div>
-            <p className="text-xs md:text-sm text-neutral-500 leading-relaxed max-w-sm font-light">
-              Diretório Central dos Estudantes da UFVJM. Representatividade, 
-              transparência e compromisso com a base estudantil nos quatro campi.
+            <p className="text-sm text-neutral-400 leading-relaxed max-w-md font-light">
+              O Diretório Central dos Estudantes da UFVJM é a entidade máxima de representação discente. 
+              Atuamos pela transparência, assistência estudantil e pelo fortalecimento da universidade pública em todos os campi.
             </p>
+            
+            <div className="flex gap-4 pt-4">
+               {/* Espaço para Redes Sociais se houver */}
+               <div className="w-8 h-8 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center hover:border-[#0073B7] transition-colors cursor-pointer group">
+                  <span className="text-neutral-500 group-hover:text-white transition-colors">in</span>
+               </div>
+               <div className="w-8 h-8 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center hover:border-[#8CC63F] transition-colors cursor-pointer group">
+                  <span className="text-neutral-500 group-hover:text-white transition-colors">ig</span>
+               </div>
+            </div>
           </div>
 
-          {/* Coluna 2: Campi (Listagem Editorial) */}
-          <div className="space-y-5">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.25em] text-neutral-950 border-b border-neutral-100 pb-3">
+          {/* Coluna 2: Campi */}
+          <div className="space-y-6">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white border-b border-neutral-900 pb-4">
               Presença Regional
             </h3>
-            <ul className="text-[10px] text-neutral-400 space-y-3.5 font-bold uppercase tracking-widest">
+            <ul className="text-[10px] space-y-4 font-bold uppercase tracking-widest">
               {['Diamantina', 'Teófilo Otoni', 'Unaí', 'Janaúba'].map((campus) => (
-                <li key={campus} className="flex items-center gap-2.5 group cursor-default text-neutral-400 hover:text-neutral-950 transition-colors">
-                  <span className="w-1 h-1 bg-neutral-300 group-hover:bg-neutral-950 rounded-full transition-colors"></span>
+                <li key={campus} className="flex items-center gap-3 text-neutral-500 group cursor-default hover:text-white transition-colors">
+                  <span className="w-1 h-1 bg-[#8CC63F] rounded-full"></span>
                   {campus}
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Coluna 3: Links Externos (Ecossistema) */}
-          <div className="space-y-5">
-            <h3 className="text-[11px] font-bold uppercase tracking-[0.25em] text-neutral-950 border-b border-neutral-100 pb-3">
+          {/* Coluna 3: Ecossistema */}
+          <div className="space-y-6">
+            <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-white border-b border-neutral-900 pb-4">
               Ecossistema
             </h3>
-            <nav className="flex flex-col gap-3.5">
+            <nav className="flex flex-col gap-4">
               {[
                 { label: 'Portal UFVJM', href: 'https://portal.ufvjm.edu.br' },
                 { label: 'Sistema SIGA', href: '#' },
                 { label: 'E-mail Acadêmico', href: '#' },
-                { label: 'Ouvidoria', href: '#' }
+                { label: 'Ouvidoria Geral', href: '#' }
               ].map((link, i) => (
                 <a 
                   key={i} 
                   href={link.href} 
-                  className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 hover:text-neutral-950 transition-all flex justify-between items-center group"
+                  className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 hover:text-[#0073B7] transition-all flex justify-between items-center group"
                 >
                   {link.label}
-                  <span className="opacity-0 translate-x-[-4px] group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200">→</span>
+                  <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">→</span>
                 </a>
               ))}
             </nav>
           </div>
         </div>
         
-        {/* Divisor de Estilo Jornal */}
-        <div className="w-full h-px bg-neutral-100 mt-16 mb-10" />
+        {/* Divisor */}
+        <div className="w-full h-px bg-neutral-900 mt-20 mb-12" />
 
-        {/* Bottom Bar: Créditos e Copyright */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="text-center md:text-left space-y-1.5">
-            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.2em]">
+        {/* Bottom Bar */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-10">
+          <div className="text-center md:text-left space-y-2">
+            <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.25em]">
               &copy; {new Date().getFullYear()} • Diretório Central dos Estudantes UFVJM
             </p>
-            <p className="text-[9px] font-medium text-neutral-300 uppercase tracking-widest">
-              Gestão "O Futuro é Agora" • CNPJ: 00.000.000/0001-00
+            <p className="text-[9px] font-bold text-neutral-600 uppercase tracking-widest">
+              Entidade de Utilidade Pública • Gestão Continuada
             </p>
           </div>
           
-          <div className="flex items-center border-l-0 md:border-l border-neutral-100 md:pl-6">
-             <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest leading-none">
-               Desenvolvido por <span className="text-neutral-950 border-b border-neutral-200 hover:border-neutral-950 transition-all cursor-pointer">Daniel Rodrigues Pereira</span>
+          <div className="flex items-center md:border-l border-neutral-900 md:pl-10">
+             <p className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest leading-none">
+               Desenvolvido por <span className="text-white border-b border-neutral-800 hover:border-[#0073B7] transition-all cursor-pointer">Daniel Rodrigues Pereira</span>
              </p>
           </div>
         </div>
 
         {/* Linha Final Decorativa */}
-        <div className="mt-10 flex justify-center gap-1.5">
-          <div className="w-1 h-1 bg-neutral-200 rounded-full"></div>
-          <div className="w-1 h-1 bg-neutral-200 rounded-full"></div>
-          <div className="w-1 h-1 bg-neutral-200 rounded-full"></div>
+        <div className="mt-16 flex justify-center gap-2">
+          <div className="w-1.5 h-1.5 bg-[#0073B7] rounded-full opacity-50"></div>
+          <div className="w-1.5 h-1.5 bg-[#8CC63F] rounded-full opacity-50"></div>
+          <div className="w-1.5 h-1.5 bg-neutral-800 rounded-full"></div>
         </div>
       </div>
     </footer>

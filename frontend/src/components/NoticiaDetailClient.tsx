@@ -124,24 +124,23 @@ export default function NoticiaDetailClient({ slug }: NoticiaDetailClientProps) 
           </div>
         </header>
 
-        {/* IMAGEM DE CAPA EM DESTAQUE (Alinhada ao padrão de mídias do grid) */}
+        {/* CORPO DA MATÉRIA PADRONIZADO EM SANS-SERIF */}
+        <div 
+          className="prose prose-neutral max-w-none text-neutral-800 text-sm md:text-base leading-relaxed text-justify mb-10 font-sans font-normal"
+          dangerouslySetInnerHTML={{ __html: noticia.conteudo }} 
+        />
+
+        {/* IMAGEM DE CAPA REDUZIDA NO FINAL DA MATÉRIA */}
         {noticia.capa && (
-          <div className="w-full relative aspect-video rounded-3xl overflow-hidden mb-10 shadow-2xs border border-neutral-200/60 bg-neutral-100">
+          <div className="max-w-2xl mx-auto w-full relative aspect-video rounded-3xl overflow-hidden mb-12 shadow-2xs border border-neutral-200/60 bg-neutral-100">
             <Image 
               src={noticia.capa.startsWith('http') ? noticia.capa : `http://127.0.0.1:8000${noticia.capa}`} 
               alt={noticia.titulo} 
               fill 
               className="object-cover"
-              priority
             />
           </div>
         )}
-
-        {/* CORPO DA MATÉRIA PADRONIZADO EM SANS-SERIF */}
-        <div 
-          className="prose prose-neutral max-w-none text-neutral-800 text-sm md:text-base leading-relaxed text-justify mb-12 font-sans font-normal"
-          dangerouslySetInnerHTML={{ __html: noticia.conteudo }} 
-        />
 
         {/* SEÇÃO DE TAGS NO PADRÃO DE DESIGN ARREDONDADO */}
         {listaTags.length > 0 && (
