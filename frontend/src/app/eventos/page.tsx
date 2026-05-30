@@ -28,11 +28,11 @@ export default async function EventosPage() {
   const eventosEncerrados = todos.filter((e: Evento) => e.ativo === false);
 
   return (
-    <main className="min-h-screen bg-[#F0F2F5] pb-32 text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased relative overflow-hidden">
+    <main className="min-h-screen bg-[#F4F6F8] pb-32 text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased relative overflow-hidden">
       
-      {/* Elementos de Fundo */}
-      <div className="absolute top-0 left-1/3 w-[600px] h-[600px] bg-[#8CC63F]/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-[#0073B7]/5 blur-[150px] rounded-full pointer-events-none -z-10"></div>
+      {/* Elementos de Fundo - Suavizados */}
+      <div className="absolute top-[-5%] left-[-5%] w-[1000px] h-[1000px] bg-[#8CC63F]/5 blur-[160px] rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute bottom-[-10%] left-[-5%] w-[1100px] h-[1100px] bg-[#0073B7]/6 blur-[200px] rounded-full pointer-events-none -z-10"></div>
 
       {/* BREADCRUMB */}
       <div className="w-full border-b border-neutral-200/60 mb-12 bg-white/60 backdrop-blur-md sticky top-0 z-30">
@@ -60,32 +60,14 @@ export default async function EventosPage() {
                 </h3>
               </div>
               <h1 className="text-2xl md:text-3xl font-black tracking-tight text-neutral-950 uppercase">
-                Calendário de Eventos
+                Eventos do DCE
               </h1>
-            </div>
-            
-            <div className="flex items-center gap-5 bg-white/80 backdrop-blur-xl px-6 py-4 rounded-2xl border border-neutral-200 shadow-xl group hover:shadow-2xl transition-all duration-500 z-20">
-              <div className="w-10 h-10 bg-[#8CC63F]/10 rounded-xl flex items-center justify-center border border-[#8CC63F]/20 group-hover:scale-110 transition-transform">
-                <Calendar size={20} className="text-[#8CC63F]" />
-              </div>
-              <div>
-                <p className="text-[9px] font-black text-neutral-400 uppercase tracking-widest leading-none mb-1">Status da Agenda</p>
-                <p className="text-[11px] font-black text-neutral-950 uppercase tracking-tight">Atividades Abertas</p>
-              </div>
             </div>
           </div>
         </div>
 
         {/* SEÇÃO: EVENTOS FUTUROS */}
         <section className="mb-24">
-          <div className="flex items-center gap-4 mb-12">
-            <div className="w-10 h-10 bg-[#8CC63F] rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(140,198,63,0.4)]">
-               <CheckCircle2 size={20} className="text-white" />
-            </div>
-            <h2 className="text-3xl font-black tracking-tight text-neutral-950">Próximas Atividades</h2>
-            <div className="h-px flex-1 bg-neutral-200"></div>
-          </div>
-
           {eventosAtivos.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {eventosAtivos.map((evento: Evento) => (

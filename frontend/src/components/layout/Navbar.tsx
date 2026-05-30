@@ -210,15 +210,15 @@ export default function Navbar() {
         <div className="flex-1 lg:flex-none flex justify-end items-center">
           <div className="hidden lg:flex items-center gap-6 min-w-[200px] justify-end">
             {loadingWeather ? (
-              <div className="h-10 w-28 bg-neutral-50 border border-neutral-100 rounded-2xl animate-pulse"></div>
+              <div className="h-10 w-28 animate-pulse"></div>
             ) : (
               weather && (
-                <div className={`flex items-center gap-4 px-4 py-2 rounded-2xl bg-white border-2 border-[#0073B7]/5 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.03)] transition-all duration-700 hover:shadow-[0_15px_35px_-5px_rgba(0,115,183,0.1)] group/w ${scrolled ? "scale-90 origin-right translate-x-2" : ""}`}>
+                <div className={`flex items-center gap-4 transition-all duration-700 group/w ${scrolled ? "scale-90 origin-right translate-x-2" : ""}`}>
                   <div className="text-right">
                     <p className="text-sm font-black text-neutral-950 leading-none tabular-nums group-hover/w:text-[#0073B7] transition-colors">{weather.temp}°C</p>
                     <p className="text-[9px] font-black text-neutral-400 uppercase tracking-widest mt-1.5 max-w-[150px] truncate">{weather.city.split(',')[0]}</p>
                   </div>
-                  <div className="p-1.5 bg-[#0073B7]/5 rounded-xl group-hover/w:bg-[#0073B7]/10 transition-colors">
+                  <div className="transition-colors">
                     {renderWeatherIcon(weather.condition)}
                   </div>
                 </div>

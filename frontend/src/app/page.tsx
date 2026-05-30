@@ -45,12 +45,12 @@ export default async function HomePage() {
   const editalDestaque = editaisAtivos[0] || null;
 
   return (
-    <main className="min-h-screen bg-[#F0F2F5] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-20 relative overflow-hidden">
+    <main className="min-h-screen bg-[#F4F6F8] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-20 relative overflow-hidden">
       
-      {/* Elementos de Fundo */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#0073B7]/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-[#8CC63F]/5 blur-[100px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-[#00AEEF]/5 blur-[150px] rounded-full pointer-events-none -z-10"></div>
+      {/* Elementos de Fundo - Suavizados para conforto visual */}
+      <div className="absolute top-[-10%] left-[-10%] w-[1000px] h-[1000px] bg-[#0073B7]/6 blur-[180px] rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute top-[20%] right-[-10%] w-[800px] h-[800px] bg-[#8CC63F]/5 blur-[160px] rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute bottom-[-10%] left-[5%] w-[1200px] h-[1200px] bg-[#00AEEF]/5 blur-[200px] rounded-full pointer-events-none -z-10"></div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10 flex flex-col gap-10 md:gap-14 relative z-10">
         

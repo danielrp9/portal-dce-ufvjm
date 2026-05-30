@@ -1,101 +1,82 @@
-# Portal DCE UFVJM — Sistema de Gestão e Transparência Estudantil
+# Portal DCE UFVJM — Engenharia de Transparência e Gestão Estudantil
 
-Este é o repositório oficial do novo **Portal do Diretório Central dos Estudantes (DCE) da UFVJM**. O projeto une uma estética de **Editorial de Jornal Clássico** com uma arquitetura moderna, escalável e de alta disponibilidade, focada em fornecer informações oficiais, editais e transparência financeira para a comunidade discente.
-
----
-
-## 🏛️ Arquitetura Técnica
-
-O sistema foi desenvolvido utilizando o paradigma **Headless**, garantindo o desacoplamento total entre a lógica de negócios e a interface do usuário. Essa escolha arquitetural permite escalabilidade independente e facilita manutenções futuras.
-
-* **Backend (Core):** Construído com **Django 5.x** e **Django REST Framework (DRF)**. Atua como um serviço de API centralizado que gerencia o estado da aplicação, autenticação administrativa e persistência de dados.
-* **Frontend (Interface):** Desenvolvido em **Next.js 16** utilizando o **App Router** e **React 19**. Focado em performance, SEO e renderização híbrida (Server-Side Rendering para notícias e Client-Side Rendering para filtros financeiros).
-* **Estilização:** Utiliza **Tailwind CSS v4** com o plugin `@tailwindcss/typography` para garantir a fidelidade estética ao estilo editorial clássico proposto.
-* **Gestão de Dados:** Implementado com **PostgreSQL** em ambiente de produção para segurança transacional e **SQLite** para agilidade em desenvolvimento.
-* **Servidor de Aplicação:** Preparado para **Gunicorn (WSGI)**, otimizando a execução de processos Python em ambiente servido.
+Este projeto não é apenas um site; é uma infraestrutura pensada para resolver a fragmentação de informações no ecossistema estudantil da UFVJM. Desenvolvi este portal com o objetivo de unir o rigor técnico necessário para a transparência financeira com a agilidade de um editorial de notícias moderno.
 
 ---
 
-## 🚀 Funcionalidades Principais
+## 🏗️ Filosofia de Arquitetura
 
--   **📰 Gestão Editorial:** Sistema de notícias com suporte a Rich Text (CKEditor) e slugs amigáveis.
--   **📂 Repositório Digital Dinâmico:** Organização de documentos e editais com sistema automático de destaque para a publicação mais recente.
--   **📅 Agenda Acadêmica:** Calendário centralizado de eventos, palestras e mobilizações estudantis.
--   **💰 Portal da Transparência:** Livro-caixa digital com balanço patrimonial automático, saldo consolidado e controle por exercício financeiro.
--   **📱 Interface Adaptativa:** Design otimizado para Desktop (foco em leitura longa) e Mobile (foco em usabilidade rápida com menu lateral *Drawer*).
+Optei por uma arquitetura **Headless (Decoupled)**, separando completamente o cérebro (Django) da pele (Next.js). Essa decisão não foi estética, mas estratégica:
+
+### 1. O "Cérebro" com Django 5.x & DRF
+Escolhi o Django pela sua maturidade em lidar com permissões e integridade de dados. Em um portal de um DCE, onde múltiplos gestores podem editar conteúdos, o sistema de `admin` nativo e os `soft-constraints` do ORM me permitiram focar no domínio do problema em vez de reinventar a roda de autenticação e segurança.
+*   **Modularidade Granular:** Em vez de uma aplicação gigante, fragmentei o backend em apps independentes (`noticias`, `financeiro`, `editais`). Isso isola falhas: se a lógica de cálculo financeiro precisar mudar, o motor de notícias permanece intacto.
+*   **Rich Text Control:** Integrei o CKEditor para que a gestão editorial tenha liberdade criativa, mas com filtros de sanitização rigorosos no backend para evitar XSS e quebras de layout no frontend.
+
+### 2. A "Pele" com Next.js 16 & React 19
+No frontend, a prioridade absoluta foi **SEO e Performance**. Um edital de bolsa ou uma notícia urgente precisa ser indexada pelo Google instantaneamente e carregar rápido em conexões móveis instáveis.
+*   **Hybrid Rendering:** Utilizo *Server Components* para o conteúdo pesado (notícias, documentos) para garantir que o HTML chegue pronto ao navegador, e *Client-Side Rendering* apenas onde a interatividade é necessária, como nos filtros dinâmicos do portal da transparência.
+*   **Tailwind CSS 4 + Typography:** A estética "Editorial Clássico" exige controle fino sobre escalas tipográficas. O uso do plugin `@tailwindcss/typography` me permitiu focar na legibilidade do texto, tratando o conteúdo vindo do backend com o respeito visual que a informação oficial merece.
 
 ---
 
-## 🔧 Guia de Instalação e Execução
+## 💰 Engenharia de Transparência (O Diferencial)
 
-### Pré-requisitos
-- Python 3.10+
-- Node.js 20+
-- PostgreSQL (Recomendado para produção)
+O módulo `financeiro` foi o maior desafio técnico. Ele não é apenas um CRUD de entradas e saídas. Implementei um sistema de **Exercícios Financeiros**, onde cada transação está vinculada a um período fiscal. 
+*   **Cálculos em Voo:** O saldo consolidado e o balanço patrimonial não são campos estáticos no banco (o que geraria inconsistência), mas sim calculados via aggregations do Django no momento da requisição, garantindo que o valor exibido seja sempre a verdade absoluta dos dados.
 
-### 1. Configurando o Backend (Django)
+---
+
+## 🛠️ Guia de Execução Detalhado
+
+Para rodar este sistema, você precisa garantir que o "diálogo" entre o backend e o frontend esteja configurado via variáveis de ambiente.
+
+### Passo 1: O Engine (Backend)
+Primeiro, isolamos o ambiente para evitar conflitos de bibliotecas.
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
+source venv/bin/activate  # No Windows: venv\Scripts\activate
 
+# Instalação das dependências e drivers do banco
 pip install -r requirements.txt
+
+# Preparação do Banco de Dados
+# O sistema detecta automaticamente se deve usar SQLite (dev) ou PostgreSQL (prod) via DATABASE_URL
 python manage.py migrate
-python manage.py createsuperuser
+python manage.py createsuperuser  # Crie seu acesso administrativo
 python manage.py runserver
 ```
-O backend estará operando em `http://127.0.0.1:8000`.
 
-### 2. Configurando o Frontend (Next.js)
+### Passo 2: A Interface (Frontend)
+Em um terminal separado, subimos o Next.js.
 ```bash
 cd frontend
 npm install
+
+# Execução em ambiente de desenvolvimento
+# Configure o .env.local com NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
 npm run dev
 ```
-O frontend estará operando em `http://localhost:3000`.
+
+*Dica de Engenharia:* Configurei um script `npm run dev` no `package.json` do frontend que utiliza `concurrently` para subir ambos os servidores se você estiver em um ambiente que suporte execução paralela (requer ajuste de caminhos no script).
 
 ---
 
-## 🌐 Variáveis de Ambiente (.env)
+## 📂 Anatomia do Projeto
 
-Para o correto funcionamento em produção, configure:
-
-**Frontend (`.env.local`):**
-- `NEXT_PUBLIC_API_URL`: URL base da API Django.
-
-**Backend (`settings.py` / `.env`):**
-- `DEBUG`: `False`
-- `FRONTEND_URL`: URL final do site Next.js (para redirecionamento do Admin).
-- `ALLOWED_HOSTS`: Domínios autorizados.
-- `CORS_ALLOWED_ORIGINS`: Origem do frontend para permissão de requisições.
+*   **`backend/core/`**: Onde reside o "sistema operacional" do projeto (middlewares de segurança, configurações de CORS e WhiteNoise).
+*   **`backend/financeiro/`**: Lógica de balanço patrimonial e controle de fluxo de caixa.
+*   **`frontend/src/app/`**: Estrutura de rotas utilizando o novo paradigma do App Router, otimizado para layouts aninhados.
+*   **`frontend/src/services/`**: Camada de abstração para consumo da API, centralizando o tratamento de erros e interceptores do Axios.
 
 ---
 
-## 📂 Organização do Repositório
+## 📡 Deployment e Escalabilidade
 
-```text
-.
-├── backend/                # Lógica de negócio e API REST
-│   ├── core/               # Configurações do projeto Django
-│   ├── dce_portal/         # App principal (Models, Serializers, Views)
-│   ├── media/              # Armazenamento de uploads (Imagens/PDFs)
-│   └── requirements.txt    # Dependências de produção (inclui Gunicorn e Psycopg2)
-├── frontend/               # Interface do usuário (SPA/SSR)
-│   ├── src/app/            # Estrutura de rotas Next.js App Router
-│   ├── src/components/     # Biblioteca de UI Components padronizados
-│   ├── src/services/       # Integração via Axios
-│   └── package.json        # Scripts de build e dependências (Next 16+)
-└── README.md               # Documentação do projeto
-```
+O sistema foi preparado para ser *stateless*. Os uploads (`media/`) devem ser integrados a um bucket S3 em produção, e os arquivos estáticos são servidos via **WhiteNoise** com compressão Brotli/Gzip, o que elimina a necessidade de um Nginx complexo para deploys rápidos em plataformas como Railway, Heroku ou Vercel.
 
 ---
 
-## ✍️ Desenvolvedor
-
-Projeto concebido e desenvolvido para o **DCE UFVJM - Gestão "O Futuro é Agora"**.
-
-* **Desenvolvedor:** Daniel Rodrigues Pereira
-* **Linkedin:** [daniel-rodrigues-pereira](https://www.linkedin.com/in/daniel-rodrigues-pereira-29b1b7243/)
-* **E-mail:** danielrodrigues878@hotmail.com
-* **GitHub:** [@danielrp9](https://github.com/danielrp9)
+**Desenvolvido por Daniel Rodrigues Pereira**  
+*Engenheiro focado em criar soluções que resolvam problemas reais com código limpo e decisões justificadas.*

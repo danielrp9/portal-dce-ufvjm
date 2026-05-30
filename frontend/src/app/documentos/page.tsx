@@ -34,11 +34,11 @@ export default async function DocumentosPage() {
   const transparencia = todos.filter(d => d.tipo === 'TRANSPARENCIA');
 
   return (
-    <main className="min-h-screen bg-[#F0F2F5] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-32 relative overflow-hidden">
+    <main className="min-h-screen bg-[#F4F6F8] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-32 relative overflow-hidden">
       
-      {/* Elementos de Fundo */}
-      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#0073B7]/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute bottom-0 right-1/4 w-[700px] h-[700px] bg-[#8CC63F]/5 blur-[150px] rounded-full pointer-events-none -z-10"></div>
+      {/* Elementos de Fundo - Suavizados */}
+      <div className="absolute top-[-5%] left-[-5%] w-[900px] h-[900px] bg-[#0073B7]/6 blur-[180px] rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute bottom-[-10%] right-[-5%] w-[1000px] h-[1000px] bg-[#8CC63F]/5 blur-[200px] rounded-full pointer-events-none -z-10"></div>
 
       {/* BREADCRUMB */}
       <div className="w-full bg-white/60 backdrop-blur-md border-b border-neutral-200/60 mb-12 sticky top-0 z-30">
