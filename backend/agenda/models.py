@@ -7,6 +7,7 @@ class Evento(models.Model):
     local = models.CharField(max_length=255)
     data_hora = models.DateTimeField()
     link_ingresso = models.URLField(blank=True, null=True)
+    ativo = models.BooleanField(default=True, help_text="Se desmarcado, o evento será movido para a seção de encerrados.")
 
     def __str__(self):
         return self.titulo

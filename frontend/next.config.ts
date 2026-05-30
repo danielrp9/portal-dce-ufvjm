@@ -1,13 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export', // Força o Next.js a gerar uma pasta com arquivos estáticos (HTML/CSS/JS)
-  
-  // CORREÇÃO DE ROTAS ESTÁTICAS: Faz o Next gerar pastas individuais para cada rota (ex: out/noticias/index.html)
-  // Isso resolve permanentemente o conflito de roteamento híbrido no Django
+  output: 'export', // Reativado para permitir que o Django sirva os arquivos estáticos da pasta 'out'
   trailingSlash: true,
-  
-  assetPrefix: '/static/', 
 
   reactCompiler: true, 
   images: {
@@ -24,6 +19,10 @@ const nextConfig: NextConfig = {
         hostname: 'localhost',
         port: '8000',
         pathname: '/media/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**', // Permite imagens de qualquer host HTTPS em produção
       },
     ],
   },

@@ -7,9 +7,10 @@ import { Evento } from '@/types';
 
 interface EventCardProps {
   evento: Evento;
+  onExpandChange?: (expanded: boolean) => void;
 }
 
-export default function EventCard({ evento }: EventCardProps) {
+export default function EventCard({ evento, onExpandChange }: EventCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -20,6 +21,12 @@ export default function EventCard({ evento }: EventCardProps) {
     setMounted(true);
     return () => setMounted(false);
   }, []);
+
+  useEffect(() => {
+    if (onExpandChange) {
+      onExpandChange(isExpanded);
+    }
+  }, [isExpanded, onExpandChange]);
   
   const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();

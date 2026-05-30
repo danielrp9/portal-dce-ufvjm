@@ -8,6 +8,8 @@ from noticias.views import NoticiaViewSet
 from agenda.views import EventoViewSet
 from documentos.views import DocumentoViewSet
 from financeiro.views import FinanceiroViewSet
+from artigos.views import ArtigoViewSet
+from editais.views import EditalViewSet
 from core.views import serve_frontend
 
 # Roteador da API
@@ -16,6 +18,8 @@ router.register(r'noticias', NoticiaViewSet)
 router.register(r'eventos', EventoViewSet)
 router.register(r'documentos', DocumentoViewSet)
 router.register(r'financeiro', FinanceiroViewSet)
+router.register(r'artigos', ArtigoViewSet)
+router.register(r'editais', EditalViewSet)
 
 urlpatterns = [
     # 1. Painel Administrativo e API de dados
@@ -27,11 +31,15 @@ urlpatterns = [
     path('noticias/', serve_frontend, {'path': 'noticias/index.html'}, name='frontend-noticias'),
     path('documentos/', serve_frontend, {'path': 'documentos/index.html'}, name='frontend-documentos'),
     path('eventos/', serve_frontend, {'path': 'eventos/index.html'}, name='frontend-eventos'),
+    path('artigos/', serve_frontend, {'path': 'artigos/index.html'}, name='frontend-artigos'),
+    path('editais/', serve_frontend, {'path': 'editais/index.html'}, name='frontend-editais'),
     path('transparencia/', serve_frontend, {'path': 'transparencia/index.html'}, name='frontend-transparencia'),
     path('sobre/', serve_frontend, {'path': 'sobre/index.html'}, name='frontend-sobre'),
 
     # 3. INTERCEPTADOR DINÂMICO PARA DETALHES
     re_path(r'^noticias/[a-zA-Z0-9_-]+/?$', serve_frontend, {'path': 'noticias/detalhe/index.html'}, name='frontend-noticia-detail'),
+    re_path(r'^artigos/[a-zA-Z0-9_-]+/?$', serve_frontend, {'path': 'artigos/detalhe/index.html'}, name='frontend-artigo-detail'),
+    re_path(r'^editais/[a-zA-Z0-9_-]+/?$', serve_frontend, {'path': 'editais/detalhe/index.html'}, name='frontend-edital-detail'),
 
     # 4. FALLBACK GERAL
     re_path(

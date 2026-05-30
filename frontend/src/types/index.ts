@@ -5,6 +5,19 @@ export interface Noticia {
   autor: string;
   capa: string;
   conteudo: string;
+  campus: string;
+  campus_display?: string;
+  tags: string;
+  data_publicacao: string;
+}
+
+export interface Artigo {
+  id: number;
+  titulo: string;
+  slug: string;
+  autor: string;
+  resumo: string;
+  conteudo: string;
   data_publicacao: string;
 }
 
@@ -16,14 +29,35 @@ export interface Evento {
   local: string;
   data_hora: string;
   link_ingresso?: string;
+  ativo: boolean;
 }
 
 export interface Documento {
   id: number;
   titulo: string;
   arquivo: string;
-  tipo: 'EDITAL' | 'TRANSPARENCIA' | 'INSTITUCIONAL';
+  tipo: 'TRANSPARENCIA' | 'INSTITUCIONAL';
   data_upload: string;
+}
+
+export interface DocumentoEdital {
+  id: number;
+  titulo: string;
+  arquivo?: string;
+  link?: string;
+  data_publicacao: string;
+}
+
+export interface Edital {
+  id: number;
+  titulo: string;
+  slug: string;
+  descricao: string;
+  campus: string;
+  campus_display?: string;
+  data_publicacao: string;
+  ativo: boolean;
+  documentos: DocumentoEdital[];
 }
 
 export interface ResumoFinanceiro {

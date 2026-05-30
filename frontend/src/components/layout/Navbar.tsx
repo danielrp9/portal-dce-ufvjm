@@ -92,6 +92,8 @@ export default function Navbar() {
   const menuItems = [
     { name: 'Início', href: '/' },
     { name: 'Notícias', href: '/noticias' },
+    { name: 'Artigos', href: '/artigos' },
+    { name: 'Editais', href: '/editais' },
     { name: 'Documentos', href: '/documentos' },
     { name: 'Eventos', href: '/eventos' },
     { name: 'Transparência', href: '/transparencia' },
@@ -131,27 +133,31 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`w-full z-50 transition-all duration-500 ${
+    <nav className={`w-full z-50 transition-all duration-700 ease-out ${
       scrolled 
-        ? "fixed top-3 left-0 right-0 max-w-7xl mx-auto rounded-2xl bg-white/80 backdrop-blur-xl border border-white/40 shadow-[0_16px_40px_rgba(0,0,0,0.08)] px-2" 
-        : "relative bg-white border-b border-neutral-200/60"
+        ? "fixed top-4 left-0 right-0 max-w-7xl mx-auto rounded-3xl bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_30px_70px_-15px_rgba(0,115,183,0.12),0_10px_20px_-5px_rgba(0,0,0,0.05),inset_0_1px_2px_rgba(255,255,255,0.8)] px-2" 
+        : "relative bg-white border-b-2 border-[#0073B7]/10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.06)]"
     }`}>
       
-      {/* 1. TOP BAR (UTILITY) */}
+      {/* 1. TOP BAR (UTILITY) - Mais Vibrante */}
       {!scrolled && (
-        <div className="hidden md:block bg-neutral-950 text-neutral-200 py-2.5 px-6 border-b border-neutral-900">
-          <div className="max-w-7xl mx-auto flex justify-between items-center text-[9px] font-bold uppercase tracking-[0.25em]">
-            <div className="flex gap-8 items-center">
-              <Link href="/contato" className="hover:text-[#8CC63F] transition-colors duration-200">Fale Conosco</Link>
-              <Link href="/documentos" className="hover:text-[#0073B7] transition-colors duration-200">Editais Abertos</Link>
+        <div className="hidden md:block bg-[#001529] text-neutral-200 py-2.5 px-6 border-b border-white/5 relative overflow-hidden">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[#0073B7]/10 to-transparent pointer-events-none"></div>
+          <div className="max-w-7xl mx-auto flex justify-between items-center text-[9px] font-black uppercase tracking-[0.35em] relative z-10">
+            <div className="flex gap-12 items-center">
+              <Link href="/contato" className="hover:text-[#8CC63F] transition-all duration-300 hover:tracking-[0.45em]">Fale Conosco</Link>
+              <Link href="/editais" className="hover:text-[#0073B7] transition-all duration-300 hover:tracking-[0.45em] flex items-center gap-2">
+                <span className="w-1 h-1 bg-[#0073B7] rounded-full shadow-[0_0_8px_#0073B7]"></span>
+                Editais Abertos
+              </Link>
             </div>
-            <div className="flex gap-6 items-center">
-              <span className="font-medium text-neutral-400">
+            <div className="flex gap-8 items-center text-neutral-400">
+              <span className="font-bold">
                 {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'full' }).format(new Date())}
               </span>
-              <div className="h-3 w-px bg-neutral-800"></div>
-              <Link href="http://127.0.0.1:8000/admin" className="flex items-center gap-2 text-white hover:text-[#8CC63F] transition-colors">
-                <span className="w-1.5 h-1.5 bg-[#8CC63F] rounded-full shadow-[0_0_8px_#8CC63F] animate-pulse"></span>
+              <div className="h-2.5 w-px bg-neutral-800"></div>
+              <Link href="http://127.0.0.1:8000/admin" className="group flex items-center gap-2.5 text-white hover:text-[#8CC63F] transition-all">
+                <span className="w-2 h-2 bg-[#8CC63F] rounded-full shadow-[0_0_12px_#8CC63F] group-hover:scale-125 transition-transform"></span>
                 <span>Acesso Restrito</span>
               </Link>
             </div>
@@ -160,41 +166,41 @@ export default function Navbar() {
       )}
 
       {/* 2. MASTHEAD (LOGO & CONTROLES) */}
-      <div className={`max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between gap-4 transition-all duration-300 ${scrolled ? "py-2.5" : "py-4 md:py-8"}`}>
+      <div className={`max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between gap-6 transition-all duration-500 ${scrolled ? "py-2" : "py-5 md:py-8"}`}>
         
         {/* Lado Esquerdo */}
         <div className="flex items-center flex-1 lg:flex-none">
           <button
             onClick={() => setIsOpen(true)}
-            className="lg:hidden p-2 -ml-1 hover:bg-neutral-100/80 rounded-xl transition-all"
+            className="lg:hidden p-3 -ml-2 hover:bg-neutral-100 rounded-2xl transition-all shadow-sm active:scale-90 border border-transparent hover:border-neutral-200"
             aria-label="Menu"
           >
             <svg className="w-6 h-6 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
           
           <div className="hidden lg:flex">
-            <div className="flex items-center gap-2.5 border border-neutral-200/60 px-5 py-2.5 rounded-full text-[9px] font-bold uppercase tracking-[0.25em] text-neutral-500 bg-neutral-50/50 shadow-inner">
-              <span className="w-1.5 h-1.5 bg-[#0073B7] rounded-full shadow-[0_0_6px_#0073B7]"></span>
-              Informativo Estudantil
+            <div className="flex items-center gap-3 border-2 border-[#0073B7]/5 px-5 py-2.5 rounded-2xl text-[9px] font-black uppercase tracking-[0.35em] text-[#0073B7] bg-[#0073B7]/5 shadow-[inset_0_2px_4px_rgba(0,115,183,0.05)]">
+              <span className="w-2 h-2 bg-[#0073B7] rounded-full shadow-[0_0_15px_rgba(0,115,183,0.5)] animate-pulse"></span>
+              Portal Oficial
             </div>
           </div>
         </div>
 
-        {/* Centro - Logotipo Editorial */}
+        {/* Centro - Logotipo Editorial com mais presença */}
         <div className="flex-1 flex justify-center lg:justify-center">
           <Link href="/" className="group flex flex-col items-center">
-            <h1 className={`font-black text-neutral-950 uppercase leading-none text-center select-none transition-all duration-300 ${scrolled ? "text-base md:text-xl tracking-[0.15em]" : "text-xl md:text-4xl tracking-[0.2em] md:tracking-[0.25em] group-hover:tracking-[0.28em]"}`}>
-              PORTAL <span className="text-[#0073B7] drop-shadow-[0_2px_10px_rgba(0,115,183,0.15)]">DCE</span>
+            <h1 className={`font-syne font-extrabold text-neutral-950 uppercase leading-none text-center select-none transition-all duration-500 ${scrolled ? "text-lg md:text-2xl tracking-[0.12em]" : "text-2xl md:text-4xl tracking-[0.08em] group-hover:tracking-[0.1em]"}`}>
+              PORTAL <span className="text-[#0073B7] bg-clip-text text-transparent bg-gradient-to-br from-[#0073B7] via-[#00AEEF] to-[#0073B7] drop-shadow-[0_15px_30px_rgba(0,115,183,0.25)] transition-all duration-700 group-hover:brightness-110">DCE</span>
             </h1>
             {!scrolled && (
-              <div className="flex items-center gap-2 md:gap-3 mt-1.5 md:mt-3 transition-all duration-300">
-                <div className="h-px w-6 md:w-10 bg-[#8CC63F]"></div>
-                <p className="text-[7px] md:text-[9px] font-black text-center uppercase tracking-[0.4em] md:tracking-[0.6em] text-neutral-400 group-hover:text-neutral-600 transition-colors">
+              <div className="flex items-center gap-4 mt-3.5 transition-all duration-500 opacity-100 group-hover:scale-105">
+                <div className="h-[2px] w-8 md:w-12 bg-gradient-to-r from-transparent via-[#8CC63F] to-transparent rounded-full shadow-[0_0_10px_rgba(140,198,63,0.3)]"></div>
+                <p className="text-[8px] md:text-[9px] font-black text-center uppercase tracking-[0.7em] md:tracking-[0.9em] text-neutral-500 group-hover:text-neutral-950 transition-all duration-500">
                   UFVJM
                 </p>
-                <div className="h-px w-6 md:w-10 bg-[#8CC63F]"></div>
+                <div className="h-[2px] w-8 md:w-12 bg-gradient-to-l from-transparent via-[#8CC63F] to-transparent rounded-full shadow-[0_0_10px_rgba(140,198,63,0.3)]"></div>
               </div>
             )}
           </Link>
@@ -202,40 +208,30 @@ export default function Navbar() {
 
         {/* Direita */}
         <div className="flex-1 lg:flex-none flex justify-end items-center">
-          <div className="hidden lg:flex items-center gap-5 min-w-[180px] justify-end">
+          <div className="hidden lg:flex items-center gap-6 min-w-[200px] justify-end">
             {loadingWeather ? (
-              <div className="flex items-center gap-3 animate-pulse">
-                <div className="text-right">
-                  <div className="h-2 w-12 bg-neutral-200 rounded-full mb-1.5 ml-auto"></div>
-                  <div className="h-1.5 w-20 bg-neutral-100 rounded-full"></div>
-                </div>
-                <div className="w-7 h-7 bg-neutral-100 rounded-full"></div>
-              </div>
+              <div className="h-10 w-28 bg-neutral-50 border border-neutral-100 rounded-2xl animate-pulse"></div>
             ) : (
               weather && (
-                <div className={`flex items-center gap-4 transition-all duration-500 animate-in fade-in ${scrolled ? "scale-90 origin-right" : ""}`}>
+                <div className={`flex items-center gap-4 px-4 py-2 rounded-2xl bg-white border-2 border-[#0073B7]/5 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.03)] transition-all duration-700 hover:shadow-[0_15px_35px_-5px_rgba(0,115,183,0.1)] group/w ${scrolled ? "scale-90 origin-right translate-x-2" : ""}`}>
                   <div className="text-right">
-                    <p className="text-[14px] font-black text-neutral-950 leading-none">{weather.temp}°C</p>
-                    <p className="text-[9px] font-bold text-neutral-500 uppercase tracking-tight mt-1 max-w-[130px] truncate">{weather.city}</p>
+                    <p className="text-sm font-black text-neutral-950 leading-none tabular-nums group-hover/w:text-[#0073B7] transition-colors">{weather.temp}°C</p>
+                    <p className="text-[9px] font-black text-neutral-400 uppercase tracking-widest mt-1.5 max-w-[150px] truncate">{weather.city.split(',')[0]}</p>
                   </div>
-                  {renderWeatherIcon(weather.condition)}
+                  <div className="p-1.5 bg-[#0073B7]/5 rounded-xl group-hover/w:bg-[#0073B7]/10 transition-colors">
+                    {renderWeatherIcon(weather.condition)}
+                  </div>
                 </div>
               )
             )}
           </div>
-
-          <button className="lg:hidden p-2 -mr-1 hover:bg-neutral-100/80 rounded-xl transition-all" aria-label="Pesquisar">
-            <svg className="w-5 h-5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </button>
         </div>
       </div>
 
-      {/* 3. PRIMARY NAVIGATION (Desktop) */}
-      <div className={`hidden lg:block max-w-7xl mx-auto px-6 border-t border-neutral-100 transition-all duration-300 ${scrolled ? "h-0 overflow-hidden border-none" : "h-14"}`}>
-        <div className="flex justify-between items-center h-14">
-          <div className="flex items-center justify-center w-full gap-12">
+      {/* 3. PRIMARY NAVIGATION (Desktop) - Mais Evidenciada */}
+      <div className={`hidden lg:block max-w-7xl mx-auto px-10 transition-all duration-500 ${scrolled ? "h-0 overflow-hidden opacity-0" : "h-14 opacity-100 border-t-2 border-neutral-50"}`}>
+        <div className="flex justify-center items-center h-14">
+          <div className="flex items-center justify-center gap-12">
             {menuItems.map((item) => {
               const active = item.href === '/'
                 ? pathname === '/'
@@ -245,48 +241,42 @@ export default function Navbar() {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`text-[11px] font-bold uppercase tracking-[0.25em] transition-all relative py-2 group ${
-                    active ? 'text-[#0073B7]' : 'text-neutral-600 hover:text-neutral-950'
+                  className={`text-[11px] font-black uppercase tracking-[0.3em] transition-all relative py-2.5 group ${
+                    active ? 'text-[#0073B7]' : 'text-neutral-500 hover:text-neutral-950'
                   }`}
                 >
-                  {item.name}
-                  <span className={`absolute -bottom-1 left-0 h-[3px] transition-all duration-300 rounded-full ${
-                    active ? 'w-full bg-[#0073B7] shadow-[0_2px_8px_rgba(0,115,183,0.4)]' : 'w-0 bg-[#8CC63F] group-hover:w-full'
+                  <span className="relative z-10">{item.name}</span>
+                  <span className={`absolute -bottom-[2px] left-0 h-[3px] transition-all duration-500 rounded-full ${
+                    active 
+                      ? 'w-full bg-gradient-to-r from-[#0073B7] to-[#00AEEF] shadow-[0_5px_15px_rgba(0,115,183,0.5)]' 
+                      : 'w-0 bg-[#8CC63F] group-hover:w-full group-hover:shadow-[0_5px_15px_rgba(140,198,63,0.3)]'
                   }`}></span>
                 </Link>
               );
             })}
           </div>
-
-          <div className="w-10 flex justify-end">
-            <button className="p-2 text-neutral-400 hover:text-neutral-950 transition-colors group" aria-label="Search">
-              <svg className="w-5 h-5 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
-          </div>
         </div>
       </div>
 
       {/* MOBILE MENU OVERLAY */}
-      <div className={`fixed inset-0 z-[100] lg:hidden transition-all duration-300 ${isOpen ? "visible" : "invisible pointer-events-none"}`}>
-        <div className={`absolute inset-0 bg-neutral-950/40 backdrop-blur-md transition-opacity duration-300 ${isOpen ? "opacity-100" : "opacity-0"}`} onClick={() => setIsOpen(false)}></div>
+      <div className={`fixed inset-0 z-[100] lg:hidden transition-all duration-500 ${isOpen ? "visible" : "invisible pointer-events-none"}`}>
+        <div className={`absolute inset-0 bg-neutral-950/60 backdrop-blur-xl transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0"}`} onClick={() => setIsOpen(false)}></div>
         
-        <div className={`absolute top-0 left-0 w-[310px] h-full bg-white/90 backdrop-blur-2xl p-8 flex flex-col border-r border-white/30 shadow-[24px_0_80px_rgba(0,0,0,0.15)] transition-transform duration-500 ease-out ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <div className={`absolute top-0 left-0 w-[320px] h-full bg-white/95 backdrop-blur-3xl p-10 flex flex-col border-r border-white/20 shadow-[40px_0_100px_rgba(0,0,0,0.2)] transition-transform duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
           
-          <div className="flex justify-between items-center mb-10">
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-6 bg-[#0073B7] rounded-full shadow-[0_0_8px_#0073B7]"></div>
-              <span className="text-[10px] font-bold uppercase tracking-[0.25em] text-neutral-950">Navegação</span>
+          <div className="flex justify-between items-center mb-12">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-8 bg-gradient-to-b from-[#0073B7] to-[#00AEEF] rounded-full shadow-[0_0_15px_rgba(0,115,183,0.5)]"></div>
+              <span className="text-[11px] font-black uppercase tracking-[0.4em] text-neutral-950">Navegação</span>
             </div>
-            <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-neutral-100 rounded-full transition-colors">
+            <button onClick={() => setIsOpen(false)} className="p-3 hover:bg-neutral-100 rounded-2xl transition-all active:scale-90 shadow-sm border border-neutral-100">
               <svg className="w-6 h-6 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
           
-          <nav className="flex flex-col gap-2">
+          <nav className="flex flex-col gap-3">
             {menuItems.map((item) => {
               const active = item.href === '/'
                 ? pathname === '/'
@@ -297,26 +287,34 @@ export default function Navbar() {
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`text-xs font-bold uppercase tracking-[0.18em] py-4 px-4 rounded-xl transition-all flex items-center relative ${
+                  className={`text-xs font-black uppercase tracking-[0.25em] py-5 px-6 rounded-2xl transition-all flex items-center relative group ${
                     active 
-                      ? 'text-[#0073B7] bg-white shadow-[0_8px_20px_rgba(0,115,183,0.08)] border border-neutral-100 font-black pl-6' 
-                      : 'text-neutral-600 hover:text-neutral-950 hover:bg-neutral-50'
+                      ? 'text-[#0073B7] bg-white shadow-[0_15px_30px_rgba(0,115,183,0.1)] border border-neutral-100 pl-8' 
+                      : 'text-neutral-500 hover:text-neutral-950 hover:bg-neutral-50/80 hover:pl-8'
                   }`}
                 >
                   {active && (
-                    <span className="absolute left-0 top-1/3 h-1/3 w-1 bg-[#0073B7] rounded-r-md"></span>
+                    <span className="absolute left-0 top-1/4 h-1/2 w-1.5 bg-gradient-to-b from-[#0073B7] to-[#00AEEF] rounded-r-full shadow-[0_0_10px_rgba(0,115,183,0.4)]"></span>
                   )}
-                  {item.name}
+                  <span className="relative z-10 transition-all group-hover:tracking-[0.3em]">{item.name}</span>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="mt-auto pt-8 border-t border-neutral-100">
-            <p className="text-[9px] font-bold text-neutral-500 uppercase tracking-widest leading-relaxed">
-              DCE UFVJM<br/>
-              <span className="text-[#0073B7] font-black">Portal de Comunicação</span><br/>
-              <span className="font-medium text-neutral-400">Gestão 2026</span>
+          <div className="mt-auto pt-10 border-t border-neutral-100/80">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 bg-[#F9FAFB] rounded-2xl flex items-center justify-center border border-neutral-100 shadow-sm">
+                 <span className="text-xl">🎓</span>
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-neutral-950 uppercase tracking-[0.1em]">DCE UFVJM</p>
+                <p className="text-[9px] font-bold text-[#0073B7] uppercase tracking-[0.05em]">Voz dos Estudantes</p>
+              </div>
+            </div>
+            <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest leading-relaxed">
+              Gestão <span className="text-neutral-600 font-black">2026</span><br/>
+              Portal de Comunicação
             </p>
           </div>
         </div>

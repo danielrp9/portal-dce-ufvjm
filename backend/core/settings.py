@@ -33,6 +33,8 @@ INSTALLED_APPS = [
     'agenda',
     'documentos',
     'financeiro',
+    'artigos',
+    'editais',
 ]
 
 MIDDLEWARE = [
@@ -73,12 +75,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
+# No servidor, eles devem prover a variável de ambiente DATABASE_URL
+# Exemplo: postgres://usuario:senha@host:porta/nome_do_banco
 DATABASES = {
     'default': os.environ.get('DATABASE_URL') and db_url(os.environ.get('DATABASE_URL')) or {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# Se DATABASE_URL estiver presente e for postgres, o dj-database-url já configura o engine corretamente.
+# Caso eles forneçam os dados separados, você pode orientá-los a montar a string ou usar este formato.
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -127,6 +134,7 @@ else:
     CORS_ALLOWED_ORIGINS = [
         os.environ.get('FRONTEND_URL', 'http://localhost:3000'),
     ]
+
 
 CSRF_TRUSTED_ORIGINS = [
     os.environ.get('FRONTEND_URL', 'http://localhost:3000'),

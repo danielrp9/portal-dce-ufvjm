@@ -1,164 +1,149 @@
-"use client";
-
-import React, { useEffect, useState } from 'react';
-import api from '@/services/api';
-import { Noticia, Evento, Documento } from '@/types';
+import React from 'react';
+import { Noticia, Evento, Edital } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import he from 'he';
-import EventCard from '@/components/EventCard';
+import QuickAccess from '@/components/QuickAccess';
+import RadioPlayer from '@/components/RadioPlayer';
+import EventsCarousel from '@/components/EventsCarousel';
+import { ChevronRight, FileText, Bell } from 'lucide-react';
+import { getMediaUrl } from '@/utils/urls';
 
-interface DjangoPaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: T[];
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+
+async function getHomeData() {
+  const fetchOptions = { next: { revalidate: 60 } };
+  
+  try {
+    const [newsRes, eventsRes, editaisRes] = await Promise.all([
+      fetch(`${API_URL}/api/noticias/`, fetchOptions),
+      fetch(`${API_URL}/api/eventos/`, fetchOptions),
+      fetch(`${API_URL}/api/editais/`, fetchOptions)
+    ]);
+
+    const newsData = await newsRes.json();
+    const eventsData = await eventsRes.json();
+    const editaisData = await editaisRes.json();
+
+    return {
+      noticias: newsData.results || [],
+      eventos: eventsData.results || [],
+      editais: editaisData.results || []
+    };
+  } catch (e) {
+    console.error("Erro ao carregar dados da Home no servidor:", e);
+    return { noticias: [], eventos: [], editais: [] };
+  }
 }
 
-export default function HomePage() {
-  const [noticias, setNoticias] = useState<Noticia[]>([]);
-  const [eventos, setEventos] = useState<Evento[]>([]);
-  const [editalDestaque, setEditalDestaque] = useState<Documento | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [mounted, setMounted] = useState<boolean>(false);
-
-  useEffect(() => {
-    setMounted(true);
-    async function loadHomeData() {
-      try {
-        const [newsRes, eventsRes, docsRes] = await Promise.all([
-          api.get<DjangoPaginatedResponse<Noticia> | Noticia[]>('noticias/'),
-          api.get<DjangoPaginatedResponse<Evento> | Evento[]>('eventos/'),
-          api.get<DjangoPaginatedResponse<Documento> | Documento[]>('documentos/')
-        ]);
-
-        const listaNoticias = Array.isArray(newsRes.data) 
-          ? newsRes.data 
-          : (newsRes.data && 'results' in newsRes.data ? newsRes.data.results : []);
-
-        const listaEventos = Array.isArray(eventsRes.data) 
-          ? eventsRes.data 
-          : (eventsRes.data && 'results' in eventsRes.data ? eventsRes.data.results : []);
-
-        const listaDocs = Array.isArray(docsRes.data) 
-          ? docsRes.data 
-          : (docsRes.data && 'results' in docsRes.data ? docsRes.data.results : []);
-
-        const edital = listaDocs.find((doc: Documento) => doc.tipo === 'EDITAL') || null;
-
-        setNoticias(listaNoticias);
-        setEventos(listaEventos.slice(0, 3));
-        setEditalDestaque(edital);
-      } catch (e) {
-        console.error("Erro ao carregar dados dinâmicos da Home:", e);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadHomeData();
-  }, []);
-
-  // Força o Next.js a renderizar APENAS o loading no build estático.
-  // Isso garante que o conteúdo real NUNCA seja "congelado" no HTML do build.
-  if (!mounted || loading) {
-    return (
-      <div className="min-h-screen bg-[#F8F9FA] flex flex-col gap-4 items-center justify-center font-sans">
-        <div className="w-10 h-10 border-4 border-[#0073B7] border-t-transparent rounded-full animate-spin"></div>
-        <span className="text-xs font-bold uppercase tracking-[0.3em] text-neutral-500">Sincronizando Portal...</span>
-      </div>
-    );
-  }
+export default async function HomePage() {
+  const { noticias, eventos, editais } = await getHomeData();
 
   const principal = noticias[0];
   const secundarias = noticias.slice(1, 4);
+  const editaisAtivos = editais.filter((e: Edital) => e.ativo === true);
+  const editalDestaque = editaisAtivos[0] || null;
 
   return (
-    <main className="min-h-screen bg-[#F8F9FA] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-20">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-10 flex flex-col gap-12">
+    <main className="min-h-screen bg-[#F0F2F5] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-20 relative overflow-hidden">
+      
+      {/* Elementos de Fundo */}
+      <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#0073B7]/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-[#8CC63F]/5 blur-[100px] rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-[#00AEEF]/5 blur-[150px] rounded-full pointer-events-none -z-10"></div>
+
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10 flex flex-col gap-10 md:gap-14 relative z-10">
         
-        {/* Bloco Superior: Banner de Destaque */}
+        {/* HERO SECTION */}
         {principal ? (
-          <article className="group cursor-pointer relative w-full aspect-[16/9] md:aspect-[21/9] rounded-[2rem] overflow-hidden bg-neutral-950 shadow-[0_24px_60px_rgba(0,0,0,0.18)] border border-neutral-800/20 transform transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_32px_70px_rgba(0,115,183,0.15)]">
+          <article className="group cursor-pointer relative w-full aspect-[16/9] md:aspect-[21/9] rounded-[2.5rem] overflow-hidden bg-neutral-950 shadow-[0_40px_100px_-20px_rgba(0,21,41,0.3)] border border-white/10 transform transition-all duration-700 hover:shadow-[0_50px_120px_-20px_rgba(0,115,183,0.25)]">
             <Link href={`/noticias/${principal.slug}/`}>
               <div className="absolute inset-0 z-0">
                 <Image 
-                  src={principal.capa.startsWith('http') ? principal.capa : `http://127.0.0.1:8000${principal.capa}`}
+                  src={getMediaUrl(principal.capa)}
                   alt={principal.titulo} 
                   fill 
-                  className="object-cover transition-all duration-700 ease-out opacity-75 scale-100 group-hover:scale-105 group-hover:opacity-90" 
+                  className="object-cover transition-all duration-1000 ease-out opacity-75 scale-100 group-hover:scale-105 group-hover:opacity-90" 
                   priority
                 />
               </div>
 
-              {/* Tag Superior 3D */}
-              <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-neutral-950 text-[10px] px-4 py-2 font-black uppercase tracking-[0.2em] z-20 rounded-full shadow-[0_8px_20px_rgba(0,0,0,0.2)] border border-white/40">
-                Notícia em Destaque
+              <div className="absolute top-8 left-8 flex items-center gap-3 z-20">
+                <div className="bg-[#0073B7] text-white text-[8px] px-4 py-2 font-black uppercase tracking-[0.2em] rounded-full shadow-lg">
+                  Destaque Principal
+                </div>
               </div>
 
-              {/* Gradiente Acentuado de Profundidade */}
-              <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-neutral-950/50 to-transparent flex flex-col justify-end p-6 md:p-14 z-10">
-                <div className="flex items-center gap-3 text-[10px] font-bold text-[#8CC63F] mb-4 uppercase tracking-[0.15em]">
-                  <span className="text-white">Por {principal.autor || 'Redação DCE'}</span>
-                  <span className="text-white/30">•</span>
-                  <span>{new Date(principal.data_publicacao).toLocaleDateString('pt-BR')}</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#001529] via-[#001529]/40 to-transparent flex flex-col justify-end p-8 md:p-14 z-10">
+                <div className="max-w-4xl">
+                  <div className="flex items-center gap-4 text-[10px] font-black text-[#8CC63F] mb-6 uppercase tracking-[0.25em]">
+                    <span className="text-white bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-md border border-white/10">Por {principal.autor || 'Redação DCE'}</span>
+                    <span className="w-1.5 h-1.5 bg-[#8CC63F] rounded-full shadow-[0_0_10px_#8CC63F]"></span>
+                    <span className="text-neutral-300">{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' }).format(new Date(principal.data_publicacao))}</span>
+                  </div>
+
+                  <h2 className="text-2xl md:text-5xl font-black text-white leading-[1.1] tracking-tight mb-6 drop-shadow-2xl group-hover:text-[#8CC63F] transition-colors duration-500">
+                    {principal.titulo}
+                  </h2>
+
+                  <p className="text-sm md:text-lg text-neutral-300 font-medium line-clamp-2 max-w-3xl leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
+                    {he.decode(principal.conteudo.replace(/<[^>]*>?/gm, ''))}
+                  </p>
                 </div>
-
-                <h2 className="text-xl md:text-5xl font-black text-white leading-tight tracking-tight mb-4 max-w-4xl drop-shadow-md">
-                  {principal.titulo}
-                </h2>
-
-                <p className="text-xs md:text-base text-neutral-300 font-normal line-clamp-2 max-w-3xl leading-relaxed opacity-90">
-                  {he.decode(principal.conteudo.replace(/<[^>]*>?/gm, ''))}
-                </p>
               </div>
             </Link>
           </article>
         ) : (
-          <div className="w-full min-h-[350px] bg-white rounded-3xl border border-neutral-200/60 flex flex-col gap-2 items-center justify-center text-xs text-neutral-400 font-bold uppercase tracking-widest shadow-xs">
-            <span>Nenhum destaque publicado.</span>
+          <div className="w-full min-h-[400px] bg-white rounded-[2.5rem] border border-neutral-200/60 flex flex-col gap-4 items-center justify-center shadow-inner">
+            <Bell size={48} className="text-neutral-200 animate-bounce" />
+            <span className="text-xs font-black uppercase tracking-[0.3em] text-neutral-400">Aguardando Novidades...</span>
           </div>
         )}
 
-        {/* Layout de Duas Colunas */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-start">
           
-          {/* Seção de Notícias Recentes (Esquerda) */}
-          <section className="lg:col-span-8 bg-white rounded-[2rem] p-6 md:p-10 border border-neutral-200/50 shadow-[0_12px_40px_rgba(0,0,0,0.03)] flex flex-col gap-8">
-            <div className="border-b border-neutral-100 pb-5">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#0073B7] mb-1">
-                Feed Informativo
-              </h3>
-              <h2 className="text-3xl font-black tracking-tight text-neutral-950">
-                Últimas Atualizações
-              </h2>
+          {/* FEED DE ÚLTIMAS ATUALIZAÇÕES */}
+          <section className="lg:col-span-8 bg-white/60 backdrop-blur-xl rounded-[3rem] p-8 md:p-12 border border-white/60 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.05)] flex flex-col gap-10">
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-8">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-[2px] bg-[#0073B7] rounded-full"></div>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#0073B7]">Informativoz</h3>
+                </div>
+                <h2 className="text-3xl font-black tracking-tight text-neutral-950">Últimas do Portal</h2>
+              </div>
+              <Link href="/noticias" className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-400 hover:text-[#0073B7] transition-all bg-neutral-50 px-5 py-2.5 rounded-full border border-neutral-100 hover:border-[#0073B7]/20">
+                Ver Tudo <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </Link>
             </div>
 
             {secundarias.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                 {secundarias.map((news: Noticia) => (
-                  <article 
-                    key={news.id} 
-                    className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-neutral-100 shadow-[0_4px_15px_rgba(0,0,0,0.02)] hover:shadow-[0_16px_35px_rgba(0,0,0,0.07)] transform hover:-translate-y-1 transition-all duration-400 h-full"
-                  >
+                  <article key={news.id} className="group flex flex-col bg-white rounded-3xl overflow-hidden border border-neutral-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_25px_60px_rgba(0,115,183,0.1)] transform hover:-translate-y-2 transition-all duration-700 h-full relative">
+                    <div className="absolute top-4 left-4 z-10">
+                       <div className="bg-white/90 backdrop-blur-md px-3 py-1 rounded-full border border-white shadow-sm">
+                         <p className="text-[8px] font-black text-[#0073B7] uppercase tracking-widest">Notícia</p>
+                       </div>
+                    </div>
                     <Link href={`/noticias/${news.slug}/`} className="flex flex-col h-full">
-                      <div className="aspect-video relative overflow-hidden bg-neutral-100">
+                      <div className="aspect-[16/10] relative overflow-hidden bg-neutral-100">
                         <Image 
-                          src={news.capa.startsWith('http') ? news.capa : `http://127.0.0.1:8000${news.capa}`} 
-                          alt={news.titulo} 
-                          fill 
-                          className="object-cover transition-transform duration-500 ease-out group-hover:scale-105" 
+                          src={getMediaUrl(news.capa)} 
+                          alt={news.titulo} fill className="object-cover transition-all duration-1000 ease-out group-hover:scale-110 group-hover:rotate-1" 
                         />
+                        <div className="absolute inset-0 bg-[#001529]/0 group-hover:bg-[#001529]/20 transition-all duration-700"></div>
                       </div>
-
-                      <div className="p-6 flex flex-col flex-1">
-                        <span className="text-[10px] font-black text-[#0073B7] uppercase tracking-wider mb-2.5 block">
-                          {new Date(news.data_publicacao).toLocaleDateString('pt-BR')}
-                        </span>
-                        <h4 className="text-base font-bold leading-snug text-neutral-950 group-hover:text-[#0073B7] transition-colors mb-3 line-clamp-2 tracking-tight">
+                      <div className="p-8 flex flex-col flex-1">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-[9px] font-black text-neutral-400 uppercase tracking-[0.2em]">
+                            {new Date(news.data_publicacao).toLocaleDateString('pt-BR')}
+                          </span>
+                        </div>
+                        <h4 className="text-xl font-black leading-tight text-neutral-950 group-hover:text-[#0073B7] transition-colors mb-4 line-clamp-2 tracking-tight">
                           {news.titulo}
                         </h4>
-                        <p className="text-xs text-neutral-500 leading-relaxed line-clamp-2 mt-auto font-normal">
+                        <p className="text-xs text-neutral-500 leading-relaxed line-clamp-3 mt-auto font-medium opacity-85 group-hover:opacity-100 transition-opacity">
                           {he.decode(news.conteudo.replace(/<[^>]*>?/gm, ''))}
                         </p>
                       </div>
@@ -167,95 +152,66 @@ export default function HomePage() {
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-neutral-400 italic py-8">Não há outras publicações recentes.</p>
+              <p className="text-xs text-neutral-400 italic py-10 text-center bg-neutral-50/50 rounded-2xl border border-dashed border-neutral-200">Não há outras publicações recentes.</p>
             )}
           </section>
 
-          {/* Sidebar Auxiliar (Direita) */}
+          {/* SIDEBAR */}
           <aside className="lg:col-span-4 flex flex-col gap-10">
             
-            {/* Bloco de Editais */}
-            <div className="flex flex-col bg-gradient-to-br from-neutral-900 to-neutral-950 text-white rounded-[2rem] p-6 md:p-8 shadow-[0_20px_50px_rgba(0,0,0,0.25)] relative overflow-hidden border border-neutral-800">
-              <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#8CC63F]/10 blur-3xl pointer-events-none rounded-full"></div>
+            {/* Widget: Editais */}
+            <div className="flex flex-col bg-[#001529] text-white rounded-[2.5rem] p-8 md:p-10 shadow-[0_40px_80px_-20px_rgba(0,21,41,0.4)] relative overflow-hidden border border-white/10 group/ed">
+              <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#8CC63F]/10 blur-[100px] pointer-events-none rounded-full group-hover/ed:bg-[#8CC63F]/20 transition-all duration-700"></div>
               
-              <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-neutral-400">
-                  Editais e Documentos
-                </h3>
+              <div className="flex items-center justify-between mb-8 pb-5 border-b border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-[#8CC63F] rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(140,198,63,0.4)]">
+                    <FileText size={20} className="text-[#001529]" />
+                  </div>
+                  <div>
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400">Chamadas</h3>
+                    <p className="text-xs font-black text-white uppercase tracking-tight">Editais Abertos</p>
+                  </div>
+                </div>
                 {editalDestaque && (
-                  <span className="bg-[#8CC63F] text-neutral-950 text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_12px_rgba(140,198,63,0.4)] animate-pulse">
-                    Novo
-                  </span>
+                  <span className="bg-[#8CC63F] text-neutral-950 text-[8px] font-black uppercase tracking-widest px-3 py-1.5 rounded-full shadow-[0_0_15px_rgba(140,198,63,0.5)] animate-pulse">Ativo</span>
                 )}
               </div>
               
               {editalDestaque ? (
-                <div className="flex flex-col gap-4 mb-6">
+                <div className="flex flex-col gap-4 mb-8">
                   <Link 
-                    href={editalDestaque.arquivo.startsWith('http') ? editalDestaque.arquivo : `http://127.0.0.1:8000${editalDestaque.arquivo}`}
-                    target="_blank"
-                    className="group/doc flex gap-4 items-center p-4 rounded-xl bg-white/5 border border-white/5 hover:border-white/20 hover:bg-white/10 transition-all duration-300 transform hover:scale-[1.02]"
+                    href={`/editais/${editalDestaque.slug}/`}
+                    className="group/item flex gap-5 items-center p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-[#8CC63F]/30 hover:bg-white/10 transition-all duration-500 transform hover:scale-[1.03] shadow-xl"
                   >
-                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex flex-col items-center justify-center font-black text-[10px] text-white shadow-md select-none tracking-tighter">
-                      <span>DOC</span>
-                      <span className="text-[7px] font-medium opacity-80">PDF</span>
+                    <div className="flex-shrink-0 w-12 h-12 bg-[#8CC63F]/10 rounded-2xl flex flex-col items-center justify-center font-black text-[10px] text-[#8CC63F] border border-[#8CC63F]/20 shadow-2xl">
+                      <FileText size={18} />
                     </div>
-                    
                     <div className="flex-1 min-w-0">
-                      <span className="text-[9px] font-bold text-[#8CC63F] uppercase tracking-wide block mb-0.5">
-                        {new Date(editalDestaque.data_upload).toLocaleDateString('pt-BR')}
-                      </span>
-                      <h4 className="text-xs font-bold text-white leading-snug line-clamp-2 tracking-tight group-hover/doc:text-[#8CC63F] transition-colors">
-                        {editalDestaque.titulo}
-                      </h4>
+                      <h4 className="text-sm font-black text-white leading-snug line-clamp-2 tracking-tight group-hover/item:text-[#8CC63F] transition-colors">{editalDestaque.titulo}</h4>
+                      <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest mt-2">Publicado em {new Date(editalDestaque.data_publicacao).toLocaleDateString('pt-BR')}</p>
                     </div>
                   </Link>
                 </div>
               ) : (
-                <div className="mb-6 py-10 border border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center bg-white/5">
-                  <p className="text-xs text-neutral-400 text-center font-light">
-                    Não há editais ativos no momento.
-                  </p>
-                </div>
+                <div className="mb-8 py-10 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center text-[10px] text-neutral-600 font-bold uppercase tracking-widest">Sem editais recentes</div>
               )}
               
-              <Link 
-                href="/documentos/" 
-                className="w-full bg-white text-neutral-950 py-4 text-xs font-black uppercase tracking-widest hover:bg-[#8CC63F] hover:text-neutral-950 transition-all duration-300 rounded-xl shadow-lg text-center"
-              >
-                Ver todos os editais
+              <Link href="/editais/" className="w-full bg-white text-neutral-950 py-5 text-[10px] font-black uppercase tracking-[0.25em] hover:bg-[#8CC63F] transition-all duration-300 rounded-2xl shadow-2xl text-center flex items-center justify-center gap-3 group-hover/ed:gap-5">
+                Ver Repositório <ChevronRight size={16} />
               </Link>
             </div>
 
-            {/* Bloco de Agenda */}
-            <section className="bg-white rounded-[2rem] p-6 md:p-8 border border-neutral-200/50 shadow-[0_12px_40px_rgba(0,0,0,0.03)] flex flex-col gap-6">
-              <div className="flex justify-between items-center pb-4 border-b border-neutral-100">
-                <h3 className="text-[10px] font-black uppercase tracking-[0.25em] text-[#0073B7]">
-                  Agenda Universitária
-                </h3>
-                <span className="w-2 h-2 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse"></span>
-              </div>
-
-              {eventos.length > 0 ? (
-                <div className="flex flex-col gap-5">
-                  {eventos.map((evento: Evento, index: number) => (
-                    <div key={evento.id} className="flex flex-col gap-5">
-                      <div className="hover:opacity-90 transition-opacity transform hover:translate-x-0.5 transition-transform duration-200">
-                        <EventCard evento={evento} />
-                      </div>
-                      {index < eventos.length - 1 && (
-                        <div className="h-px bg-neutral-100 w-full" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-xs italic text-neutral-400 font-light py-2">Sem eventos próximos.</p>
-              )}
-            </section>
+            {/* Agenda */}
+            <EventsCarousel initialEventos={eventos} />
 
           </aside>
         </div>
+
+        {/* RÁDIO UNIVERSITÁRIA */}
+        <RadioPlayer />
+
+        <QuickAccess />
 
       </div>
     </main>
