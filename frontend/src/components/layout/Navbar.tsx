@@ -172,12 +172,16 @@ export default function Navbar() {
         <div className="flex items-center flex-1 lg:flex-none">
           <button
             onClick={() => setIsOpen(true)}
-            className="lg:hidden p-3 -ml-2 hover:bg-neutral-100 rounded-2xl transition-all shadow-sm active:scale-90 border border-transparent hover:border-neutral-200"
+            className="lg:hidden p-3 -ml-2 group hover:bg-neutral-50 rounded-2xl transition-all duration-300 relative overflow-hidden"
             aria-label="Menu"
           >
-            <svg className="w-6 h-6 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+            <div className="flex flex-col gap-1.5 w-6 items-end">
+              <span className="h-[2px] w-6 bg-neutral-950 rounded-full transition-all duration-300 group-hover:w-4 group-hover:bg-[#0073B7]"></span>
+              <span className="h-[2px] w-4 bg-[#0073B7] rounded-full transition-all duration-300 group-hover:w-6 group-hover:bg-neutral-950"></span>
+              <span className="h-[2px] w-6 bg-neutral-950 rounded-full transition-all duration-300 group-hover:w-3 group-hover:bg-[#8CC63F]"></span>
+            </div>
+            {/* Efeito de brilho sutil ao passar o mouse */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-[#0073B7]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           </button>
           
           <div className="hidden lg:flex">
@@ -262,21 +266,24 @@ export default function Navbar() {
       <div className={`fixed inset-0 z-[100] lg:hidden transition-all duration-500 ${isOpen ? "visible" : "invisible pointer-events-none"}`}>
         <div className={`absolute inset-0 bg-neutral-950/60 backdrop-blur-xl transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0"}`} onClick={() => setIsOpen(false)}></div>
         
-        <div className={`absolute top-0 left-0 w-[320px] h-full bg-white p-10 flex flex-col border-r border-white/20 shadow-[40px_0_100px_rgba(0,0,0,0.2)] transition-transform duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <div className={`absolute top-0 left-0 w-[300px] h-full bg-white flex flex-col border-r border-white/20 shadow-[40px_0_100px_rgba(0,0,0,0.2)] transition-transform duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
           
-          <div className="flex justify-between items-center mb-12">
+          <div className="p-8 border-b border-neutral-100 flex justify-between items-center bg-neutral-50/50">
             <div className="flex items-center gap-3">
-              <div className="w-2 h-8 bg-gradient-to-b from-[#0073B7] to-[#00AEEF] rounded-full shadow-[0_0_15px_rgba(0,115,183,0.5)]"></div>
-              <span className="text-[11px] font-black uppercase tracking-[0.4em] text-neutral-950">Navegação</span>
+              <div className="w-1.5 h-6 bg-[#0073B7] rounded-full"></div>
+              <span className="text-sm font-black uppercase tracking-[0.4em] text-neutral-950">Menu</span>
             </div>
-            <button onClick={() => setIsOpen(false)} className="p-3 hover:bg-neutral-100 rounded-2xl transition-all active:scale-90 shadow-sm border border-neutral-100">
-              <svg className="w-6 h-6 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button 
+              onClick={() => setIsOpen(false)} 
+              className="p-3 bg-white hover:bg-neutral-100 rounded-2xl transition-all active:scale-90 shadow-sm border border-neutral-200"
+            >
+              <svg className="w-5 h-5 text-neutral-950" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
           
-          <nav className="flex flex-col gap-3">
+          <nav className="flex-1 overflow-y-auto p-6 flex flex-col gap-1.5">
             {menuItems.map((item) => {
               const active = item.href === '/'
                 ? pathname === '/'
@@ -287,26 +294,40 @@ export default function Navbar() {
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`text-xs font-black uppercase tracking-[0.25em] py-5 px-6 rounded-2xl transition-all flex items-center relative group ${
+                  className={`group relative flex items-center justify-between py-4 px-5 rounded-2xl transition-all duration-300 ${
                     active 
-                      ? 'text-[#0073B7] bg-white shadow-[0_15px_30px_rgba(0,115,183,0.1)] border border-neutral-100 pl-8' 
-                      : 'text-neutral-500 hover:text-neutral-950 hover:bg-neutral-50/80 hover:pl-8'
+                      ? 'bg-[#0073B7] text-white shadow-[0_10px_20px_-5px_rgba(0,115,183,0.3)]' 
+                      : 'text-neutral-500 hover:text-neutral-950 hover:bg-neutral-50'
                   }`}
                 >
-                  {active && (
-                    <span className="absolute left-0 top-1/4 h-1/2 w-1.5 bg-gradient-to-b from-[#0073B7] to-[#00AEEF] rounded-r-full shadow-[0_0_10px_rgba(0,115,183,0.4)]"></span>
-                  )}
-                  <span className="relative z-10 transition-all group-hover:tracking-[0.3em]">{item.name}</span>
+                  <span className={`text-[10px] font-black uppercase tracking-[0.15em] transition-all ${active ? 'translate-x-1' : 'group-hover:translate-x-1'}`}>
+                    {item.name}
+                  </span>
+                  <svg 
+                    className={`w-3.5 h-3.5 transition-all duration-500 ${active ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0'}`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M9 5l7 7-7 7" />
+                  </svg>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="mt-auto pt-10 border-t border-neutral-100/80">
-            <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest leading-relaxed">
-              Gestão <span className="text-neutral-600 font-black">2026</span><br/>
-              Portal de Comunicação
-            </p>
+          <div className="p-8 border-t border-neutral-100 bg-neutral-50/30">
+            <Link 
+              href="/ficha-tecnica" 
+              onClick={() => setIsOpen(false)}
+              className="w-full py-4 bg-white border border-neutral-200 text-neutral-500 rounded-2xl text-[9px] font-black uppercase tracking-[0.25em] flex items-center justify-center gap-3 shadow-sm hover:text-[#0073B7] hover:border-[#0073B7]/30 hover:bg-[#0073B7]/5 transition-all active:scale-[0.98] group"
+            >
+              <span className="w-1.5 h-1.5 bg-neutral-300 rounded-full group-hover:bg-[#8CC63F] transition-colors"></span>
+              <span>Ficha Técnica</span>
+              <svg className="w-3 h-3 opacity-30 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </Link>
           </div>
         </div>
       </div>
