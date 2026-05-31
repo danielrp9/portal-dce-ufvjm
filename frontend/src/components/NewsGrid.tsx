@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Noticia } from '@/types';
+import { getMediaUrl } from '@/utils/urls';
 import he from 'he'; // Importa o decodificador profissional
 
 interface NewsGridProps {
@@ -38,7 +39,7 @@ export default function NewsGridUFVJM({ noticias }: NewsGridProps) {
         <Link href={`/noticias/${principal.slug}`}>
           <div className="relative h-64 md:h-[480px] w-full overflow-hidden bg-gray-100 mb-6 border-b-8 border-[#8CC63F]">
             <Image 
-              src={principal.capa.startsWith('http') ? principal.capa : `http://127.0.0.1:8000${principal.capa}`} 
+              src={getMediaUrl(principal.capa)} 
               alt={principal.titulo}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"

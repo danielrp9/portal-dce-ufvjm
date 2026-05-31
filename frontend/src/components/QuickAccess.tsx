@@ -78,20 +78,23 @@ const QuickAccess: React.FC = () => {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex flex-col items-center justify-center p-5 md:p-6 bg-white/5 hover:bg-white/[0.08] rounded-2xl border border-white/10 transition-all duration-500 transform hover:-translate-y-1.5 hover:shadow-[0_15px_35px_rgba(0,0,0,0.3)] aspect-[4/3] md:aspect-square lg:aspect-auto lg:min-h-[190px]"
+              className="group flex flex-col items-center justify-center p-6 md:p-8 bg-white/5 hover:bg-white/[0.08] rounded-[2rem] border border-white/10 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-[0_25px_50px_-12px_rgba(0,115,183,0.3)] min-h-[220px] relative overflow-hidden"
             >
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-[#0073B7] to-[#005a91] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-xl border border-white/10">
-                <link.icon className="w-6 h-6 text-white" />
+              {/* Efeito de luz sutil no hover */}
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[#0073B7]/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full"></div>
+              
+              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-[#0073B7] group-hover:text-white transition-all duration-500 border border-white/5 shadow-inner">
+                <link.icon className="w-7 h-7 text-[#8CC63F] group-hover:text-white transition-colors duration-500" />
               </div>
               
-              <div className="flex flex-col items-center text-center w-full">
-                <h4 className="text-white text-[10px] md:text-[11px] font-black uppercase tracking-widest leading-snug">
+              <div className="flex flex-col items-center text-center w-full relative z-10">
+                <h4 className="text-white text-[11px] font-black uppercase tracking-[0.2em] leading-snug">
                   {link.title}
                 </h4>
                 
-                <div className="h-0.5 w-0 group-hover:w-8 bg-[#8CC63F] transition-all duration-500 rounded-full mt-2 shadow-[0_0_10px_rgba(140,198,63,0.5)]"></div>
+                <div className="h-[2px] w-6 group-hover:w-12 bg-[#8CC63F] transition-all duration-500 rounded-full mt-3 shadow-[0_0_15px_rgba(140,198,63,0.6)]"></div>
                 
-                <span className="mt-3 text-[8px] text-blue-300 font-bold uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-1 group-hover:translate-y-0">
+                <span className="mt-4 text-[9px] text-blue-300/60 font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-2 group-hover:translate-y-0 max-w-[120px]">
                   {link.description}
                 </span>
               </div>

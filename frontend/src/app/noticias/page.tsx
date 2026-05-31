@@ -1,32 +1,11 @@
-import React from 'react';
+"use client";
+
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { Noticia } from '@/types';
 import NoticiasList from '@/components/NoticiasList';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-
-async function getNoticias(): Promise<Noticia[]> {
-  try {
-    const res = await fetch(`${API_URL}/api/noticias/?page=1`, {
-      next: { revalidate: 60 }, // Revalida a cada 1 minuto
-    });
-    
-    if (!res.ok) {
-      throw new Error('Falha ao buscar notícias');
-    }
-    
-    const data = await res.json();
-    return data.results || [];
-  } catch (error) {
-    console.error("Erro no Server Component:", error);
-    return [];
-  }
-}
-
-export default async function NoticiasPage() {
-  const initialNoticias = await getNoticias();
-
+export default function NoticiasPage() {
   return (
     <main className="min-h-screen bg-[#F4F6F8] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-32 relative overflow-hidden">
       
@@ -45,7 +24,9 @@ export default async function NoticiasPage() {
         </div>
       </div>
 
-      <NoticiasList initialNoticias={initialNoticias} />
+      <Suspense fallback={<div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0073B7]"></div></div>}>
+        <NoticiasList />
+      </Suspense>
       
     </main>
   );

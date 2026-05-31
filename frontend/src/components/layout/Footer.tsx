@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Instagram, Linkedin, Github, ExternalLink } from 'lucide-react';
+import { Instagram, Linkedin, Github, ExternalLink, ChevronRight } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -82,6 +82,13 @@ export default function Footer() {
                   <ExternalLink size={12} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
                 </a>
               ))}
+              <Link 
+                href="/ficha-tecnica"
+                className="text-[10px] font-black uppercase tracking-widest text-neutral-400 hover:text-[#8CC63F] transition-all flex justify-between items-center group mt-2 pt-4 border-t border-white/5"
+              >
+                Ficha Técnica
+                <ChevronRight size={12} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+              </Link>
             </nav>
           </div>
         </div>

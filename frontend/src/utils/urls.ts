@@ -1,12 +1,11 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 export function getMediaUrl(path: string | null | undefined): string {
   if (!path) return '';
   if (path.startsWith('http')) return path;
   
-  // Remove trailing slash from API_URL and leading slash from path
-  const base = API_URL.replace(/\/$/, '');
+  // Garantimos que o caminho comece com barra para ser relativo à raiz do domínio atual
   const normalizedPath = path.startsWith('/') ? path : `/${path}`;
   
-  return `${base}${normalizedPath}`;
+  return normalizedPath;
 }

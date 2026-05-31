@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Noticia } from '@/types';
+import { getMediaUrl } from '@/utils/urls';
 import he from 'he';
 
 interface NewsGridProps {
@@ -34,39 +35,54 @@ export default function NewsGridUFVJM({ noticias }: NewsGridProps) {
         {secundarias.map((item: Noticia) => (
           <article 
             key={item.id} 
-            className="group flex flex-col bg-white border border-black/5 rounded-sm overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+            className="group flex flex-col bg-white border border-neutral-200/60 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-[0_20px_40px_rgba(0,115,183,0.1)] transition-all duration-500"
           >
             <Link href={`/noticias/${item.slug}`} className="flex flex-col h-full">
               
               {/* Imagem de Capa do Card */}
-              <div className="aspect-video relative overflow-hidden bg-slate-100 border-b border-black/5">
+              <div className="aspect-video relative overflow-hidden bg-neutral-100">
                 {item.capa ? (
                   <Image 
-                    src={item.capa.startsWith('http') ? item.capa : `http://127.0.0.1:8000${item.capa}`} 
+                    src={getMediaUrl(item.capa)} 
                     alt={item.titulo} 
                     fill 
-                    className="object-cover transition-transform duration-500 group-hover:scale-103" 
+                    className="object-cover transition-all duration-1000 ease-out group-hover:scale-105" 
                   />
+
                 ) : (
-                  <div className="w-full h-full bg-slate-200 flex items-center justify-center font-sans text-[10px] text-slate-400">
-                    Sem Imagem
+                  <div className="w-full h-full bg-neutral-100 flex items-center justify-center font-sans text-[10px] text-neutral-400">
+                    SEM IMAGEM
                   </div>
                 )}
+                {/* Overlay de gradiente sutil na imagem */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               </div>
 
-              {/* Conteúdo Textual Protegido contra Vazamentos */}
-              <div className="p-5 flex flex-col flex-1">
-                <span className="text-[9px] font-black text-[#0073B7] uppercase tracking-widest font-sans mb-2 block">
-                  {new Date(item.data_publicacao).toLocaleDateString('pt-BR')}
-                </span>
+              {/* Conteúdo Textual */}
+              <div className="p-7 flex flex-col flex-1">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="w-6 h-[2px] bg-[#8CC63F]"></span>
+                  <span className="text-[9px] font-black text-[#0073B7] uppercase tracking-[0.2em] font-sans">
+                    {new Date(item.data_publicacao).toLocaleDateString('pt-BR')}
+                  </span>
+                </div>
                 
-                <h4 className="text-base font-bold leading-tight text-slate-900 group-hover:text-[#0073B7] transition-colors mb-2 line-clamp-2 font-serif">
+                <h4 className="text-xl font-black leading-tight text-neutral-950 group-hover:text-[#0073B7] transition-colors mb-4 line-clamp-2 uppercase tracking-tight">
                   {item.titulo}
                 </h4>
                 
-                <p className="text-xs text-slate-500 leading-relaxed font-sans line-clamp-2 mt-auto">
+                <p className="text-sm text-neutral-500 leading-relaxed font-medium line-clamp-2 mt-auto">
                   {formatSummary(item.conteudo)}
                 </p>
+
+                <div className="mt-6 pt-6 border-t border-neutral-100 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#0073B7]">Ler Notícia</span>
+                  <div className="w-8 h-8 rounded-full bg-[#0073B7]/5 flex items-center justify-center text-[#0073B7]">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </div>
+                </div>
               </div>
 
             </Link>

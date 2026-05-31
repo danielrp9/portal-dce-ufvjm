@@ -1,32 +1,11 @@
-import React from 'react';
+"use client";
+
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { Edital } from '@/types';
 import EditaisList from '@/components/EditaisList';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-
-async function getEditais(): Promise<Edital[]> {
-  try {
-    const res = await fetch(`${API_URL}/api/editais/`, {
-      next: { revalidate: 60 },
-    });
-    
-    if (!res.ok) {
-      throw new Error('Falha ao buscar editais');
-    }
-    
-    const data = await res.json();
-    return data.results || [];
-  } catch (error) {
-    console.error("Erro ao buscar editais no servidor:", error);
-    return [];
-  }
-}
-
-export default async function EditaisPage() {
-  const initialEditais = await getEditais();
-
+export default function EditaisPage() {
   return (
     <main className="min-h-screen bg-[#F4F6F8] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-32 relative overflow-hidden">
       
@@ -45,7 +24,9 @@ export default async function EditaisPage() {
         </div>
       </div>
 
-      <EditaisList initialEditais={initialEditais} />
+      <Suspense fallback={<div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0073B7]"></div></div>}>
+        <EditaisList />
+      </Suspense>
       
     </main>
   );

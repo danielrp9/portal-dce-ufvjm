@@ -40,7 +40,7 @@ export default async function EventosPage() {
           <nav className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">
             <Link href="/" className="hover:text-[#0073B7] transition-colors">Início</Link>
             <ChevronRight size={10} className="text-neutral-300" />
-            <span className="text-neutral-950 font-black">Agenda de Eventos</span>
+            <span className="text-neutral-900 font-black">Agenda de Eventos</span>
           </nav>
         </div>
       </div>
@@ -73,15 +73,20 @@ export default async function EventosPage() {
               {eventosAtivos.map((evento: Evento) => (
                 <article 
                   key={evento.id} 
-                  className="bg-white border border-neutral-100 rounded-[3rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_40px_100px_rgba(0,115,183,0.1)] transition-all duration-700 transform hover:-translate-y-2 relative group"
+                  className="bg-white border border-white rounded-[3.5rem] p-10 shadow-[0_30px_70px_-15px_rgba(0,0,0,0.1)] hover:shadow-[0_45px_100px_-15px_rgba(0,115,183,0.18)] transition-all duration-700 transform hover:-translate-y-3 relative group overflow-hidden"
                 >
-                  <div className="absolute top-0 right-12 w-8 h-1 bg-[#8CC63F] rounded-b-full shadow-[0_0_10px_rgba(140,198,63,0.4)]"></div>
-                  <EventCard evento={evento} />
+                  <div className="absolute top-0 right-12 w-12 h-2 bg-[#8CC63F] rounded-b-full shadow-[0_0_15px_rgba(140,198,63,0.6)]"></div>
+                  {/* Efeito de luz interna */}
+                  <div className="absolute -top-12 -left-12 w-32 h-32 bg-[#0073B7]/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                  
+                  <div className="relative z-10">
+                    <EventCard evento={evento} />
+                  </div>
                 </article>
               ))}
             </div>
           ) : (
-            <div className="py-24 text-center bg-white/40 backdrop-blur-md border-2 border-dashed border-neutral-200 rounded-[3.5rem]">
+            <div className="py-24 text-center bg-white border-2 border-dashed border-neutral-200 rounded-[3.5rem] shadow-inner">
               <p className="text-neutral-400 font-black text-xs uppercase tracking-[0.4em]">Nenhum evento agendado para o momento.</p>
             </div>
           )}
@@ -90,19 +95,19 @@ export default async function EventosPage() {
         {/* SEÇÃO: EVENTOS ENCERRADOS */}
         <section>
           <div className="flex items-center gap-4 mb-12">
-            <div className="w-10 h-10 bg-neutral-400 rounded-2xl flex items-center justify-center shadow-lg">
-               <History size={20} className="text-white" />
+            <div className="w-12 h-12 bg-neutral-400 rounded-2xl flex items-center justify-center shadow-xl">
+               <History size={24} className="text-white" />
             </div>
-            <h2 className="text-3xl font-black tracking-tight text-neutral-400">Atividades Realizadas</h2>
-            <div className="h-px flex-1 bg-neutral-200/60"></div>
+            <h2 className="text-3xl font-black tracking-tight text-neutral-500 uppercase">Atividades Realizadas</h2>
+            <div className="h-px flex-1 bg-neutral-200"></div>
           </div>
 
           {eventosEncerrados.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 opacity-80">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {eventosEncerrados.map((evento: Evento) => (
                 <article 
                   key={evento.id} 
-                  className="bg-neutral-50/50 backdrop-blur-sm border border-neutral-200/50 rounded-[3rem] p-8 grayscale-[0.4] hover:grayscale-0 hover:opacity-100 transition-all duration-700"
+                  className="bg-[#F8FAFC] border border-neutral-100 rounded-[3.5rem] p-10 opacity-80 grayscale-[0.2] hover:grayscale-0 hover:opacity-100 hover:bg-white hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] transition-all duration-700 transform hover:-translate-y-2"
                 >
                   <EventCard evento={evento} />
                 </article>

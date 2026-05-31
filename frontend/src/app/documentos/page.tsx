@@ -75,18 +75,24 @@ export default async function DocumentosPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           
           {/* Seção: Base Normativa */}
-          <section className="bg-white/40 backdrop-blur-md p-10 rounded-[3.5rem] border border-white/60 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
-            <div className="flex items-center gap-4 mb-10">
-              <div className="w-12 h-12 bg-[#0073B7]/5 rounded-[1.2rem] flex items-center justify-center border border-[#0073B7]/10">
-                <ShieldCheck size={24} className="text-[#0073B7]" />
+          <section className="bg-white rounded-[3.5rem] border border-white p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] relative overflow-hidden group/parent">
+            {/* Efeito de luz interna sutil */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#0073B7]/5 blur-3xl rounded-full"></div>
+            
+            <div className="relative z-10 flex items-center gap-5 mb-12">
+              <div className="w-14 h-14 bg-[#0073B7] rounded-2xl flex items-center justify-center shadow-[0_10px_20px_rgba(0,115,183,0.2)]">
+                <ShieldCheck size={28} className="text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-neutral-950 tracking-tight">Regimentos e Atas</h2>
-                <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.2em]">Base Normativa</p>
+                <h2 className="text-2xl font-black text-neutral-950 tracking-tight uppercase">Regimentos e Atas</h2>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-[2px] bg-[#8CC63F]"></div>
+                  <p className="text-[10px] font-black text-[#0073B7] uppercase tracking-[0.2em]">Base Normativa</p>
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-4">
               {institucionais.length > 0 ? (
                 institucionais.map((doc) => (
                   <a 
@@ -94,21 +100,21 @@ export default async function DocumentosPage() {
                     href={getMediaUrl(doc.arquivo)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center justify-between p-6 bg-white rounded-3xl border border-neutral-100 hover:border-[#0073B7] hover:shadow-[0_20px_40px_rgba(0,115,183,0.06)] transition-all duration-500 transform hover:-translate-y-1"
+                    className="group flex items-center justify-between p-6 bg-[#F8FAFC] rounded-3xl border border-neutral-100 hover:bg-white hover:border-[#0073B7] hover:shadow-[0_20px_40px_rgba(0,115,183,0.1)] transition-all duration-500 transform hover:-translate-y-1.5"
                   >
                     <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 bg-neutral-50 rounded-2xl flex items-center justify-center border border-neutral-100 group-hover:bg-[#0073B7]/5 transition-colors duration-500">
-                        <FileText size={20} className="text-neutral-400 group-hover:text-[#0073B7] transition-colors" />
+                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border border-neutral-100 group-hover:bg-[#0073B7] transition-all duration-500 shadow-sm">
+                        <FileText size={20} className="text-[#0073B7] group-hover:text-white transition-colors" />
                       </div>
-                      <h4 className="text-sm font-black text-neutral-900 group-hover:text-[#0073B7] transition-colors uppercase tracking-tight">{doc.titulo}</h4>
+                      <h4 className="text-[11px] font-black text-neutral-900 group-hover:text-[#0073B7] transition-colors uppercase tracking-[0.05em]">{doc.titulo}</h4>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center group-hover:bg-[#0073B7] group-hover:text-white transition-all">
-                       <ExternalLink size={12} />
+                    <div className="w-9 h-9 rounded-full bg-white border border-neutral-100 flex items-center justify-center group-hover:bg-[#0073B7] group-hover:text-white group-hover:border-[#0073B7] transition-all shadow-sm">
+                       <ExternalLink size={14} />
                     </div>
                   </a>
                 ))
               ) : (
-                <div className="p-16 border-2 border-dashed border-neutral-200 rounded-[2.5rem] text-center bg-neutral-50/30">
+                <div className="p-16 border-2 border-dashed border-neutral-200 rounded-[2.5rem] text-center bg-neutral-50/50">
                   <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.3em]">Nenhum documento disponível.</p>
                 </div>
               )}
@@ -116,18 +122,24 @@ export default async function DocumentosPage() {
           </section>
 
           {/* Seção: Transparência */}
-          <section className="bg-white/40 backdrop-blur-md p-10 rounded-[3.5rem] border border-white/60 shadow-[0_20px_50px_rgba(0,0,0,0.02)]">
-            <div className="flex items-center gap-4 mb-10">
-              <div className="w-12 h-12 bg-[#8CC63F]/5 rounded-[1.2rem] flex items-center justify-center border border-[#8CC63F]/10">
-                <Info size={24} className="text-[#8CC63F]" />
+          <section className="bg-white rounded-[3.5rem] border border-white p-10 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] relative overflow-hidden group/parent">
+            {/* Efeito de luz interna sutil */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#8CC63F]/5 blur-3xl rounded-full"></div>
+
+            <div className="relative z-10 flex items-center gap-5 mb-12">
+              <div className="w-14 h-14 bg-[#8CC63F] rounded-2xl flex items-center justify-center shadow-[0_10px_20px_rgba(140,198,63,0.2)]">
+                <Info size={28} className="text-neutral-950" />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-neutral-950 tracking-tight">Relatórios e Balanços</h2>
-                <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.2em]">Transparência</p>
+                <h2 className="text-2xl font-black text-neutral-950 tracking-tight uppercase">Relatórios e Balanços</h2>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-[2px] bg-[#0073B7]"></div>
+                  <p className="text-[10px] font-black text-[#8CC63F] uppercase tracking-[0.2em]">Transparência</p>
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-4">
               {transparencia.length > 0 ? (
                 transparencia.map((doc) => (
                   <a 
@@ -135,21 +147,21 @@ export default async function DocumentosPage() {
                     href={getMediaUrl(doc.arquivo)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center justify-between p-6 bg-white rounded-3xl border border-neutral-100 hover:border-[#8CC63F] hover:shadow-[0_20px_40px_rgba(140,198,63,0.06)] transition-all duration-500 transform hover:-translate-y-1"
+                    className="group flex items-center justify-between p-6 bg-[#F8FAFC] rounded-3xl border border-neutral-100 hover:bg-white hover:border-[#8CC63F] hover:shadow-[0_20px_40px_rgba(140,198,63,0.1)] transition-all duration-500 transform hover:-translate-y-1.5"
                   >
                     <div className="flex items-center gap-5">
-                      <div className="w-12 h-12 bg-neutral-50 rounded-2xl flex items-center justify-center border border-neutral-100 group-hover:bg-[#8CC63F]/5 transition-colors duration-500">
-                        <FileText size={20} className="text-neutral-400 group-hover:text-[#8CC63F] transition-colors" />
+                      <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center border border-neutral-100 group-hover:bg-[#8CC63F] transition-all duration-500 shadow-sm">
+                        <FileText size={20} className="text-[#8CC63F] group-hover:text-neutral-950 transition-colors" />
                       </div>
-                      <h4 className="text-sm font-black text-neutral-900 group-hover:text-[#8CC63F] transition-colors uppercase tracking-tight">{doc.titulo}</h4>
+                      <h4 className="text-[11px] font-black text-neutral-900 group-hover:text-[#8CC63F] transition-colors uppercase tracking-[0.05em]">{doc.titulo}</h4>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-neutral-50 flex items-center justify-center group-hover:bg-[#8CC63F] group-hover:text-neutral-950 transition-all">
-                       <ExternalLink size={12} />
+                    <div className="w-9 h-9 rounded-full bg-white border border-neutral-100 flex items-center justify-center group-hover:bg-[#8CC63F] group-hover:text-neutral-950 group-hover:border-[#8CC63F] transition-all shadow-sm">
+                       <ExternalLink size={14} />
                     </div>
                   </a>
                 ))
               ) : (
-                <div className="p-16 border-2 border-dashed border-neutral-200 rounded-[2.5rem] text-center bg-neutral-50/30">
+                <div className="p-16 border-2 border-dashed border-neutral-200 rounded-[2.5rem] text-center bg-neutral-50/50">
                   <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.3em]">Nenhum relatório disponível.</p>
                 </div>
               )}

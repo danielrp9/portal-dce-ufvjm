@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-substitua-isso-por-um
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 # Configuração de Hosts
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 .vercel.app .railway.app .render.com').split()
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 0.0.0.0 .vercel.app .railway.app .render.com .ngrok-free.app .ngrok.io').split()
 
 # Application definition
 INSTALLED_APPS = [
@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     
     # Bibliotecas de Terceiros
     'rest_framework',
+    'django_filters',
     'corsheaders',
     'ckeditor',
     
@@ -129,16 +130,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS Config
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
+    # Para o CSRF funcionar com ngrok em DEBUG, precisamos confiar nos domínios do ngrok
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "https://*.ngrok-free.app",
+        "https://*.ngrok.io"
+    ]
 else:
     CORS_ALLOW_ALL_ORIGINS = False
-    CORS_ALLOWED_ORIGINS = [
-        os.environ.get('FRONTEND_URL', 'http://localhost:3000'),
-    ]
+    CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', os.environ.get('FRONTEND_URL', 'http://localhost:3000')).split()
+    CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', os.environ.get('FRONTEND_URL', 'http://localhost:3000')).split()
 
-
-CSRF_TRUSTED_ORIGINS = [
-    os.environ.get('FRONTEND_URL', 'http://localhost:3000'),
-]
+# Garante que o FRONTEND_URL sempre seja confiado
+if os.environ.get('FRONTEND_URL') and os.environ.get('FRONTEND_URL') not in CSRF_TRUSTED_ORIGINS:
+    CSRF_TRUSTED_ORIGINS.append(os.environ.get('FRONTEND_URL'))
 
 CKEDITOR_CONFIGS = {
     'default': {
@@ -151,6 +159,11 @@ CKEDITOR_CONFIGS = {
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 6,
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
 }
 
 FRONTEND_URL = os.environ.get('FRONTEND_URL', "http://localhost:3000")

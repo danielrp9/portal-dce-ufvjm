@@ -1,33 +1,83 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { Artigo } from '@/types';
+import React, { useState, useEffect } from 'react';
+import { Artigo, PaginatedResponse } from '@/types';
 import Link from 'next/link';
 import { Search, ChevronRight, BookOpen } from 'lucide-react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import Pagination from './Pagination';
 
-interface ArtigosListProps {
-  initialArtigos: Artigo[];
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
-export default function ArtigosList({ initialArtigos }: ArtigosListProps) {
-  const [allArtigos, setAllArtigos] = useState<Artigo[]>(initialArtigos);
-  const [filteredArtigos, setFilteredArtigos] = useState<Artigo[]>(initialArtigos);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [showSearchInput, setShowSearchInput] = useState<boolean>(false);
+export default function ArtigosList() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const page = Number(searchParams.get('page')) || 1;
+  const search = searchParams.get('search') || '';
+
+  const [data, setData] = useState<PaginatedResponse<Artigo> | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [showSearchInput, setShowSearchInput] = useState<boolean>(search !== '');
+  const [searchQuery, setSearchQuery] = useState<string>(search);
 
   useEffect(() => {
-    if (searchQuery.trim() === '') {
-      setFilteredArtigos(allArtigos);
-    } else {
-      const query = searchQuery.toLowerCase().trim();
-      const filtered = allArtigos.filter((a) => 
-        a.titulo.toLowerCase().includes(query) || 
-        a.autor.toLowerCase().includes(query) ||
-        a.resumo.toLowerCase().includes(query)
-      );
-      setFilteredArtigos(filtered);
-    }
-  }, [searchQuery, allArtigos]);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        let url = `${API_URL}/api/artigos/?page=${page}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+
+        const res = await fetch(url);
+        if (res.ok) {
+          const json = await res.json();
+          setData(json);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar artigos:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page, search]);
+
+  const PAGE_SIZE = 6;
+  const totalPages = data ? Math.ceil(data.count / PAGE_SIZE) : 0;
+
+  const updateFilters = (newPage: number, newSearch: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (newPage > 1) params.set('page', newPage.toString());
+    else params.delete('page');
+    
+    if (newSearch) params.set('search', newSearch);
+    else params.delete('search');
+    
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateFilters(1, searchQuery);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    updateFilters(newPage, search);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (loading && !data) {
+    return (
+      <div className="flex justify-center py-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0073B7]"></div>
+      </div>
+    );
+  }
+
+  if (!data) return null;
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
@@ -50,7 +100,7 @@ export default function ArtigosList({ initialArtigos }: ArtigosListProps) {
             </div>
             
             <div className="flex items-center gap-3 relative z-20">
-              <div className="flex items-center gap-2">
+              <form onSubmit={handleSearch} className="flex items-center gap-2">
                 {showSearchInput && (
                   <input
                     type="text"
@@ -62,9 +112,13 @@ export default function ArtigosList({ initialArtigos }: ArtigosListProps) {
                   />
                 )}
                 <button
+                  type="button"
                   onClick={() => {
+                    if (showSearchInput && searchQuery) {
+                      updateFilters(1, '');
+                      setSearchQuery('');
+                    }
                     setShowSearchInput(!showSearchInput);
-                    if (showSearchInput) setSearchQuery('');
                   }}
                   className={`p-2.5 rounded-xl border transition-all duration-300 ${
                     showSearchInput ? 'bg-[#0073B7] border-[#0073B7] text-white' : 'bg-white border-neutral-200 text-neutral-950 hover:border-[#0073B7]'
@@ -72,7 +126,7 @@ export default function ArtigosList({ initialArtigos }: ArtigosListProps) {
                 >
                   <Search size={14} strokeWidth={3} />
                 </button>
-              </div>
+              </form>
 
               <div className="w-px h-6 bg-neutral-200 mx-1"></div>
               
@@ -81,61 +135,73 @@ export default function ArtigosList({ initialArtigos }: ArtigosListProps) {
           </div>
         </div>
 
-        {/* Listagem de Artigos */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          {filteredArtigos.length > 0 ? (
-            filteredArtigos.map((artigo) => (
+        {/* Listagem de Artigos - Alterado para Lista (1 coluna) */}
+        <div className={`flex flex-col gap-8 transition-opacity duration-300 ${loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+          {data.results.length > 0 ? (
+            data.results.map((artigo) => (
               <article 
                 key={artigo.id} 
-                className="group bg-white/70 backdrop-blur-sm border border-neutral-200/50 rounded-[3rem] p-10 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_40px_90px_rgba(140,198,63,0.08)] transition-all duration-700 transform hover:-translate-y-2 flex flex-col h-full relative overflow-hidden"
+                className="group bg-white border border-neutral-100 rounded-[2.5rem] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.04)] hover:shadow-[0_40px_80px_rgba(140,198,63,0.1)] transition-all duration-700 transform hover:-translate-y-2 flex flex-col lg:flex-row gap-8 relative overflow-hidden"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#8CC63F]/5 rounded-full blur-3xl pointer-events-none group-hover:bg-[#8CC63F]/10 transition-all"></div>
+                {/* Efeito de luz interna sutil no hover */}
+                <div className="absolute top-0 right-0 w-48 h-48 bg-[#8CC63F]/5 blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
                 
-                <div className="flex items-center gap-5 mb-8">
-                  <div className="w-14 h-14 bg-neutral-50 rounded-2xl flex items-center justify-center border border-neutral-100 shadow-inner group-hover:bg-[#0073B7]/5 transition-colors duration-500">
-                    <BookOpen className="text-[#0073B7] group-hover:scale-110 transition-transform duration-500" size={24} />
+                <div className="flex items-center gap-6 lg:w-1/4 flex-shrink-0">
+                  <div className="w-16 h-16 bg-[#F8FAFC] rounded-2xl flex items-center justify-center border border-neutral-100 shadow-sm group-hover:bg-[#0073B7] group-hover:text-white transition-all duration-500">
+                    <BookOpen className="group-hover:scale-110 transition-transform duration-500" size={28} />
                   </div>
                   <div>
-                    <p className="text-[10px] font-black text-[#0073B7] uppercase tracking-[0.25em] mb-1">Autor(a)</p>
-                    <p className="text-sm font-black text-neutral-950 uppercase tracking-tight">{artigo.autor}</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-4 h-[2px] bg-[#8CC63F]"></div>
+                      <p className="text-[10px] font-black text-[#0073B7] uppercase tracking-[0.3em]">Autor(a)</p>
+                    </div>
+                    <p className="text-sm font-black text-neutral-950 uppercase tracking-tight line-clamp-1">{artigo.autor}</p>
                   </div>
                 </div>
 
-                <Link href={`/artigos/${artigo.slug}/`}>
-                  <h2 className="text-2xl font-black text-neutral-950 leading-tight mb-5 tracking-tight group-hover:text-[#0073B7] transition-colors duration-500">
-                    {artigo.titulo}
-                  </h2>
-                </Link>
-
-                <p className="text-neutral-500 text-[15px] leading-relaxed font-medium opacity-85 mb-10 line-clamp-4">
-                  {artigo.resumo}
-                </p>
-
-                <div className="mt-auto pt-8 border-t border-neutral-50 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-[#8CC63F] rounded-full shadow-[0_0_8px_rgba(140,198,63,0.5)]"></div>
-                    <span className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">
-                      {new Date(artigo.data_publicacao).toLocaleDateString('pt-BR')}
-                    </span>
-                  </div>
-                  <Link 
-                    href={`/artigos/${artigo.slug}/`}
-                    className="text-[10px] font-black uppercase tracking-[0.35em] text-[#0073B7] flex items-center gap-2 hover:text-neutral-950 transition-colors group/link"
-                  >
-                    Ler Artigo <ChevronRight size={14} className="transform transition-transform group-hover/link:translate-x-1.5" />
+                <div className="flex-1 min-w-0">
+                  <Link href={`/artigos/${artigo.slug}/`}>
+                    <h2 className="text-2xl font-black text-neutral-950 leading-tight mb-4 tracking-tight group-hover:text-[#0073B7] transition-colors duration-500 uppercase line-clamp-1">
+                      {artigo.titulo}
+                    </h2>
                   </Link>
+
+                  <p className="text-neutral-500 text-sm leading-relaxed font-medium opacity-100 mb-6 line-clamp-2">
+                    {artigo.resumo}
+                  </p>
+
+                  <div className="flex items-center justify-between mt-auto">
+                    <div className="flex items-center gap-3">
+                      <div className="w-2 h-2 bg-[#8CC63F] rounded-full shadow-[0_0_12px_rgba(140,198,63,0.6)] animate-pulse"></div>
+                      <span className="text-[11px] font-black text-neutral-400 uppercase tracking-[0.2em]">
+                        {new Date(artigo.data_publicacao).toLocaleDateString('pt-BR')}
+                      </span>
+                    </div>
+                    <Link 
+                      href={`/artigos/${artigo.slug}/`}
+                      className="text-[11px] font-black uppercase tracking-[0.4em] text-[#0073B7] flex items-center gap-3 hover:text-neutral-950 transition-colors group/link"
+                    >
+                      Ler Artigo <ChevronRight size={18} className="transform transition-transform group-hover/link:translate-x-1.5" />
+                    </Link>
+                  </div>
                 </div>
               </article>
             ))
           ) : (
-            <div className="col-span-full py-32 text-center bg-white/40 backdrop-blur-md rounded-[3rem] border border-dashed border-neutral-200">
-              <div className="w-20 h-20 bg-neutral-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-neutral-100 shadow-inner">
-                <Search size={32} className="text-neutral-200" />
+            <div className="col-span-full py-32 text-center bg-white rounded-[3.5rem] border-2 border-dashed border-neutral-200 shadow-inner">
+              <div className="w-24 h-24 bg-neutral-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-neutral-100 shadow-sm">
+                <Search size={40} className="text-neutral-200" />
               </div>
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-neutral-400">Nenhum artigo encontrado para sua busca.</p>
+              <p className="text-xs font-black uppercase tracking-[0.4em] text-neutral-400">Nenhum artigo encontrado para sua busca.</p>
             </div>
           )}
         </div>
+
+        <Pagination 
+          currentPage={page} 
+          totalPages={totalPages} 
+          onPageChange={handlePageChange} 
+        />
 
       </div>
   );

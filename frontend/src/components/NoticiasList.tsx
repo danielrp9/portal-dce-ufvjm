@@ -1,25 +1,86 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { Noticia } from '@/types';
+import React, { useState, useEffect } from 'react';
+import { Noticia, PaginatedResponse } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import he from 'he';
 import { Search, Filter, ChevronRight } from 'lucide-react';
 import { getMediaUrl } from '@/utils/urls';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import Pagination from './Pagination';
 
-interface NoticiasListProps {
-  initialNoticias: Noticia[];
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
 
-export default function NoticiasList({ initialNoticias }: NoticiasListProps) {
-  const [allNoticias, setAllNoticias] = useState<Noticia[]>(initialNoticias);
-  const [filteredNoticias, setFilteredNoticias] = useState<Noticia[]>(initialNoticias);
+export default function NoticiasList() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const [showCampusFilters, setShowCampusFilters] = useState<boolean>(false);
-  const [showSearchInput, setShowSearchInput] = useState<boolean>(false);
-  const [selectedCampus, setSelectedCampus] = useState<string>('GERAL');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const page = Number(searchParams.get('page')) || 1;
+  const search = searchParams.get('search') || '';
+  const campus = searchParams.get('campus') || 'GERAL';
+
+  const [data, setData] = useState<PaginatedResponse<Noticia> | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [showCampusFilters, setShowCampusFilters] = useState<boolean>(campus !== 'GERAL');
+  const [showSearchInput, setShowSearchInput] = useState<boolean>(search !== '');
+  const [searchQuery, setSearchQuery] = useState<string>(search);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        let url = `${API_URL}/api/noticias/?page=${page}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+        if (campus && campus !== 'GERAL') url += `&campus=${encodeURIComponent(campus)}`;
+
+        const res = await fetch(url);
+        if (res.ok) {
+          const json = await res.json();
+          setData(json);
+        }
+      } catch (error) {
+        console.error("Erro ao buscar notícias:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page, search, campus]);
+
+  const PAGE_SIZE = 6;
+  const totalPages = data ? Math.ceil(data.count / PAGE_SIZE) : 0;
+
+  const updateFilters = (newPage: number, newSearch: string, newCampus: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    
+    if (newPage > 1) params.set('page', newPage.toString());
+    else params.delete('page');
+    
+    if (newSearch) params.set('search', newSearch);
+    else params.delete('search');
+    
+    if (newCampus !== 'GERAL') params.set('campus', newCampus);
+    else params.delete('campus');
+    
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    updateFilters(1, searchQuery, campus);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    updateFilters(newPage, search, campus);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCampusChange = (newCampus: string) => {
+    updateFilters(1, search, newCampus);
+  };
 
   const campusOptions = [
     { value: 'GERAL', label: 'Geral' },
@@ -29,24 +90,19 @@ export default function NoticiasList({ initialNoticias }: NoticiasListProps) {
     { value: 'JANAUBA', label: 'Janaúba' },
   ];
 
-  useEffect(() => {
-    let result = allNoticias;
-    if (selectedCampus !== 'GERAL') {
-      result = result.filter((n: Noticia) => n.campus === selectedCampus);
-    }
-    if (searchQuery.trim() !== '') {
-      const query = searchQuery.toLowerCase().trim();
-      result = result.filter((n: Noticia) => {
-        const matchTitulo = n.titulo?.toLowerCase().includes(query);
-        const matchTags = n.tags?.toLowerCase().includes(query);
-        return matchTitulo || matchTags;
-      });
-    }
-    setFilteredNoticias(result);
-  }, [selectedCampus, searchQuery, allNoticias]);
+  if (loading && !data) {
+    return (
+      <div className="flex justify-center py-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0073B7]"></div>
+      </div>
+    );
+  }
 
-  const principais = filteredNoticias.slice(0, 3);
-  const emLista = filteredNoticias.slice(3);
+  if (!data) return null;
+
+  const showPrincipais = page === 1 && !search && campus === 'GERAL';
+  const principais = showPrincipais ? data.results.slice(0, 3) : [];
+  const emLista = showPrincipais ? data.results.slice(3) : data.results;
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
@@ -69,7 +125,7 @@ export default function NoticiasList({ initialNoticias }: NoticiasListProps) {
             </div>
             
             <div className="flex items-center gap-3 relative z-20">
-              <div className="flex items-center gap-2">
+              <form onSubmit={handleSearch} className="flex items-center gap-2">
                 {showSearchInput && (
                   <input
                     type="text"
@@ -81,9 +137,13 @@ export default function NoticiasList({ initialNoticias }: NoticiasListProps) {
                   />
                 )}
                 <button
+                  type="button"
                   onClick={() => {
+                    if (showSearchInput && searchQuery) {
+                       updateFilters(1, '', campus);
+                       setSearchQuery('');
+                    }
                     setShowSearchInput(!showSearchInput);
-                    if (showSearchInput) setSearchQuery('');
                   }}
                   className={`p-2.5 rounded-xl border transition-all duration-300 ${
                     showSearchInput ? 'bg-[#0073B7] border-[#0073B7] text-white' : 'bg-white border-neutral-200 text-neutral-950 hover:border-[#0073B7]'
@@ -91,7 +151,7 @@ export default function NoticiasList({ initialNoticias }: NoticiasListProps) {
                 >
                   <Search size={14} strokeWidth={3} />
                 </button>
-              </div>
+              </form>
 
               <div className="w-px h-6 bg-neutral-200 mx-1"></div>
 
@@ -120,9 +180,9 @@ export default function NoticiasList({ initialNoticias }: NoticiasListProps) {
                 {campusOptions.map((opt) => (
                   <button
                     key={opt.value}
-                    onClick={() => setSelectedCampus(opt.value)}
+                    onClick={() => handleCampusChange(opt.value)}
                     className={`text-[9px] font-black uppercase tracking-widest px-5 py-2.5 rounded-full border-2 transition-all duration-300 ${
-                      selectedCampus === opt.value
+                      campus === opt.value
                         ? 'bg-[#0073B7] border-[#0073B7] text-white shadow-[0_5px_15px_rgba(0,115,183,0.3)]'
                         : 'bg-white border-neutral-100 text-neutral-400 hover:border-[#0073B7] hover:text-[#0073B7]'
                     }`}
@@ -135,120 +195,128 @@ export default function NoticiasList({ initialNoticias }: NoticiasListProps) {
           </div>
         )}
 
-        {/* Grid de Destaques - Modernizado */}
-        {principais.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-20">
-            {principais.map((noticia: Noticia) => (
-              <article 
-                key={noticia.id} 
-                className="group cursor-pointer bg-white/80 backdrop-blur-sm border border-neutral-200/50 rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_40px_80px_rgba(0,115,183,0.12)] flex flex-col transform transition-all duration-700 hover:-translate-y-2"
-              >
-                <Link href={`/noticias/${noticia.slug}/`} className="relative aspect-video overflow-hidden bg-neutral-950">
-                  <Image
-                    src={getMediaUrl(noticia.capa)}
-                    alt={noticia.titulo} 
-                    fill 
-                    className="object-cover transition-all duration-1000 ease-out group-hover:scale-110 group-hover:opacity-80"
-                    priority={principais.indexOf(noticia) < 3}
-                  />
-                  <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md text-[#0073B7] text-[8px] px-4 py-2 font-black uppercase tracking-[0.2em] z-10 rounded-full border border-white/40 shadow-lg">
-                    {noticia.campus_display || 'Geral'}
-                  </div>
-                </Link>
-                
-                <div className="p-8 flex-1 flex flex-col relative">
-                   <div className="absolute top-0 right-8 w-12 h-1 bg-[#8CC63F] rounded-b-full shadow-[0_0_10px_rgba(140,198,63,0.3)]"></div>
-
-                  <div className="flex justify-between items-center mb-4 text-[10px] font-black text-[#8CC63F] uppercase tracking-wider">
-                    <span className="text-neutral-400 flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 bg-neutral-200 rounded-full"></div>
-                      Editorial
-                    </span>
-                    <span>{new Date(noticia.data_publicacao).toLocaleDateString('pt-BR')}</span>
-                  </div>
-
-                  <Link href={`/noticias/${noticia.slug}/`}>
-                    <h2 className="text-xl font-black leading-tight text-neutral-950 group-hover:text-[#0073B7] transition-colors duration-500 mb-4 tracking-tight line-clamp-2">
-                      {noticia.titulo}
-                    </h2>
-                  </Link>
-                  <p className="text-neutral-500 text-[13px] leading-relaxed line-clamp-3 mb-8 font-medium opacity-85 group-hover:opacity-100 transition-opacity">
-                    {he.decode(noticia.conteudo.replace(/<[^>]*>?/gm, ''))}
-                  </p>
-                  
-                  <Link 
-                    href={`/noticias/${noticia.slug}/`}
-                    className="mt-auto pt-6 border-t border-neutral-50 text-[10px] font-black uppercase tracking-[0.3em] text-[#0073B7] hover:text-neutral-950 transition-all flex items-center justify-between group/btn"
-                  >
-                    Ler Reportagem <ChevronRight size={14} className="transform transition-transform group-hover/btn:translate-x-1.5" />
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-neutral-400 uppercase tracking-widest text-xs font-black">Nenhuma notícia encontrada para os filtros aplicados.</p>
-          </div>
-        )}
-
-        {/* Acervo em Lista - Modernizado */}
-        {emLista.length > 0 && (
-          <div className="w-full flex flex-col gap-10 border-t border-neutral-200 pt-16">
-            <div className="flex items-center gap-3">
-               <div className="w-1.5 h-6 bg-[#8CC63F] rounded-full shadow-[0_0_8px_rgba(140,198,63,0.4)]"></div>
-               <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-neutral-400">
-                Acervo de Publicações
-               </h3>
-            </div>
-            
-            <div className="flex flex-col gap-8">
-              {emLista.map((noticia: Noticia) => (
+        {/* Loading Overlay */}
+        <div className={`transition-opacity duration-300 ${loading ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+          {/* Grid de Destaques */}
+          {principais.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-20">
+              {principais.map((noticia: Noticia) => (
                 <article 
                   key={noticia.id} 
-                  className="group flex flex-col lg:flex-row gap-8 p-6 rounded-[2.5rem] bg-white/60 backdrop-blur-sm border border-neutral-100 hover:border-[#0073B7]/20 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_60px_rgba(0,115,183,0.06)] transform hover:-translate-y-1.5 transition-all duration-700"
+                  className="group cursor-pointer bg-white/80 backdrop-blur-sm border border-neutral-200/50 rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:shadow-[0_40px_80px_rgba(0,115,183,0.12)] flex flex-col transform transition-all duration-700 hover:-translate-y-2"
                 >
-                  <Link 
-                    href={`/noticias/${noticia.slug}/`} 
-                    className="relative w-full lg:w-72 aspect-video flex-shrink-0 overflow-hidden bg-neutral-950 rounded-[2rem] shadow-xl"
-                  >
+                  <Link href={`/noticias/${noticia.slug}/`} className="relative aspect-video overflow-hidden bg-neutral-950">
                     <Image
                       src={getMediaUrl(noticia.capa)}
                       alt={noticia.titulo} 
                       fill 
                       className="object-cover transition-all duration-1000 ease-out group-hover:scale-110 group-hover:opacity-80"
                     />
+                    <div className="absolute top-5 left-5 bg-white/90 backdrop-blur-md text-[#0073B7] text-[8px] px-4 py-2 font-black uppercase tracking-[0.2em] z-10 rounded-full border border-white/40 shadow-lg">
+                      {noticia.campus_display || 'Geral'}
+                    </div>
                   </Link>
+                  
+                  <div className="p-8 flex-1 flex flex-col relative">
+                    <div className="absolute top-0 right-8 w-12 h-1 bg-[#8CC63F] rounded-b-full shadow-[0_0_10px_rgba(140,198,63,0.3)]"></div>
 
-                  <div className="flex flex-col flex-1 min-w-0 py-2 relative">
-                    <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.25em] mb-4">
-                      <span className="text-[#0073B7] bg-[#0073B7]/5 px-4 py-1.5 rounded-full border border-[#0073B7]/10">{noticia.campus_display || 'Geral'}</span>
-                      <span className="text-neutral-300">•</span>
-                      <span className="text-neutral-400">{new Date(noticia.data_publicacao).toLocaleDateString('pt-BR')}</span>
+                    <div className="flex justify-between items-center mb-4 text-[10px] font-black text-[#8CC63F] uppercase tracking-wider">
+                      <span className="text-neutral-400 flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-neutral-200 rounded-full"></div>
+                        Editorial
+                      </span>
+                      <span>{new Date(noticia.data_publicacao).toLocaleDateString('pt-BR')}</span>
                     </div>
 
                     <Link href={`/noticias/${noticia.slug}/`}>
-                      <h4 className="text-2xl font-black text-neutral-950 leading-snug mb-4 tracking-tight group-hover:text-[#0073B7] transition-colors duration-500 line-clamp-1">
+                      <h2 className="text-xl font-black leading-tight text-neutral-950 group-hover:text-[#0073B7] transition-colors duration-500 mb-4 tracking-tight line-clamp-2">
                         {noticia.titulo}
-                      </h4>
+                      </h2>
                     </Link>
-
-                    <p className="text-neutral-500 text-sm leading-relaxed line-clamp-2 max-w-4xl font-medium mb-6 opacity-85 group-hover:opacity-100 transition-opacity">
+                    <p className="text-neutral-500 text-[13px] leading-relaxed line-clamp-3 mb-8 font-medium opacity-85 group-hover:opacity-100 transition-opacity">
                       {he.decode(noticia.conteudo.replace(/<[^>]*>?/gm, ''))}
                     </p>
-
+                    
                     <Link 
-                      href={`/noticias/${noticia.slug}/`} 
-                      className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#0073B7] hover:text-neutral-950 transition-all mt-auto group/l"
+                      href={`/noticias/${noticia.slug}/`}
+                      className="mt-auto pt-6 border-t border-neutral-50 text-[10px] font-black uppercase tracking-[0.3em] text-[#0073B7] hover:text-neutral-950 transition-all flex items-center justify-between group/btn"
                     >
-                      Acessar Conteúdo <ChevronRight size={14} className="transform transition-transform group-hover/l:translate-x-1.5" />
+                      Ler Reportagem <ChevronRight size={14} className="transform transition-transform group-hover/btn:translate-x-1.5" />
                     </Link>
                   </div>
                 </article>
               ))}
             </div>
-          </div>
-        )}
+          )}
+
+          {/* Acervo em Lista */}
+          {emLista.length > 0 ? (
+            <div className="w-full flex flex-col gap-10 border-t border-neutral-200 pt-16">
+              <div className="flex items-center gap-3">
+                <div className="w-1.5 h-6 bg-[#8CC63F] rounded-full shadow-[0_0_8px_rgba(140,198,63,0.4)]"></div>
+                <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-neutral-400">
+                  {showPrincipais ? 'Acervo de Publicações' : 'Resultados da Pesquisa'}
+                </h3>
+              </div>
+              
+              <div className="flex flex-col gap-8">
+                {emLista.map((noticia: Noticia) => (
+                  <article 
+                    key={noticia.id} 
+                    className="group flex flex-col lg:flex-row gap-8 p-6 rounded-[2.5rem] bg-white/60 backdrop-blur-sm border border-neutral-100 hover:border-[#0073B7]/20 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_60px_rgba(0,115,183,0.06)] transform hover:-translate-y-1.5 transition-all duration-700"
+                  >
+                    <Link 
+                      href={`/noticias/${noticia.slug}/`} 
+                      className="relative w-full lg:w-72 aspect-video flex-shrink-0 overflow-hidden bg-neutral-950 rounded-[2rem] shadow-xl"
+                    >
+                      <Image
+                        src={getMediaUrl(noticia.capa)}
+                        alt={noticia.titulo} 
+                        fill 
+                        className="object-cover transition-all duration-1000 ease-out group-hover:scale-110 group-hover:opacity-80"
+                      />
+                    </Link>
+
+                    <div className="flex flex-col flex-1 min-w-0 py-2 relative">
+                      <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.25em] mb-4">
+                        <span className="text-[#0073B7] bg-[#0073B7]/5 px-4 py-1.5 rounded-full border border-[#0073B7]/10">{noticia.campus_display || 'Geral'}</span>
+                        <span className="text-neutral-300">•</span>
+                        <span className="text-neutral-400">{new Date(noticia.data_publicacao).toLocaleDateString('pt-BR')}</span>
+                      </div>
+
+                      <Link href={`/noticias/${noticia.slug}/`}>
+                        <h4 className="text-2xl font-black text-neutral-950 leading-snug mb-4 tracking-tight group-hover:text-[#0073B7] transition-colors duration-500 line-clamp-1">
+                          {noticia.titulo}
+                        </h4>
+                      </Link>
+
+                      <p className="text-neutral-500 text-sm leading-relaxed line-clamp-2 max-w-4xl font-medium mb-6 opacity-85 group-hover:opacity-100 transition-opacity">
+                        {he.decode(noticia.conteudo.replace(/<[^>]*>?/gm, ''))}
+                      </p>
+
+                      <Link 
+                        href={`/noticias/${noticia.slug}/`} 
+                        className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.3em] text-[#0073B7] hover:text-neutral-950 transition-all mt-auto group/l"
+                      >
+                        Acessar Conteúdo <ChevronRight size={14} className="transform transition-transform group-hover/l:translate-x-1.5" />
+                      </Link>
+                    </div>
+                  </article>
+                ))}
+              </div>
+
+              <Pagination 
+                currentPage={page} 
+                totalPages={totalPages} 
+                onPageChange={handlePageChange} 
+              />
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-neutral-400 uppercase tracking-widest text-xs font-black">Nenhuma notícia encontrada para os filtros aplicados.</p>
+            </div>
+          )}
+        </div>
 
       </div>
   );

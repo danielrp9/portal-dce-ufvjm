@@ -1,32 +1,11 @@
-import React from 'react';
-import { Artigo } from '@/types';
+"use client";
+
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import ArtigosList from '@/components/ArtigosList';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
-
-async function getArtigos(): Promise<Artigo[]> {
-  try {
-    const res = await fetch(`${API_URL}/api/artigos/?page=1`, {
-      next: { revalidate: 60 },
-    });
-    
-    if (!res.ok) {
-      throw new Error('Falha ao buscar artigos');
-    }
-    
-    const data = await res.json();
-    return data.results || [];
-  } catch (error) {
-    console.error("Erro ao buscar artigos no servidor:", error);
-    return [];
-  }
-}
-
-export default async function ArtigosPage() {
-  const initialArtigos = await getArtigos();
-
+export default function ArtigosPage() {
   return (
     <main className="min-h-screen bg-[#F0F2F5] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-32 relative overflow-hidden">
       
@@ -45,7 +24,9 @@ export default async function ArtigosPage() {
         </div>
       </div>
 
-      <ArtigosList initialArtigos={initialArtigos} />
+      <Suspense fallback={<div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0073B7]"></div></div>}>
+        <ArtigosList />
+      </Suspense>
       
     </main>
   );

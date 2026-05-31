@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '@/services/api';
 import { Noticia } from '@/types';
+import { getMediaUrl } from '@/utils/urls';
 import Image from 'next/image';
 import Link from 'next/link';
 import PrintButton from '@/components/PrintButton';
@@ -65,7 +66,7 @@ export default function NoticiaDetailClient({ slug }: NoticiaDetailClientProps) 
     );
   }
 
-  const shareUrl = typeof window !== 'undefined' ? window.location.href : `http://dce.ufvjm.edu.br/noticias/${noticia.slug}/`;
+  const shareUrl = typeof window !== 'undefined' ? window.location.href : `/noticias/${noticia.slug}/`;
   const shareText = encodeURIComponent(`Portal do DCE: ${noticia.titulo}`);
 
   const listaTags = (noticia as any).tags
@@ -135,7 +136,7 @@ export default function NoticiaDetailClient({ slug }: NoticiaDetailClientProps) 
         {noticia.capa && (
           <div className="max-w-3xl mx-auto w-full relative aspect-video rounded-[2rem] overflow-hidden mb-12 shadow-[0_12px_40px_rgba(0,0,0,0.03)] border border-neutral-200/50 bg-neutral-900">
             <Image 
-              src={noticia.capa.startsWith('http') ? noticia.capa : `http://127.0.0.1:8000${noticia.capa}`} 
+              src={getMediaUrl(noticia.capa)} 
               alt={noticia.titulo} 
               fill 
               className="object-cover"

@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { Evento } from '@/types';
+import { getMediaUrl } from '@/utils/urls';
 
 interface EventCardProps {
   evento: Evento;
@@ -148,7 +149,7 @@ export default function EventCard({ evento, onExpandChange }: EventCardProps) {
         {/* Banner com Proporção Fixa */}
         <div className="relative aspect-[16/9] w-full bg-neutral-50 rounded-3xl overflow-hidden border border-neutral-200/60 shadow-2xs">
           <Image 
-            src={evento.banner.startsWith('http') ? evento.banner : `http://127.0.0.1:8000${evento.banner}`}
+            src={getMediaUrl(evento.banner)}
             alt={evento.titulo}
             fill
             className="object-cover transition-all duration-700 ease-out opacity-95 group-hover:opacity-100 group-hover:scale-102"

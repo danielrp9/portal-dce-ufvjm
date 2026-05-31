@@ -93,27 +93,27 @@ export default function SobrePage() {
         {/* POR QUE O DCE É IMPORTANTE? */}
         <section className="mb-32">
           <div className="flex items-center gap-4 mb-16">
-            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#0073B7] whitespace-nowrap">A Importância da Luta</h3>
+            <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-[#0073B7] whitespace-nowrap">A Importância da Luta</h3>
             <div className="h-px w-full bg-neutral-200"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div className="bg-white rounded-[3rem] p-10 md:p-14 border border-white shadow-[0_20px_50px_rgba(0,0,0,0.04)] relative group hover:shadow-[0_30px_70px_rgba(0,0,0,0.1)] transition-all duration-500">
-               <div className="w-16 h-16 bg-[#0073B7]/5 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#0073B7] group-hover:text-white transition-all">
-                 <Compass size={32} />
+            <div className="bg-white rounded-[3.5rem] p-12 md:p-16 border border-white shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] relative group hover:shadow-[0_50px_100px_-15px_rgba(0,115,183,0.15)] transition-all duration-700 transform hover:-translate-y-3">
+               <div className="w-20 h-20 bg-[#F8FAFC] rounded-2xl flex items-center justify-center mb-10 group-hover:bg-[#0073B7] group-hover:text-white transition-all duration-500 shadow-sm">
+                 <Compass size={40} className="text-[#0073B7] group-hover:text-white transition-colors" />
                </div>
-               <h4 className="text-2xl font-black text-neutral-950 mb-6 tracking-tight">Formação Política e Cidadã</h4>
-               <p className="text-neutral-500 leading-relaxed font-medium">
+               <h4 className="text-3xl font-black text-neutral-950 mb-8 tracking-tighter uppercase leading-tight">Formação Política <br/><span className="text-[#0073B7]">e Cidadã</span></h4>
+               <p className="text-neutral-600 leading-relaxed font-bold text-base opacity-100">
                  A universidade vai além da sala de aula. Participar do DCE ou apoiar suas causas é exercer a democracia na prática. O movimento estudantil forma líderes e cidadãos conscientes, capazes de questionar, negociar e transformar a realidade social do país.
                </p>
             </div>
 
-            <div className="bg-white rounded-[3rem] p-10 md:p-14 border border-white shadow-[0_20px_50px_rgba(0,0,0,0.04)] relative group hover:shadow-[0_30px_70px_rgba(0,0,0,0.1)] transition-all duration-500">
-               <div className="w-16 h-16 bg-[#8CC63F]/5 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-[#8CC63F] group-hover:text-neutral-950 transition-all">
-                 <ShieldCheck size={32} />
+            <div className="bg-white rounded-[3.5rem] p-12 md:p-16 border border-white shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] relative group hover:shadow-[0_50px_100px_-15px_rgba(140,198,63,0.15)] transition-all duration-700 transform hover:-translate-y-3">
+               <div className="w-20 h-20 bg-[#F8FAFC] rounded-2xl flex items-center justify-center mb-10 group-hover:bg-[#8CC63F] group-hover:text-neutral-950 transition-all duration-500 shadow-sm">
+                 <ShieldCheck size={40} className="text-[#8CC63F] group-hover:text-neutral-950 transition-colors" />
                </div>
-               <h4 className="text-2xl font-black text-neutral-950 mb-6 tracking-tight">Garantia de Permanência</h4>
-               <p className="text-neutral-500 leading-relaxed font-medium">
+               <h4 className="text-3xl font-black text-neutral-950 mb-8 tracking-tighter uppercase leading-tight">Garantia de <br/><span className="text-[#8CC63F]">Permanência</span></h4>
+               <p className="text-neutral-600 leading-relaxed font-bold text-base opacity-100">
                  Sem o DCE, pautas como moradia estudantil, restaurantes universitários a preços justos e bolsas de auxílio ficariam à mercê apenas de decisões administrativas. Nós lutamos para que o filho da classe trabalhadora não apenas entre, mas consiga permanecer e se formar.
                </p>
             </div>
@@ -135,14 +135,14 @@ export default function SobrePage() {
           <div className="lg:col-span-7 space-y-12">
             <div className="flex gap-8 group">
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center border border-neutral-200 shadow-sm group-hover:border-[#0073B7] transition-colors">
-                  <History size={20} className="text-[#0073B7]" />
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center border border-neutral-200 shadow-[0_10px_20px_rgba(0,0,0,0.05)] group-hover:border-[#0073B7] group-hover:shadow-[0_15px_30px_rgba(0,115,183,0.15)] transition-all duration-500">
+                  <History size={24} className="text-[#0073B7]" />
                 </div>
-                <div className="w-px h-full bg-neutral-200 mt-4"></div>
+                <div className="w-[2px] h-full bg-neutral-200 mt-4"></div>
               </div>
               <div className="pb-12">
-                <h5 className="text-[11px] font-black uppercase tracking-widest text-[#0073B7] mb-3">Contexto Brasileiro</h5>
-                <p className="text-lg text-neutral-700 leading-relaxed font-medium">
+                <h5 className="text-[12px] font-black uppercase tracking-widest text-[#0073B7] mb-4">Contexto Brasileiro</h5>
+                <p className="text-xl text-neutral-700 leading-relaxed font-bold">
                   Desde a resistência à Ditadura Militar até as "Diretas Já" e o "Fora Collor", o Movimento Estudantil sempre foi o motor das mudanças sociais no Brasil. Os DCEs são a base desse ecossistema, conectando cada campus à luta nacional da UNE.
                 </p>
               </div>
@@ -150,26 +150,27 @@ export default function SobrePage() {
 
             <div className="flex gap-8 group">
               <div className="flex flex-col items-center">
-                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center border border-neutral-200 shadow-sm group-hover:border-[#8CC63F] transition-colors">
-                  <Users size={20} className="text-[#8CC63F]" />
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center border border-neutral-200 shadow-[0_10px_20px_rgba(0,0,0,0.05)] group-hover:border-[#8CC63F] group-hover:shadow-[0_15px_30px_rgba(140,198,63,0.15)] transition-all duration-500">
+                  <Users size={24} className="text-[#8CC63F]" />
                 </div>
-                <div className="w-px h-full bg-neutral-200 mt-4"></div>
+                <div className="w-[2px] h-full bg-neutral-200 mt-4"></div>
               </div>
               <div className="pb-12">
-                <h5 className="text-[11px] font-black uppercase tracking-widest text-[#8CC63F] mb-3">Fundação UFVJM (2005)</h5>
-                <p className="text-lg text-neutral-700 leading-relaxed font-medium">
+                <h5 className="text-[12px] font-black uppercase tracking-widest text-[#8CC63F] mb-4">Fundação UFVJM (2005)</h5>
+                <p className="text-xl text-neutral-700 leading-relaxed font-bold">
                   Com a expansão da antiga Faod para se tornar a UFVJM em 2005, o DCE tornou-se a ponte essencial entre os novos campi. De Diamantina a Unaí, o diretório unificou as vozes dos Vales do Jequitinhonha e Mucuri.
                 </p>
               </div>
             </div>
 
             {/* FRASES DE IMPACTO */}
-            <div className="bg-[#0073B7]/5 p-10 rounded-[3rem] border border-[#0073B7]/10 relative">
-              <Quote size={40} className="text-[#0073B7] opacity-20 absolute top-8 left-8" />
-              <p className="text-xl md:text-2xl font-black text-[#001529] leading-tight italic relative z-10 pl-4">
-                "A educação não transforma o mundo. A educação muda pessoas. Pessoas transformam o mundo."
+            <div className="bg-[#001529] p-12 md:p-16 rounded-[3.5rem] border border-white/10 relative shadow-2xl overflow-hidden group">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[#0073B7]/10 blur-3xl rounded-full"></div>
+              <Quote size={60} className="text-[#8CC63F] opacity-10 absolute top-8 left-8 group-hover:scale-110 transition-transform duration-700" />
+              <p className="text-2xl md:text-3xl font-black text-white leading-tight italic relative z-10 pl-6">
+                "A educação não transforma o world. A educação muda pessoas. Pessoas transformam o mundo."
               </p>
-              <footer className="mt-6 text-[10px] font-black uppercase tracking-widest text-[#0073B7] pl-4">
+              <footer className="mt-10 text-[12px] font-black uppercase tracking-[0.4em] text-[#8CC63F] pl-6 border-l-4 border-[#8CC63F]">
                 — Paulo Freire
               </footer>
             </div>
@@ -183,10 +184,10 @@ export default function SobrePage() {
             <p className="text-lg font-bold opacity-80 uppercase tracking-tighter">O DCE é o que os estudantes fazem dele. Participe!</p>
           </div>
           <Link 
-            href="/contato" 
+            href="/ficha-tecnica" 
             className="px-12 py-5 bg-[#001529] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] hover:bg-[#0073B7] transition-all transform hover:scale-105 active:scale-95 shadow-xl"
           >
-            Falar com o DCE
+            Ficha Técnica
           </Link>
         </section>
 

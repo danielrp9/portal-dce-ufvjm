@@ -145,7 +145,7 @@ export default function Navbar() {
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[#0073B7]/10 to-transparent pointer-events-none"></div>
           <div className="max-w-7xl mx-auto flex justify-between items-center text-[9px] font-black uppercase tracking-[0.35em] relative z-10">
             <div className="flex gap-12 items-center">
-              <Link href="/contato" className="hover:text-[#8CC63F] transition-all duration-300 hover:tracking-[0.45em]">Fale Conosco</Link>
+              <Link href="/ficha-tecnica" className="hover:text-[#8CC63F] transition-all duration-300 hover:tracking-[0.45em]">Ficha Técnica</Link>
               <Link href="/editais" className="hover:text-[#0073B7] transition-all duration-300 hover:tracking-[0.45em] flex items-center gap-2">
                 <span className="w-1 h-1 bg-[#0073B7] rounded-full shadow-[0_0_8px_#0073B7]"></span>
                 Editais Abertos
@@ -156,7 +156,7 @@ export default function Navbar() {
                 {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'full' }).format(new Date())}
               </span>
               <div className="h-2.5 w-px bg-neutral-800"></div>
-              <Link href="http://127.0.0.1:8000/admin" className="group flex items-center gap-2.5 text-white hover:text-[#8CC63F] transition-all">
+              <Link href="/admin" className="group flex items-center gap-2.5 text-white hover:text-[#8CC63F] transition-all">
                 <span className="w-2 h-2 bg-[#8CC63F] rounded-full shadow-[0_0_12px_#8CC63F] group-hover:scale-125 transition-transform"></span>
                 <span>Acesso Restrito</span>
               </Link>

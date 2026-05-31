@@ -6,3 +6,4 @@ class ArtigoViewSet(viewsets.ModelViewSet):
     queryset = Artigo.objects.all().order_by('-data_publicacao')
     serializer_class = ArtigoSerializer
     lookup_field = 'slug'
+    search_fields = ['titulo', 'resumo', 'conteudo', 'autor']

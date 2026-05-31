@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Como o build é 'export' (estático), o frontend roda de forma independente.
-const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/';
+const baseURL = process.env.NEXT_PUBLIC_API_URL || '/api/';
 
 const api = axios.create({
   baseURL: baseURL,
