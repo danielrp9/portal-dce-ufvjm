@@ -1,82 +1,90 @@
 # Portal DCE UFVJM — Engenharia de Transparência e Gestão Estudantil
 
-Este projeto não é apenas um site; é uma infraestrutura pensada para resolver a fragmentação de informações no ecossistema estudantil da UFVJM. Desenvolvi este portal com o objetivo de unir o rigor técnico necessário para a transparência financeira com a agilidade de um editorial de notícias moderno.
+O **Portal DCE UFVJM** é uma plataforma integrada desenvolvida para ser o ponto central de informação e transparência  do movimento estudantil, regido pelo DCE da UFVJM. 
 
 ---
 
-## 🏗️ Filosofia de Arquitetura
+## Objetivo e Contextualização
 
-Optei por uma arquitetura **Headless (Decoupled)**, separando completamente o cérebro (Django) da pele (Next.js). Essa decisão não foi estética, mas estratégica:
+Este projeto nasceu para solucionar um problema histórico: a **fragmentação da informação**. Até então, editais, notícias urgentes, documentos oficiais e, principalmente, a movimentação financeira das gestões do DCE ficavam espalhados em redes sociais, grupos de mensagens ou arquivos físicos de difícil acesso.
 
-### 1. O "Cérebro" com Django 5.x & DRF
-Escolhi o Django pela sua maturidade em lidar com permissões e integridade de dados. Em um portal de um DCE, onde múltiplos gestores podem editar conteúdos, o sistema de `admin` nativo e os `soft-constraints` do ORM me permitiram focar no domínio do problema em vez de reinventar a roda de autenticação e segurança.
-*   **Modularidade Granular:** Em vez de uma aplicação gigante, fragmentei o backend em apps independentes (`noticias`, `financeiro`, `editais`). Isso isola falhas: se a lógica de cálculo financeiro precisar mudar, o motor de notícias permanece intacto.
-*   **Rich Text Control:** Integrei o CKEditor para que a gestão editorial tenha liberdade criativa, mas com filtros de sanitização rigorosos no backend para evitar XSS e quebras de layout no frontend.
-
-### 2. A "Pele" com Next.js 16 & React 19
-No frontend, a prioridade absoluta foi **SEO e Performance**. Um edital de bolsa ou uma notícia urgente precisa ser indexada pelo Google instantaneamente e carregar rápido em conexões móveis instáveis.
-*   **Hybrid Rendering:** Utilizo *Server Components* para o conteúdo pesado (notícias, documentos) para garantir que o HTML chegue pronto ao navegador, e *Client-Side Rendering* apenas onde a interatividade é necessária, como nos filtros dinâmicos do portal da transparência.
-*   **Tailwind CSS 4 + Typography:** A estética "Editorial Clássico" exige controle fino sobre escalas tipográficas. O uso do plugin `@tailwindcss/typography` me permitiu focar na legibilidade do texto, tratando o conteúdo vindo do backend com o respeito visual que a informação oficial merece.
+**O que o projeto busca solucionar:**
+*   **Unificação do Movimento:** Centraliza todas as questões do movimento estudantil em um único lugar, servindo como a "memória viva" das lutas e conquistas.
+*   **Transparência Radical:** Garante que qualquer estudante possa auditar os processos realizados pelas gestões, desde a publicação de uma ata de reunião até o balanço detalhado de entradas e saídas do caixa.
+*   **Democratização da Informação:** Transforma dados técnicos e burocráticos em interfaces amigáveis, permitindo que a base estudantil compreenda como os recursos são aplicados e como os processos administrativos são conduzidos.
 
 ---
 
-## 💰 Engenharia de Transparência (O Diferencial)
+## Guia de Execução (Clonagem e Instalação)
 
-O módulo `financeiro` foi o maior desafio técnico. Ele não é apenas um CRUD de entradas e saídas. Implementei um sistema de **Exercícios Financeiros**, onde cada transação está vinculada a um período fiscal. 
-*   **Cálculos em Voo:** O saldo consolidado e o balanço patrimonial não são campos estáticos no banco (o que geraria inconsistência), mas sim calculados via aggregations do Django no momento da requisição, garantindo que o valor exibido seja sempre a verdade absoluta dos dados.
+Para garantir que o projeto execute sem erros, siga rigorosamente os passos abaixo. Este sistema utiliza uma arquitetura desacoplada com **Django** no backend e **Next.js** no frontend.
 
----
-
-## 🛠️ Guia de Execução Detalhado
-
-Para rodar este sistema, você precisa garantir que o "diálogo" entre o backend e o frontend esteja configurado via variáveis de ambiente.
-
-### Passo 1: O Engine (Backend)
-Primeiro, isolamos o ambiente para evitar conflitos de bibliotecas.
+### 1. Clonando o Repositório
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # No Windows: venv\Scripts\activate
+git clone https://github.com/seu-usuario/dce-portal.git
+cd dce-portal
+```
 
-# Instalação das dependências e drivers do banco
+### 2. Configurando o Backend (Cérebro)
+É fundamental usar um ambiente virtual para isolar as dependências do Python.
+```bash
+# Entre na pasta do backend
+cd portal-dce-ufvjm/backend
+
+# Crie e ative o ambiente virtual
+python -m venv venv
+source venv/bin/activate  # No Linux/Mac
+# No Windows: venv\Scripts\activate
+
+# Instale as dependências
 pip install -r requirements.txt
 
-# Preparação do Banco de Dados
-# O sistema detecta automaticamente se deve usar SQLite (dev) ou PostgreSQL (prod) via DATABASE_URL
+# Execute as migrações para criar as tabelas no banco de dados
 python manage.py migrate
-python manage.py createsuperuser  # Crie seu acesso administrativo
+
+# Crie seu usuário de administrador (para acessar o /admin)
+python manage.py createsuperuser
+
+# Inicie o servidor do Django
 python manage.py runserver
 ```
+*O backend estará rodando em: `http://127.0.0.1:8000`*
 
-### Passo 2: A Interface (Frontend)
-Em um terminal separado, subimos o Next.js.
+### 3. Configurando o Frontend (Interface)
+Certifique-se de ter o **Node.js** instalado (recomenda-se v18 ou superior).
 ```bash
-cd frontend
+# Em um novo terminal, entre na pasta do frontend
+cd portal-dce-ufvjm/frontend
+
+# Instale as dependências do Node
 npm install
 
-# Execução em ambiente de desenvolvimento
-# Configure o .env.local com NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+# Inicie o servidor de desenvolvimento do Next.js
 npm run dev
 ```
-
-*Dica de Engenharia:* Configurei um script `npm run dev` no `package.json` do frontend que utiliza `concurrently` para subir ambos os servidores se você estiver em um ambiente que suporte execução paralela (requer ajuste de caminhos no script).
-
----
-
-## 📂 Anatomia do Projeto
-
-*   **`backend/core/`**: Onde reside o "sistema operacional" do projeto (middlewares de segurança, configurações de CORS e WhiteNoise).
-*   **`backend/financeiro/`**: Lógica de balanço patrimonial e controle de fluxo de caixa.
-*   **`frontend/src/app/`**: Estrutura de rotas utilizando o novo paradigma do App Router, otimizado para layouts aninhados.
-*   **`frontend/src/services/`**: Camada de abstração para consumo da API, centralizando o tratamento de erros e interceptores do Axios.
+*O frontend estará rodando em: `http://127.0.0.1:3000`*
 
 ---
 
-## 📡 Deployment e Escalabilidade
+## Filosofia de Arquitetura
 
-O sistema foi preparado para ser *stateless*. Os uploads (`media/`) devem ser integrados a um bucket S3 em produção, e os arquivos estáticos são servidos via **WhiteNoise** com compressão Brotli/Gzip, o que elimina a necessidade de um Nginx complexo para deploys rápidos em plataformas como Railway, Heroku ou Vercel.
+Optei por uma arquitetura **Headless (Decoupled)**, separando completamente a lógica de dados da interface visual:
+
+*   **Django 5.x & DRF:** Escolhido pela maturidade em permissões e integridade de dados. O sistema é modularizado em apps independentes (`noticias`, `financeiro`, `editais`,`eventos`,`artigos`,), o que garante que uma falha em um módulo não afete os outros.
+*   **Next.js 16 & React 19:** Focado em SEO e Performance. Utiliza *Server Components* para garantir que editais e notícias sejam indexados instantaneamente pelo Google, sendo acessíveis mesmo em conexões de internet instáveis.
+
+---
+
+## Engenharia de Transparência
+
+O módulo `financeiro` é o coração da transparência do portal. Ele utiliza um sistema de **Exercícios Financeiros**, onde cada transação é selada e auditável. Os saldos não são estáticos; são calculados em tempo real via agregations do Django, garantindo que o portal da transparência reflita exatamente a realidade do caixa.
+
+---
+
+## Deployment
+
+O sistema está preparado para deploy *stateless*. Os arquivos estáticos são servidos via **WhiteNoise** e a aplicação pode ser facilmente hospedada em plataformas como Vercel (frontend) e Railway/Render (backend).
 
 ---
 
 **Desenvolvido por Daniel Rodrigues Pereira**  
-*Engenheiro focado em criar soluções que resolvam problemas reais com código limpo e decisões justificadas.*

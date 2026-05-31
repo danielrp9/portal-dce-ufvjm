@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
@@ -58,7 +59,7 @@ class ExercicioFinanceiro(models.Model):
                 
                 self.total_entrada_fechamento = entradas
                 self.total_saida_fechamento = saidas
-                self.saldo_final_fechamento = self.saldo_inicial_transportado + (entradas - saidas)
+                self.saldo_final_fechamento = Decimal(str(self.saldo_inicial_transportado)) + (entradas - saidas)
                 
                 # Propaga o saldo final calculado diretamente para o saldo inicial do ano seguinte (se ele já existir)
                 ano_seguinte = self.ano + 1
