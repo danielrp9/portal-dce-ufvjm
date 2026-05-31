@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import RedirectView
 from rest_framework.routers import DefaultRouter
 
 from noticias.views import NoticiaViewSet
@@ -23,6 +24,7 @@ router.register(r'editais', EditalViewSet)
 
 urlpatterns = [
     # 1. Painel Administrativo e API de dados
+    path('admin/index.txt', RedirectView.as_view(url='/admin/', permanent=True)),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     

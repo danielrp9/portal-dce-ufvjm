@@ -156,10 +156,10 @@ export default function Navbar() {
                 {new Intl.DateTimeFormat('pt-BR', { dateStyle: 'full' }).format(new Date())}
               </span>
               <div className="h-2.5 w-px bg-neutral-800"></div>
-              <Link href="/admin" className="group flex items-center gap-2.5 text-white hover:text-[#8CC63F] transition-all">
+              <a href="/admin" className="group flex items-center gap-2.5 text-white hover:text-[#8CC63F] transition-all">
                 <span className="w-2 h-2 bg-[#8CC63F] rounded-full shadow-[0_0_12px_#8CC63F] group-hover:scale-125 transition-transform"></span>
                 <span>Acesso Restrito</span>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
