@@ -5,6 +5,7 @@ import { Play, Pause, Volume2 } from 'lucide-react';
 
 export default function RadioPlayer() {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [volume, setVolume] = useState<number>(0.7);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const togglePlay = () => {
@@ -15,11 +16,20 @@ export default function RadioPlayer() {
       setIsPlaying(false);
     } else {
       audioRef.current.load();
+      audioRef.current.volume = volume;
       audioRef.current.play().then(() => {
         setIsPlaying(true);
       }).catch((error) => {
         console.error("Erro ao reproduzir áudio:", error);
       });
+    }
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
     }
   };
 
@@ -106,15 +116,17 @@ export default function RadioPlayer() {
                 <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${isPlaying ? 'bg-[#8CC63F] shadow-[0_0_8px_rgba(140,198,63,0.8)]' : 'bg-neutral-300'}`}></div>
               </div>
               
-              <div className="text-[8px] font-black text-neutral-400 uppercase tracking-[0.35em] select-none">
-                Broadcast Control
-              </div>
-              
-              <div className="flex items-center gap-2 text-neutral-400">
-                <Volume2 size={12} className={isPlaying ? 'text-[#0073B7]' : ''} />
-                <div className="h-1 w-10 bg-neutral-200 rounded-full overflow-hidden">
-                  <div className={`h-full rounded-full transition-all duration-500 ${isPlaying ? 'w-full bg-[#0073B7]' : 'w-1/3 bg-neutral-300'}`}></div>
-                </div>
+              <div className="flex items-center gap-3 text-neutral-400 flex-1 justify-end">
+                <Volume2 size={14} className={isPlaying ? 'text-[#0073B7]' : ''} />
+                <input 
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="w-24 h-1 bg-neutral-200 rounded-full appearance-none cursor-pointer accent-[#0073B7] hover:accent-[#8CC63F] transition-all"
+                />
               </div>
             </div>
 
