@@ -15,7 +15,7 @@ export default function EditaisPage() {
 
       {/* BREADCRUMB */}
       <div className="w-full bg-white/60 backdrop-blur-md border-b border-neutral-200/60 mb-12 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-6 py-5">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-5">
           <nav className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">
             <Link href="/" className="hover:text-[#0073B7] transition-colors">Início</Link>
             <ChevronRight size={10} className="text-neutral-300" />

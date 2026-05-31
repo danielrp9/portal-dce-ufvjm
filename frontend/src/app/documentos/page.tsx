@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Documento } from '@/types';
 import { 
@@ -6,32 +8,43 @@ import {
   ChevronRight, 
   ExternalLink,
   ShieldCheck,
-  Info
+  Info,
+  Loader2
 } from 'lucide-react';
 import { getMediaUrl } from '@/utils/urls';
+import api from '@/services/api';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+export default function DocumentosPage() {
+  const [todos, setTodos] = useState<Documento[]>([]);
+  const [loading, setLoading] = useState(true);
 
-async function getDocumentos(): Promise<Documento[]> {
-  try {
-    const res = await fetch(`${API_URL}/api/documentos/`, {
-      next: { revalidate: 60 },
-    });
-    
-    if (!res.ok) throw new Error('Falha ao buscar documentos');
-    
-    const data = await res.json();
-    return data.results || [];
-  } catch (error) {
-    console.error("Erro ao buscar documentos no servidor:", error);
-    return [];
-  }
-}
+  useEffect(() => {
+    async function loadDocumentos() {
+      try {
+        const res = await api.get('/documentos/');
+        setTodos(res.data.results || []);
+      } catch (error) {
+        console.error("Erro ao buscar documentos:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadDocumentos();
+  }, []);
 
-export default async function DocumentosPage() {
-  const todos = await getDocumentos();
   const institucionais = todos.filter(d => d.tipo === 'INSTITUCIONAL');
   const transparencia = todos.filter(d => d.tipo === 'TRANSPARENCIA');
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F4F6F8] gap-4">
+        <Loader2 className="w-12 h-12 text-[#0073B7] animate-spin" />
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400 animate-pulse">
+          Sincronizando Repositório...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#F4F6F8] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-32 relative overflow-hidden">
@@ -42,16 +55,16 @@ export default async function DocumentosPage() {
 
       {/* BREADCRUMB */}
       <div className="w-full bg-white/60 backdrop-blur-md border-b border-neutral-200/60 mb-12 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-6 py-5">
+        <div className="max-w-[1440px] mx-auto px-6 py-5 md:px-12 lg:px-20">
           <nav className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">
             <Link href="/" className="hover:text-[#0073B7] transition-colors">Início</Link>
             <ChevronRight size={10} className="text-neutral-300" />
-            <span className="text-neutral-900 font-black">Documentos Oficiais</span>
+            <span className="text-neutral-950 font-black">Documentos Oficiais</span>
           </nav>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 relative z-10">
         
         {/* Header Ultra-Compacto e Legível: Documentos */}
         <div className="mb-10 relative">

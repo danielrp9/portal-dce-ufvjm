@@ -133,22 +133,22 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`w-full z-50 transition-all duration-700 ease-out ${
+    <nav className={`z-50 transition-all duration-700 ease-out ${
       scrolled 
-        ? "fixed top-4 left-0 right-0 max-w-7xl mx-auto rounded-3xl bg-white/85 backdrop-blur-3xl border border-white/60 shadow-[0_30px_70px_-15px_rgba(0,115,183,0.12),0_10px_20px_-5px_rgba(0,0,0,0.05),inset_0_1px_2px_rgba(255,255,255,0.8)] px-2" 
-        : "relative bg-white border-b-2 border-[#0073B7]/10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.06)]"
+        ? "fixed top-4 left-4 right-4 mx-auto max-w-[1380px] rounded-3xl bg-white border border-white/60 shadow-[0_30px_70px_-15px_rgba(0,115,183,0.12),0_10px_20px_-5px_rgba(0,0,0,0.05),inset_0_1px_2px_rgba(255,255,255,0.8)] px-2" 
+        : "relative w-full bg-white border-b-2 border-[#0073B7]/10 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.06)]"
     }`}>
       
       {/* 1. TOP BAR (UTILITY) - Mais Vibrante */}
       {!scrolled && (
-        <div className="hidden md:block bg-[#001529] text-neutral-200 py-2.5 px-6 border-b border-white/5 relative overflow-hidden">
+        <div className="hidden md:block bg-[#001529] text-neutral-200 py-2.5 px-8 border-b border-white/5 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-[#0073B7]/10 to-transparent pointer-events-none"></div>
-          <div className="max-w-7xl mx-auto flex justify-between items-center text-[9px] font-black uppercase tracking-[0.35em] relative z-10">
+          <div className="max-w-[1440px] mx-auto flex justify-between items-center text-[9px] font-black uppercase tracking-[0.35em] relative z-10 px-4">
             <div className="flex gap-12 items-center">
               <Link href="/ficha-tecnica" className="hover:text-[#8CC63F] transition-all duration-300 hover:tracking-[0.45em]">Ficha Técnica</Link>
               <Link href="/editais" className="hover:text-[#0073B7] transition-all duration-300 hover:tracking-[0.45em] flex items-center gap-2">
                 <span className="w-1 h-1 bg-[#0073B7] rounded-full shadow-[0_0_8px_#0073B7]"></span>
-                Editais Abertos
+                Editais Ativos
               </Link>
             </div>
             <div className="flex gap-8 items-center text-neutral-400">
@@ -166,7 +166,7 @@ export default function Navbar() {
       )}
 
       {/* 2. MASTHEAD (LOGO & CONTROLES) */}
-      <div className={`max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between gap-6 transition-all duration-500 ${scrolled ? "py-2" : "py-5 md:py-8"}`}>
+      <div className={`max-w-[1440px] mx-auto px-6 md:px-12 flex items-center justify-between gap-6 transition-all duration-500 ${scrolled ? "py-2" : "py-5 md:py-8"}`}>
         
         {/* Lado Esquerdo */}
         <div className="flex items-center flex-1 lg:flex-none">
@@ -229,7 +229,7 @@ export default function Navbar() {
       </div>
 
       {/* 3. PRIMARY NAVIGATION (Desktop) - Mais Evidenciada */}
-      <div className={`hidden lg:block max-w-7xl mx-auto px-10 transition-all duration-500 ${scrolled ? "h-0 overflow-hidden opacity-0" : "h-14 opacity-100 border-t-2 border-neutral-50"}`}>
+      <div className={`hidden lg:block max-w-[1440px] mx-auto px-10 transition-all duration-500 ${scrolled ? "h-0 overflow-hidden opacity-0" : "h-14 opacity-100 border-t-2 border-neutral-50"}`}>
         <div className="flex justify-center items-center h-14">
           <div className="flex items-center justify-center gap-12">
             {menuItems.map((item) => {
@@ -262,7 +262,7 @@ export default function Navbar() {
       <div className={`fixed inset-0 z-[100] lg:hidden transition-all duration-500 ${isOpen ? "visible" : "invisible pointer-events-none"}`}>
         <div className={`absolute inset-0 bg-neutral-950/60 backdrop-blur-xl transition-opacity duration-500 ${isOpen ? "opacity-100" : "opacity-0"}`} onClick={() => setIsOpen(false)}></div>
         
-        <div className={`absolute top-0 left-0 w-[320px] h-full bg-white/95 backdrop-blur-3xl p-10 flex flex-col border-r border-white/20 shadow-[40px_0_100px_rgba(0,0,0,0.2)] transition-transform duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        <div className={`absolute top-0 left-0 w-[320px] h-full bg-white p-10 flex flex-col border-r border-white/20 shadow-[40px_0_100px_rgba(0,0,0,0.2)] transition-transform duration-700 cubic-bezier(0.4, 0, 0.2, 1) ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
           
           <div className="flex justify-between items-center mb-12">
             <div className="flex items-center gap-3">
@@ -303,15 +303,6 @@ export default function Navbar() {
           </nav>
 
           <div className="mt-auto pt-10 border-t border-neutral-100/80">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 bg-[#F9FAFB] rounded-2xl flex items-center justify-center border border-neutral-100 shadow-sm">
-                 <span className="text-xl">🎓</span>
-              </div>
-              <div>
-                <p className="text-[10px] font-black text-neutral-950 uppercase tracking-[0.1em]">DCE UFVJM</p>
-                <p className="text-[9px] font-bold text-[#0073B7] uppercase tracking-[0.05em]">Voz dos Estudantes</p>
-              </div>
-            </div>
             <p className="text-[9px] font-bold text-neutral-400 uppercase tracking-widest leading-relaxed">
               Gestão <span className="text-neutral-600 font-black">2026</span><br/>
               Portal de Comunicação

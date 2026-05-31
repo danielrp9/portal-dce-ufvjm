@@ -25,14 +25,14 @@ export default function RadioPlayer() {
 
   return (
     <section className="relative w-full overflow-hidden">
-      <div className="flex flex-col md:flex-row items-center gap-8 bg-white/70 backdrop-blur-2xl rounded-[2.5rem] p-8 md:p-10 border border-white/40 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.7)] group">
+      <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8 bg-white/70 backdrop-blur-2xl rounded-[2.5rem] p-6 md:p-10 border border-white/40 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.7)] group">
         
         <audio ref={audioRef} src="https://radio.dicom.ufvjm.edu.br/live" preload="none" />
 
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-[#0073B7]/5 blur-[100px] rounded-full pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-64 h-64 bg-[#8CC63F]/5 blur-[100px] rounded-full pointer-events-none"></div>
 
-        <div className="flex-1 flex flex-col gap-4 relative z-10">
+        <div className="flex-1 flex flex-col gap-3 md:gap-4 relative z-10 w-full">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 border border-red-100 shadow-sm">
               <span className={`w-2 h-2 bg-red-600 rounded-full ${isPlaying ? 'animate-pulse' : ''} shadow-[0_0_8px_rgba(220,38,38,0.5)]`}></span>
@@ -43,12 +43,12 @@ export default function RadioPlayer() {
             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400">Destaque Cultural</span>
           </div>
           
-          <h2 className="text-2xl md:text-4xl font-extrabold tracking-tight text-neutral-950 leading-tight">
-            Rádio Universitária <br/>
-            <span className="text-[#0073B7] bg-clip-text text-transparent bg-gradient-to-r from-[#0073B7] to-[#00AEEF]">UFVJM</span>
+          <h2 className="text-xl md:text-4xl font-extrabold tracking-tight text-neutral-950 leading-tight">
+            Rádio Universitária <br className="hidden md:block"/>
+            <span className="text-[#0073B7] bg-clip-text text-transparent bg-gradient-to-r from-[#0073B7] to-[#00AEEF]"> UFVJM</span>
           </h2>
           
-          <p className="text-sm text-neutral-500 font-medium max-w-md leading-relaxed">
+          <p className="text-xs md:text-sm text-neutral-500 font-medium max-w-md leading-relaxed">
             Acompanhe a programação completa, notícias do campus e o melhor da música universitária diretamente pelo nosso portal oficial.
           </p>
         </div>

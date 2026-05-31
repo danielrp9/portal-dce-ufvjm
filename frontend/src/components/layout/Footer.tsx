@@ -14,7 +14,7 @@ export default function Footer() {
         <div className="flex-1 bg-[#003366]"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-[1440px] mx-auto px-6 relative z-10">
         
         {/* Grid Principal */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 text-left">

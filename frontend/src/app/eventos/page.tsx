@@ -1,31 +1,43 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Evento } from '@/types';
 import EventCard from '@/components/EventCard';
-import { Calendar, ChevronRight, CheckCircle2, History } from 'lucide-react';
+import { Calendar, ChevronRight, CheckCircle2, History, Loader2 } from 'lucide-react';
+import api from '@/services/api';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+export default function EventosPage() {
+  const [todos, setTodos] = useState<Evento[]>([]);
+  const [loading, setLoading] = useState(true);
 
-async function getEventos(): Promise<Evento[]> {
-  try {
-    const res = await fetch(`${API_URL}/api/eventos/`, {
-      next: { revalidate: 60 },
-    });
-    
-    if (!res.ok) throw new Error('Falha ao buscar eventos');
-    
-    const data = await res.json();
-    return data.results || [];
-  } catch (error) {
-    console.error("Erro ao buscar eventos no servidor:", error);
-    return [];
-  }
-}
+  useEffect(() => {
+    async function loadEventos() {
+      try {
+        const res = await api.get('/eventos/');
+        setTodos(res.data.results || []);
+      } catch (error) {
+        console.error("Erro ao buscar eventos:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadEventos();
+  }, []);
 
-export default async function EventosPage() {
-  const todos = await getEventos();
   const eventosAtivos = todos.filter((e: Evento) => e.ativo !== false);
   const eventosEncerrados = todos.filter((e: Evento) => e.ativo === false);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F4F6F8] gap-4">
+        <Loader2 className="w-12 h-12 text-[#0073B7] animate-spin" />
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400 animate-pulse">
+          Sincronizando Agenda...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#F4F6F8] pb-32 text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased relative overflow-hidden">
@@ -36,16 +48,16 @@ export default async function EventosPage() {
 
       {/* BREADCRUMB */}
       <div className="w-full border-b border-neutral-200/60 mb-12 bg-white/60 backdrop-blur-md sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-6 py-5">
+        <div className="max-w-[1440px] mx-auto px-6 py-5 md:px-12 lg:px-20">
           <nav className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">
             <Link href="/" className="hover:text-[#0073B7] transition-colors">Início</Link>
             <ChevronRight size={10} className="text-neutral-300" />
-            <span className="text-neutral-900 font-black">Agenda de Eventos</span>
+            <span className="text-neutral-950 font-black">Agenda de Eventos</span>
           </nav>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 relative z-10">
         
         {/* Header Ultra-Compacto e Legível: Eventos */}
         <div className="mb-10 relative">

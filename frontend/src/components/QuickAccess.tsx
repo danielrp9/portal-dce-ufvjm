@@ -78,7 +78,7 @@ const QuickAccess: React.FC = () => {
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex flex-col items-center justify-center p-6 md:p-8 bg-white/5 hover:bg-white/[0.08] rounded-[2rem] border border-white/10 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-[0_25px_50px_-12px_rgba(0,115,183,0.3)] min-h-[220px] relative overflow-hidden"
+              className="group flex flex-col items-center justify-center p-5 md:p-8 bg-white/5 hover:bg-white/[0.08] rounded-[2rem] border border-white/10 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-[0_25px_50px_-12px_rgba(0,115,183,0.3)] min-h-[180px] md:min-h-[220px] relative overflow-hidden"
             >
               {/* Efeito de luz sutil no hover */}
               <div className="absolute top-0 right-0 w-24 h-24 bg-[#0073B7]/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-full"></div>

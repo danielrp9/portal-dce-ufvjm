@@ -97,7 +97,7 @@ export default function FichaTecnicaPage() {
       
       {/* 1. BREADCRUMB */}
       <div className="w-full bg-white border-b border-neutral-200 mb-12 sticky top-0 z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-5">
+        <div className="max-w-[1440px] mx-auto px-6 py-5">
           <nav className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400">
             <Link href="/" className="hover:text-[#0073B7] transition-colors">Início</Link>
             <ChevronRight size={10} className="text-neutral-300" />
@@ -106,7 +106,7 @@ export default function FichaTecnicaPage() {
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-6">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20">
         
         {/* HEADER */}
         <div className="mb-16">

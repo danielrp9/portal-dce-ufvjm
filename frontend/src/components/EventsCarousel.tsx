@@ -38,7 +38,7 @@ export default function EventsCarousel({ initialEventos }: EventsCarouselProps) 
   const eventosExibidos = eventos.slice(currentEventIndex, currentEventIndex + 1);
 
   return (
-    <section className="bg-white rounded-[2.5rem] p-8 md:p-10 border border-neutral-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] flex flex-col gap-8 relative overflow-hidden group/ag">
+    <section className="bg-white rounded-[2.5rem] p-6 md:p-10 border border-neutral-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] flex flex-col gap-8 relative overflow-hidden group/ag">
       <div className="absolute top-0 right-0 w-32 h-32 bg-[#0073B7]/5 rounded-full blur-3xl pointer-events-none group-hover/ag:bg-[#0073B7]/10 transition-all"></div>
       
       <div className="flex justify-between items-center pb-6 border-b border-neutral-100">

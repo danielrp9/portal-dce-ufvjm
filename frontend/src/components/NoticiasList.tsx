@@ -10,7 +10,7 @@ import { getMediaUrl } from '@/utils/urls';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import Pagination from './Pagination';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+import api from '@/services/api';
 
 export default function NoticiasList() {
   const router = useRouter();
@@ -31,15 +31,14 @@ export default function NoticiasList() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        let url = `${API_URL}/api/noticias/?page=${page}`;
-        if (search) url += `&search=${encodeURIComponent(search)}`;
-        if (campus && campus !== 'GERAL') url += `&campus=${encodeURIComponent(campus)}`;
+        const params = {
+          page,
+          search: search || undefined,
+          campus: campus !== 'GERAL' ? campus : undefined
+        };
 
-        const res = await fetch(url);
-        if (res.ok) {
-          const json = await res.json();
-          setData(json);
-        }
+        const res = await api.get('/noticias/', { params });
+        setData(res.data);
       } catch (error) {
         console.error("Erro ao buscar notícias:", error);
       } finally {
@@ -105,26 +104,26 @@ export default function NoticiasList() {
   const emLista = showPrincipais ? data.results.slice(3) : data.results;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
+    <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 relative z-10">
         
         {/* Header Ultra-Compacto e Legível: Notícias */}
         <div className="mb-10 relative">
           <div className="absolute -top-6 -left-6 w-32 h-32 bg-[#0073B7]/5 blur-[50px] rounded-full pointer-events-none"></div>
           
-          <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-neutral-200/60 pb-6">
-            <div className="flex flex-col gap-1">
+          <div className="relative flex flex-row items-center justify-between gap-4 border-b border-neutral-200/60 pb-6">
+            <div className="flex flex-col gap-1 flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 select-none">
                 <div className="w-6 h-[2px] bg-[#0073B7] rounded-full"></div>
                 <h3 className="text-[8px] font-black uppercase tracking-[0.3em] text-[#0073B7]">
-                  Jornalismo Oficial
+                  Notícias Estudantis
                 </h3>
               </div>
-              <h1 className="text-2xl md:text-3xl font-black tracking-tight text-neutral-950 uppercase">
-                Notícias e Reportagens
+              <h1 className="text-xl md:text-3xl font-black tracking-tight text-neutral-950 uppercase truncate">
+                Notícias
               </h1>
             </div>
             
-            <div className="flex items-center gap-3 relative z-20">
+            <div className="flex items-center gap-2 md:gap-3 relative z-20 shrink-0">
               <form onSubmit={handleSearch} className="flex items-center gap-2">
                 {showSearchInput && (
                   <input

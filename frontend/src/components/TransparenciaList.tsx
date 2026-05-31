@@ -50,7 +50,7 @@ export default function TransparenciaList({
   const anosNoHistorico = anosDisponiveis.filter(ano => !anosPrincipais.includes(ano)).sort((a, b) => b - a);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 relative z-10">
+    <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 relative z-10">
         
         {/* Header Ultra-Compacto e Legível: Transparência */}
         <div className="mb-10 relative">

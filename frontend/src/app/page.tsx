@@ -72,11 +72,11 @@ export default function HomePage() {
       <div className="absolute top-[20%] right-[-10%] w-[800px] h-[800px] bg-[#8CC63F]/5 blur-[160px] rounded-full pointer-events-none -z-10"></div>
       <div className="absolute bottom-[-10%] left-[5%] w-[1200px] h-[1200px] bg-[#00AEEF]/5 blur-[200px] rounded-full pointer-events-none -z-10"></div>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10 flex flex-col gap-10 md:gap-14 relative z-10">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-12 lg:px-20 py-6 md:py-10 flex flex-col gap-8 md:gap-14 relative z-10">
         
         {/* HERO SECTION */}
         {principal ? (
-          <article className="group cursor-pointer relative w-full aspect-[16/9] md:aspect-[21/9] rounded-[2.5rem] overflow-hidden bg-neutral-950 shadow-[0_40px_100px_-20px_rgba(0,21,41,0.3)] border border-white/10 transform transition-all duration-700 hover:shadow-[0_50px_120px_-20px_rgba(0,115,183,0.25)]">
+          <article className="group cursor-pointer relative w-full aspect-[4/5] sm:aspect-[16/9] md:aspect-[21/9] rounded-[2.5rem] overflow-hidden bg-neutral-950 shadow-[0_40px_100px_-20px_rgba(0,21,41,0.3)] border border-white/10 transform transition-all duration-700 hover:shadow-[0_50px_120px_-20px_rgba(0,115,183,0.25)]">
             <Link href={`/noticias/${principal.slug}/`}>
               <div className="absolute inset-0 z-0">
                 <Image 
@@ -88,25 +88,25 @@ export default function HomePage() {
                 />
               </div>
 
-              <div className="absolute top-8 left-8 flex items-center gap-3 z-20">
+              <div className="absolute top-6 left-6 md:top-8 md:left-8 flex items-center gap-3 z-20">
                 <div className="bg-[#0073B7] text-white text-[8px] px-4 py-2 font-black uppercase tracking-[0.2em] rounded-full shadow-lg">
                   Destaque Principal
                 </div>
               </div>
 
-              <div className="absolute inset-0 bg-gradient-to-t from-[#001529] via-[#001529]/40 to-transparent flex flex-col justify-end p-8 md:p-14 z-10">
-                <div className="max-w-4xl">
-                  <div className="flex items-center gap-4 text-[10px] font-black text-[#8CC63F] mb-6 uppercase tracking-[0.25em]">
-                    <span className="text-white bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-md border border-white/10">Por {principal.autor || 'Redação DCE'}</span>
-                    <span className="w-1.5 h-1.5 bg-[#8CC63F] rounded-full shadow-[0_0_10px_#8CC63F]"></span>
-                    <span className="text-neutral-300">{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' }).format(new Date(principal.data_publicacao))}</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#001529] via-[#001529]/40 to-transparent flex flex-col justify-end p-6 md:p-14 z-10">
+                <div className="w-full">
+                  <div className="flex items-center gap-3 md:gap-4 text-[10px] font-black text-[#8CC63F] mb-3 md:mb-6 uppercase tracking-[0.25em]">
+                    <span className="hidden md:block text-white bg-white/10 px-3 py-1.5 rounded-lg backdrop-blur-md border border-white/10 shrink-0">Por {principal.autor || 'Redação DCE'}</span>
+                    <span className="hidden md:block w-1.5 h-1.5 bg-[#8CC63F] rounded-full shadow-[0_0_10px_#8CC63F]"></span>
+                    <span className="text-neutral-300 shrink-0">{new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long' }).format(new Date(principal.data_publicacao))}</span>
                   </div>
 
-                  <h2 className="text-2xl md:text-5xl font-black text-white leading-[1.1] tracking-tight mb-6 drop-shadow-2xl group-hover:text-[#8CC63F] transition-colors duration-500">
+                  <h2 className="text-xl md:text-5xl font-black text-white leading-[1.1] tracking-tight mb-4 md:mb-6 drop-shadow-2xl group-hover:text-[#8CC63F] transition-colors duration-500 max-w-6xl">
                     {principal.titulo}
                   </h2>
 
-                  <p className="text-sm md:text-lg text-neutral-300 font-medium line-clamp-2 max-w-3xl leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
+                  <p className="text-xs md:text-lg text-neutral-300 font-medium line-clamp-3 md:line-clamp-2 max-w-4xl leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">
                     {he.decode(principal.conteudo.replace(/<[^>]*>?/gm, ''))}
                   </p>
                 </div>
@@ -120,17 +120,17 @@ export default function HomePage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 md:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-16 items-start">
           
           {/* FEED DE ÚLTIMAS ATUALIZAÇÕES */}
-          <section className="lg:col-span-8 bg-white/60 backdrop-blur-xl rounded-[3rem] p-8 md:p-12 border border-white/60 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.05)] flex flex-col gap-10">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-8">
+          <section className="lg:col-span-8 bg-white/60 backdrop-blur-xl rounded-[3rem] p-5 md:p-12 border border-white/60 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.05)] flex flex-col gap-8 md:gap-10">
+            <div className="flex items-center justify-between border-b border-neutral-100 pb-6 md:pb-8">
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <div className="w-8 h-[2px] bg-[#0073B7] rounded-full"></div>
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#0073B7]">Informativoz</h3>
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#0073B7]">Informativos</h3>
                 </div>
-                <h2 className="text-3xl font-black tracking-tight text-neutral-950">Últimas do Portal</h2>
+                <h2 className="text-2xl md:text-3xl font-black tracking-tight text-neutral-950">Últimas Notícias</h2>
               </div>
               <Link href="/noticias" className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-neutral-400 hover:text-[#0073B7] transition-all bg-neutral-50 px-5 py-2.5 rounded-full border border-neutral-100 hover:border-[#0073B7]/20">
                 Ver Tudo <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
@@ -138,7 +138,7 @@ export default function HomePage() {
             </div>
 
             {secundarias.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
                 {secundarias.map((news: Noticia) => (
                   <article key={news.id} className="group flex flex-col bg-white rounded-3xl overflow-hidden border border-neutral-100 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_25px_60px_rgba(0,115,183,0.1)] transform hover:-translate-y-2 transition-all duration-700 h-full relative">
                     <div className="absolute top-4 left-4 z-10">
@@ -154,13 +154,13 @@ export default function HomePage() {
                         />
                         <div className="absolute inset-0 bg-[#001529]/0 group-hover:bg-[#001529]/20 transition-all duration-700"></div>
                       </div>
-                      <div className="p-8 flex flex-col flex-1">
-                        <div className="flex items-center gap-3 mb-4">
+                      <div className="p-6 md:p-8 flex flex-col flex-1">
+                        <div className="flex items-center gap-3 mb-3 md:mb-4">
                           <span className="text-[9px] font-black text-neutral-400 uppercase tracking-[0.2em]">
                             {new Date(news.data_publicacao).toLocaleDateString('pt-BR')}
                           </span>
                         </div>
-                        <h4 className="text-xl font-black leading-tight text-neutral-950 group-hover:text-[#0073B7] transition-colors mb-4 line-clamp-2 tracking-tight">
+                        <h4 className="text-lg md:text-xl font-black leading-tight text-neutral-950 group-hover:text-[#0073B7] transition-colors mb-3 md:mb-4 line-clamp-2 tracking-tight">
                           {news.titulo}
                         </h4>
                         <p className="text-xs text-neutral-500 leading-relaxed line-clamp-3 mt-auto font-medium opacity-85 group-hover:opacity-100 transition-opacity">
@@ -180,7 +180,7 @@ export default function HomePage() {
           <aside className="lg:col-span-4 flex flex-col gap-10">
             
             {/* Widget: Editais */}
-            <div className="flex flex-col bg-[#001529] text-white rounded-[2.5rem] p-8 md:p-10 shadow-[0_40px_80px_-20px_rgba(0,21,41,0.4)] relative overflow-hidden border border-white/10 group/ed">
+            <div className="flex flex-col bg-[#001529] text-white rounded-[2.5rem] p-6 md:p-10 shadow-[0_40px_80px_-20px_rgba(0,21,41,0.4)] relative overflow-hidden border border-white/10 group/ed">
               <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#8CC63F]/10 blur-[100px] pointer-events-none rounded-full group-hover/ed:bg-[#8CC63F]/20 transition-all duration-700"></div>
               
               <div className="flex items-center justify-between mb-8 pb-5 border-b border-white/10">
@@ -190,7 +190,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400">Chamadas</h3>
-                    <p className="text-xs font-black text-white uppercase tracking-tight">Editais Abertos</p>
+                    <p className="text-xs font-black text-white uppercase tracking-tight">Editais Ativos</p>
                   </div>
                 </div>
                 {editalDestaque && (
@@ -202,7 +202,7 @@ export default function HomePage() {
                 <div className="flex flex-col gap-4 mb-8">
                   <Link 
                     href={`/editais/${editalDestaque.slug}/`}
-                    className="group/item flex gap-5 items-center p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-[#8CC63F]/30 hover:bg-white/10 transition-all duration-500 transform hover:scale-[1.03] shadow-xl"
+                    className="group/item flex gap-5 items-center p-5 md:p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-[#8CC63F]/30 hover:bg-white/10 transition-all duration-500 transform hover:scale-[1.03] shadow-xl"
                   >
                     <div className="flex-shrink-0 w-12 h-12 bg-[#8CC63F]/10 rounded-2xl flex flex-col items-center justify-center font-black text-[10px] text-[#8CC63F] border border-[#8CC63F]/20 shadow-2xl">
                       <FileText size={18} />
@@ -218,7 +218,7 @@ export default function HomePage() {
               )}
               
               <Link href="/editais/" className="w-full bg-white text-neutral-950 py-5 text-[10px] font-black uppercase tracking-[0.25em] hover:bg-[#8CC63F] transition-all duration-300 rounded-2xl shadow-2xl text-center flex items-center justify-center gap-3 group-hover/ed:gap-5">
-                Ver Repositório <ChevronRight size={16} />
+                Ver outros Editais <ChevronRight size={16} />
               </Link>
             </div>
 

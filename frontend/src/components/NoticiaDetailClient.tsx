@@ -80,7 +80,7 @@ export default function NoticiaDetailClient({ slug }: NoticiaDetailClientProps) 
       
       {/* 1. BREADCRUMB EDITORIAL SUTIL */}
       <div className="w-full border-b border-neutral-200/60 mb-8 bg-white/50 backdrop-blur-md sticky top-0 z-30 print:hidden">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-6 py-4">
           <nav className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.2em] text-neutral-400">
             <Link href="/" className="hover:text-[#0073B7] transition-colors">Início</Link>
             <span className="text-neutral-300">/</span>
