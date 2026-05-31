@@ -10,7 +10,9 @@ import {
   Layers,
   Sparkles,
   Wrench,
-  Bug
+  User,
+  Mail,
+  ShieldCheck
 } from 'lucide-react';
 
 export default function FichaTecnicaPage() {
@@ -67,7 +69,7 @@ export default function FichaTecnicaPage() {
     {
       category: "Frontend",
       icon: MonitorSmartphone,
-      items: ["Next.js 15 (App Router)", "React 19", "TypeScript", "Tailwind CSS", "Lucide Icons"]
+      items: ["Next.js (App Router)", "React 19", "TypeScript", "Tailwind CSS", "Lucide Icons"]
     },
     {
       category: "Backend",
@@ -77,14 +79,18 @@ export default function FichaTecnicaPage() {
     {
       category: "Banco de Dados",
       icon: Database,
-      items: ["PostgreSQL", "Cloudinary (Storage)"]
+      items: ["PostgreSQL (Relacional)", "FileSystem (Storage Local)"]
     },
     {
       category: "Infraestrutura",
       icon: Server,
-      items: ["Servidores PROTIC UFVJM", "Docker (Containerização)", "Vercel (Frontend Edge)"]
+      items: ["Servidores PROTIC UFVJM", "Nginx (Proxy Reverso)", "Gunicorn (WSGI)"]
     }
   ];
+
+  const supportEmail = "danielrodrigues878@hotmail.com";
+  const emailSubject = encodeURIComponent("Suporte Técnico - Portal DCE UFVJM");
+  const emailBody = encodeURIComponent("Olá Daniel,\n\nEncontrei um problema/necessito de suporte no Portal do DCE.\n\nDetalhes do problema:\n[Descreva aqui o que aconteceu]\n\nPassos para reproduzir:\n[Descreva como chegar ao erro]\n\nAmbiente:\nDispositivo/Navegador: ");
 
   return (
     <main className="min-h-screen bg-[#F0F2F5] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-32">
@@ -132,7 +138,7 @@ export default function FichaTecnicaPage() {
                   Servidores <span className="text-[#0073B7]">PROTIC UFVJM</span>
                 </h2>
                 <p className="text-neutral-300 font-bold leading-relaxed opacity-90">
-                  O sistema está lotado na infraestrutura da Pró-Reitoria de Tecnologia da Informação e Comunicação, garantindo integração com a rede acadêmica oficial.
+                  O sistema está hospedado na infraestrutura da Pró-Reitoria de Tecnologia da Informação e Comunicação, garantindo integração segura com a rede acadêmica oficial e conformidade com as normas da universidade.
                 </p>
               </div>
             </div>
@@ -161,8 +167,8 @@ export default function FichaTecnicaPage() {
           ))}
         </div>
 
-        {/* 4. HISTÓRICO DE VERSÕES (ESTILO E-CAMPUS) */}
-        <section className="mb-16">
+        {/* 4. HISTÓRICO DE VERSÕES */}
+        <section className="mb-24">
           <div className="flex items-center gap-4 mb-12">
             <GitBranch size={24} className="text-[#0073B7]" />
             <h3 className="text-xl font-black uppercase tracking-widest text-neutral-950">Novidades da versão</h3>
@@ -215,26 +221,86 @@ export default function FichaTecnicaPage() {
           </div>
         </section>
 
-        {/* 5. ARQUITETURA */}
-        <section className="bg-neutral-950 rounded-[3rem] p-10 md:p-16 text-white mb-24 relative overflow-hidden shadow-2xl">
+        {/* 5. ARQUITETURA DETALHADA */}
+        <section className="bg-neutral-950 rounded-[3rem] p-10 md:p-16 text-white mb-20 relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#0073B7]/10 to-transparent pointer-events-none"></div>
-          <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-              <Layers size={40} className="text-[#8CC63F] mb-8" />
-              <h4 className="text-3xl font-black mb-6 uppercase tracking-tight leading-tight">Arquitetura <br/><span className="text-[#0073B7]">Desacoplada</span></h4>
-              <p className="text-neutral-400 font-bold leading-relaxed text-sm">
-                O portal utiliza comunicação via API REST entre o motor Django (Backend) e a interface Next.js (Frontend), permitindo independência tecnológica e otimização específica para cada camada do sistema.
-              </p>
+          <div className="relative z-10 flex flex-col gap-10">
+            <div className="flex items-center gap-6">
+              <Layers size={48} className="text-[#8CC63F]" />
+              <h4 className="text-3xl md:text-4xl font-black uppercase tracking-tight leading-tight">Arquitetura <span className="text-[#0073B7]">Headless & REST</span></h4>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-               <div className="bg-white/5 border border-white/10 p-8 rounded-3xl text-center">
-                  <div className="text-3xl font-black text-[#8CC63F] mb-1 tracking-tighter">98+</div>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-neutral-500">Performance</p>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div className="space-y-6">
+                <p className="text-neutral-400 font-bold leading-relaxed text-sm">
+                  O Portal foi desenvolvido seguindo o padrão de <span className="text-white">Desacoplamento de Camadas (Headless Architecture)</span>. O motor de gerenciamento de dados é isolado da interface de apresentação.
+                </p>
+                <div className="p-6 bg-white/5 border border-white/10 rounded-3xl">
+                  <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#8CC63F] mb-3">Comunicação RESTful</h5>
+                  <p className="text-xs text-neutral-300 leading-relaxed font-medium">
+                    A troca de informações ocorre via requisições assíncronas em JSON. O Frontend consome os endpoints do Django REST Framework, garantindo que o portal seja rápido, seguro e escalável.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="space-y-6">
+                <div className="p-6 bg-white/5 border border-white/10 rounded-3xl">
+                  <h5 className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0073B7] mb-3">Vantagens Técnicas</h5>
+                  <ul className="space-y-3">
+                    <li className="flex items-center gap-3 text-xs font-bold text-neutral-300 uppercase tracking-tight">
+                      <ShieldCheck size={14} className="text-[#8CC63F]" />
+                      Segurança de Dados Camada 7
+                    </li>
+                    <li className="flex items-center gap-3 text-xs font-bold text-neutral-300 uppercase tracking-tight">
+                      <ShieldCheck size={14} className="text-[#8CC63F]" />
+                      Otimização de SEO via SSR
+                    </li>
+                    <li className="flex items-center gap-3 text-xs font-bold text-neutral-300 uppercase tracking-tight">
+                      <ShieldCheck size={14} className="text-[#8CC63F]" />
+                      Cache dinâmico no navegador
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. DESENVOLVEDOR E SUPORTE */}
+        <section className="bg-white rounded-[3rem] p-10 md:p-16 border border-neutral-200 shadow-xl mb-24 relative overflow-hidden">
+          <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-[#F4F6F8] rounded-full blur-[100px] -z-10"></div>
+          
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            <div className="relative group">
+               <div className="absolute -inset-4 bg-gradient-to-tr from-[#0073B7] to-[#8CC63F] rounded-[3rem] opacity-20 group-hover:opacity-40 transition-opacity duration-500 blur-xl"></div>
+               <div className="relative w-40 h-40 bg-[#001529] rounded-[2.5rem] flex items-center justify-center border-4 border-white shadow-2xl overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                  <User size={80} className="text-white/20" />
+                  <div className="absolute inset-0 flex items-center justify-center font-black text-white text-5xl">DR</div>
                </div>
-               <div className="bg-white/5 border border-white/10 p-8 rounded-3xl text-center">
-                  <div className="text-3xl font-black text-[#0073B7] mb-1 tracking-tighter">100%</div>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-neutral-500">Acessível</p>
-               </div>
+            </div>
+
+            <div className="flex-1 text-center lg:text-left">
+              <div className="flex items-center justify-center lg:justify-start gap-3 mb-4">
+                <div className="w-6 h-[2px] bg-[#8CC63F]"></div>
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400">Engenharia de Software</h3>
+              </div>
+              <h2 className="text-3xl font-black text-neutral-950 uppercase tracking-tight mb-4">Daniel Rodrigues</h2>
+              <p className="text-neutral-500 font-bold text-lg mb-8 max-w-xl">
+                Estudante de Sistemas de Informação na UFVJM. Desenvolvedor Full-stack responsável pelo design, arquitetura e implementação deste ecossistema digital.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center gap-5">
+                <a 
+                  href={`mailto:${supportEmail}?subject=${emailSubject}&body=${emailBody}`}
+                  className="group flex items-center gap-4 bg-[#0073B7] hover:bg-[#001529] text-white px-8 py-5 rounded-2xl font-black uppercase text-[10px] tracking-[0.2em] transition-all duration-300 shadow-lg hover:shadow-[#0073B7]/20"
+                >
+                  <Mail size={16} className="group-hover:rotate-12 transition-transform" />
+                  Suporte Técnico
+                </a>
+                <p className="text-[9px] font-black text-neutral-400 uppercase tracking-widest max-w-[200px] leading-relaxed">
+                  Para problemas técnicos ou manutenção, entre em contato via e-mail.
+                </p>
+              </div>
             </div>
           </div>
         </section>

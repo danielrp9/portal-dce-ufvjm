@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useState, useEffect } from 'react';
 import { Noticia, Evento, Edital } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,43 +8,61 @@ import he from 'he';
 import QuickAccess from '@/components/QuickAccess';
 import RadioPlayer from '@/components/RadioPlayer';
 import EventsCarousel from '@/components/EventsCarousel';
-import { ChevronRight, FileText, Bell } from 'lucide-react';
+import { ChevronRight, FileText, Bell, Loader2 } from 'lucide-react';
 import { getMediaUrl } from '@/utils/urls';
+import api from '@/services/api';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+export default function HomePage() {
+  const [data, setData] = useState<{
+    noticias: Noticia[];
+    eventos: Evento[];
+    editais: Edital[];
+  }>({
+    noticias: [],
+    eventos: [],
+    editais: []
+  });
+  const [loading, setLoading] = useState(true);
 
-async function getHomeData() {
-  const fetchOptions = { next: { revalidate: 60 } };
-  
-  try {
-    const [newsRes, eventsRes, editaisRes] = await Promise.all([
-      fetch(`${API_URL}/api/noticias/`, fetchOptions),
-      fetch(`${API_URL}/api/eventos/`, fetchOptions),
-      fetch(`${API_URL}/api/editais/`, fetchOptions)
-    ]);
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [newsRes, eventsRes, editaisRes] = await Promise.all([
+          api.get('/noticias/'),
+          api.get('/eventos/'),
+          api.get('/editais/')
+        ]);
 
-    const newsData = await newsRes.json();
-    const eventsData = await eventsRes.json();
-    const editaisData = await editaisRes.json();
+        setData({
+          noticias: newsRes.data.results || [],
+          eventos: eventsRes.data.results || [],
+          editais: editaisRes.data.results || []
+        });
+      } catch (e) {
+        console.error("Erro ao carregar dados da Home:", e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
 
-    return {
-      noticias: newsData.results || [],
-      eventos: eventsData.results || [],
-      editais: editaisData.results || []
-    };
-  } catch (e) {
-    console.error("Erro ao carregar dados da Home no servidor:", e);
-    return { noticias: [], eventos: [], editais: [] };
-  }
-}
-
-export default async function HomePage() {
-  const { noticias, eventos, editais } = await getHomeData();
-
+  const { noticias, eventos, editais } = data;
   const principal = noticias[0];
   const secundarias = noticias.slice(1, 4);
   const editaisAtivos = editais.filter((e: Edital) => e.ativo === true);
   const editalDestaque = editaisAtivos[0] || null;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F4F6F8] gap-4">
+        <Loader2 className="w-12 h-12 text-[#0073B7] animate-spin" />
+        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400 animate-pulse">
+          Sincronizando Portal...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#F4F6F8] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-20 relative overflow-hidden">
