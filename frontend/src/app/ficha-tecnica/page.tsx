@@ -79,12 +79,12 @@ export default function FichaTecnicaPage() {
     {
       category: "Banco de Dados",
       icon: Database,
-      items: ["PostgreSQL (Relacional)", "FileSystem (Storage Local)"]
+      items: ["PostgreSQL (Relacional)"]
     },
     {
       category: "Infraestrutura",
       icon: Server,
-      items: ["Servidores PROTIC UFVJM", "Nginx (Proxy Reverso)", "Gunicorn (WSGI)"]
+      items: ["Servidores PROTIC UFVJM", "Gunicorn (WSGI)"]
     }
   ];
 
@@ -138,7 +138,7 @@ export default function FichaTecnicaPage() {
                   Servidores <span className="text-[#0073B7]">PROTIC UFVJM</span>
                 </h2>
                 <p className="text-neutral-300 font-bold leading-relaxed opacity-90">
-                  O sistema está hospedado na infraestrutura da Pró-Reitoria de Tecnologia da Informação e Comunicação, garantindo integração segura com a rede acadêmica oficial e conformidade com as normas da universidade.
+                  O sistema está hospedado na infraestrutura da Pró-Reitoria de Tecnologia da Informação e Comunicação da UFVJM.
                 </p>
               </div>
             </div>
@@ -153,7 +153,7 @@ export default function FichaTecnicaPage() {
                 <div className="w-12 h-12 bg-[#F8FAFC] rounded-2xl flex items-center justify-center border border-neutral-100 group-hover:bg-[#0073B7] group-hover:text-white transition-all shadow-sm">
                   <tech.icon size={24} />
                 </div>
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-neutral-400">{tech.category}</h4>
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#0073B7]">{tech.category}</h4>
               </div>
               <ul className="space-y-3">
                 {tech.items.map((item, i) => (
@@ -186,7 +186,7 @@ export default function FichaTecnicaPage() {
                     <span className="hidden md:block text-neutral-300">|</span>
                     <p className="text-sm font-black text-neutral-400 uppercase tracking-widest">Data {v.date}</p>
                     <span className={`px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
-                      v.status === 'Atual' ? 'bg-[#8CC63F] text-neutral-950' : 'bg-neutral-200 text-neutral-50'
+                      v.status === 'Atual' ? 'bg-[#8CC63F] text-neutral-950' : 'bg-neutral-800 text-white shadow-lg'
                     }`}>
                       {v.status}
                     </span>
@@ -275,18 +275,17 @@ export default function FichaTecnicaPage() {
                <div className="absolute -inset-4 bg-gradient-to-tr from-[#0073B7] to-[#8CC63F] rounded-[3rem] opacity-20 group-hover:opacity-40 transition-opacity duration-500 blur-xl"></div>
                <div className="relative w-40 h-40 bg-[#001529] rounded-[2.5rem] flex items-center justify-center border-4 border-white shadow-2xl overflow-hidden group-hover:scale-105 transition-transform duration-500">
                   <User size={80} className="text-white/20" />
-                  <div className="absolute inset-0 flex items-center justify-center font-black text-white text-5xl">DR</div>
                </div>
             </div>
 
             <div className="flex-1 text-center lg:text-left">
               <div className="flex items-center justify-center lg:justify-start gap-3 mb-4">
                 <div className="w-6 h-[2px] bg-[#8CC63F]"></div>
-                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400">Engenharia de Software</h3>
+                <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400">Desenvolvedor e Arquiteto do Sistema</h3>
               </div>
               <h2 className="text-3xl font-black text-neutral-950 uppercase tracking-tight mb-4">Daniel Rodrigues</h2>
               <p className="text-neutral-500 font-bold text-lg mb-8 max-w-xl">
-                Estudante de Sistemas de Informação na UFVJM. Desenvolvedor Full-stack responsável pelo design, arquitetura e implementação deste ecossistema digital.
+                Estudante de Sistemas de Informação pela UFVJM.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center gap-5">
@@ -308,7 +307,7 @@ export default function FichaTecnicaPage() {
         {/* FOOTER DA FICHA */}
         <div className="text-center pt-12 border-t border-neutral-200">
           <p className="text-[10px] font-black text-neutral-400 uppercase tracking-[0.5em] mb-6">
-            DCE UFVJM • Gestão 2026
+            DCE UFVJM
           </p>
           <div className="flex justify-center gap-8">
              <Link href="/sobre" className="text-[10px] font-black uppercase tracking-widest text-[#0073B7] hover:underline">Sobre o DCE</Link>
