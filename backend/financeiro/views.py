@@ -6,8 +6,9 @@ from .models import Financeiro, ExercicioFinanceiro
 from .serializers import FinanceiroSerializer, AnosDisponiveisSerializer
 
 class FinanceiroViewSet(viewsets.ModelViewSet):
-    queryset = Financeiro.objects.all().order_by('-data')
+    queryset = Financeiro.objects.all().order_by('data', 'id')
     serializer_class = FinanceiroSerializer
+    pagination_class = None
 
     def get_queryset(self):
         queryset = super().get_queryset()

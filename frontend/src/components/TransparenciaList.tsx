@@ -142,7 +142,29 @@ export default function TransparenciaList({
                 Disponibilidade <br/><span className="text-[#0073B7]">Financeira Líquida</span>
               </h2>
               <div className="w-16 h-1.5 bg-[#8CC63F] rounded-full mb-8"></div>
-              <p className="text-base text-neutral-500 max-w-lg leading-relaxed font-bold opacity-100">
+              
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Saldo Inicial</span>
+                  <span className={`text-base font-black ${initialResumo.saldo_anterior < 0 ? 'text-red-600' : 'text-neutral-950'}`}>
+                    {formatCurrency(Number(initialResumo.saldo_anterior))}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Total Entradas</span>
+                  <span className="text-base font-black text-[#0073B7]">
+                    + {formatCurrency(Number(initialResumo.total_entrada))}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-neutral-400">Total Saídas</span>
+                  <span className="text-base font-black text-red-600">
+                    - {formatCurrency(Number(initialResumo.total_saida))}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-sm text-neutral-500 max-w-lg leading-relaxed font-bold opacity-100">
                 Total de recursos líquidos sob custódia e responsabilidade legal da gestão corrente no exercício de {initialResumo.ano}. Dados auditados automaticamente.
               </p>
             </div>
@@ -184,13 +206,38 @@ export default function TransparenciaList({
                <span className="text-[11px] font-black uppercase tracking-[0.3em] text-[#0073B7]">Registro Oficial</span>
             </div>
             <div className="divide-y divide-neutral-50">
+              {/* Saldo Inicial como primeira linha se houver */}
+              {initialResumo.saldo_anterior !== 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-12 items-center py-8 px-8 md:px-12 bg-neutral-50/30 group">
+                  <div className="col-span-2 text-[11px] font-black text-[#0073B7] mb-3 md:mb-0 uppercase tracking-widest">
+                    Abertura
+                  </div>
+                  <div className="col-span-6 font-black text-neutral-950 text-base tracking-tight mb-4 md:mb-0 uppercase">
+                    Saldo Inicial Transportado (Exercício Anterior)
+                  </div>
+                  <div className="col-span-2 flex md:justify-center mb-5 md:mb-0">
+                    <span className="text-[9px] font-black uppercase px-4 py-2 rounded-xl border-2 tracking-widest border-neutral-200 text-neutral-400 bg-white">
+                      SALDO INICIAL
+                    </span>
+                  </div>
+                  <div className={`col-span-2 text-left md:text-right text-lg font-black tracking-tighter ${initialResumo.saldo_anterior < 0 ? 'text-red-600' : 'text-neutral-950'}`}>
+                    {initialResumo.saldo_anterior < 0 ? '−' : '+'} {formatCurrency(Math.abs(Number(initialResumo.saldo_anterior)))}
+                  </div>
+                </div>
+              )}
+
               {initialMovimentacoes && initialMovimentacoes.length > 0 ? (
                 initialMovimentacoes.map((item: Transacao) => {
                   const isDespesa = item.tipo === 'SAIDA';
+                  
+                  // Corrige o problema de timezone ao processar datas YYYY-MM-DD do Django
+                  const dateParts = item.data.split('-');
+                  const formattedDate = `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}`;
+
                   return (
                     <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 items-center py-8 px-8 md:px-12 hover:bg-neutral-50/50 transition-all group">
                       <div className="col-span-2 text-[11px] font-black text-neutral-400 mb-3 md:mb-0 uppercase tracking-widest">
-                        {new Date(item.data).toLocaleDateString('pt-BR')}
+                        {formattedDate}
                       </div>
                       <div className="col-span-6 font-black text-neutral-950 text-base tracking-tight mb-4 md:mb-0 uppercase">
                         {item.descricao}
