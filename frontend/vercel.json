@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/noticias/:slug*", "destination": "/noticias/detalhe/" },
+    { "source": "/artigos/:slug*", "destination": "/artigos/detalhe/" },
+    { "source": "/editais/:slug*", "destination": "/editais/detalhe/" }
+  ]
+}

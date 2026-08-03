@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-substitua-isso-por-um
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 # Configuração de Hosts
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 0.0.0.0 .vercel.app .railway.app .render.com .ngrok-free.app .ngrok.io').split()
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 0.0.0.0 .vercel.app .pythonanywhere.com .railway.app .render.com .ngrok-free.app .ngrok.io').split()
 
 # Application definition
 INSTALLED_APPS = [
@@ -53,14 +53,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'core.urls'
 
+# Mapeia onde estão os arquivos estáticos internos gerados pelo Next.js (se a pasta existir)
+FRONTEND_OUT = os.path.join(BASE_DIR, '../frontend/out')
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+if os.path.exists(FRONTEND_OUT):
+    TEMPLATE_DIRS.insert(0, FRONTEND_OUT)
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        # Configura o Django para buscar no build do Next.js e também aceitar uma pasta raiz de templates no backend se necessário
-        'DIRS': [
-            os.path.join(BASE_DIR, '../frontend/out'),
-            os.path.join(BASE_DIR, 'templates'),
-        ],
+        'DIRS': TEMPLATE_DIRS,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,9 +87,6 @@ DATABASES = {
     }
 }
 
-# Se DATABASE_URL estiver presente e for postgres, o dj-database-url já configura o engine corretamente.
-# Caso eles forneçam os dados separados, você pode orientá-los a montar a string ou usar este formato.
-
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -106,10 +105,9 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Mapeia onde estão os arquivos estáticos internos gerados pelo Next.js
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '../frontend/out'),
-]
+STATICFILES_DIRS = []
+if os.path.exists(FRONTEND_OUT):
+    STATICFILES_DIRS.append(FRONTEND_OUT)
 
 # Correção para o WhiteNoise não ignorar pastas ocultas do compilador se houver resquícios
 WHITENOISE_ALLOW_ALL_ORIGINS = True
@@ -130,7 +128,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS Config
 if DEBUG:
     CORS_ALLOW_ALL_ORIGINS = True
-    # Para o CSRF funcionar com ngrok em DEBUG, precisamos confiar nos domínios do ngrok
     CSRF_TRUSTED_ORIGINS = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
@@ -140,13 +137,15 @@ if DEBUG:
         "https://*.ngrok.io"
     ]
 else:
-    CORS_ALLOW_ALL_ORIGINS = False
-    CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', os.environ.get('FRONTEND_URL', 'http://localhost:3000')).split()
+    if os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'True') == 'True':
+        CORS_ALLOW_ALL_ORIGINS = True
+    else:
+        CORS_ALLOW_ALL_ORIGINS = False
+        CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', os.environ.get('FRONTEND_URL', 'http://localhost:3000')).split()
+    
     CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', os.environ.get('FRONTEND_URL', 'http://localhost:3000')).split()
-
-# Garante que o FRONTEND_URL sempre seja confiado
-if os.environ.get('FRONTEND_URL') and os.environ.get('FRONTEND_URL') not in CSRF_TRUSTED_ORIGINS:
-    CSRF_TRUSTED_ORIGINS.append(os.environ.get('FRONTEND_URL'))
+    if os.environ.get('FRONTEND_URL') and os.environ.get('FRONTEND_URL') not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(os.environ.get('FRONTEND_URL'))
 
 CKEDITOR_CONFIGS = {
     'default': {
