@@ -165,4 +165,4 @@ REST_FRAMEWORK = {
     ],
 }
 
-FRONTEND_URL = os.environ.get('FRONTEND_URL', "http://localhost:3000")
+FRONTEND_URL = os.environ.get('FRONTEND_URL', "https://portal-dce-ufvjm.vercel.app" if not DEBUG else "http://localhost:3000")

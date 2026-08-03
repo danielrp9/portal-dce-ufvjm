@@ -2,6 +2,7 @@ import os
 import mimetypes
 from django.conf import settings
 from django.http import FileResponse, HttpResponseNotFound
+from django.shortcuts import redirect
 from django.utils.cache import add_never_cache_headers
 
 def serve_frontend(request, path='index.html'):
@@ -29,12 +30,13 @@ def serve_frontend(request, path='index.html'):
                 if os.path.exists(potential_index):
                     full_path = potential_index
 
-    # Fallback final para SPA (serve o index.html raiz se o arquivo não existir)
+    # Fallback final para SPA ou redirecionamento para o Vercel
     if not os.path.exists(full_path):
         full_path = os.path.join(settings.BASE_DIR, '../frontend/out/index.html')
 
     if not os.path.exists(full_path):
-        return HttpResponseNotFound("Frontend build not found.")
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+        return redirect(frontend_url)
 
     # Detecta o tipo de conteúdo (MIME Type) dinamicamente
     content_type, _ = mimetypes.guess_type(full_path)
