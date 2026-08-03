@@ -14,7 +14,7 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Configuração de Hosts Autorizados
 ALLOWED_HOSTS = os.environ.get(
-    'ALLOWED_HOSTS', 
+    'ALLOWED_HOSTS',
     'localhost 127.0.0.1 0.0.0.0 dce.pythonanywhere.com .pythonanywhere.com .vercel.app .railway.app .render.com .ngrok-free.app .ngrok.io'
 ).split()
 
@@ -26,13 +26,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
     # Bibliotecas de Terceiros
     'rest_framework',
     'django_filters',
     'corsheaders',
     'ckeditor',
-    
+
     # Apps Locais
     'noticias',
     'agenda',
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -112,17 +112,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
-# Libera TODOS os headers padrão + o header customizado 'x-control-cache'
+# Libera todos os cabeçalhos padrão do HTTP
 CORS_ALLOW_HEADERS = list(default_headers) + [
-    'x-control-cache',
     'cache-control',
     'pragma',
     'expires',
+    'if-modified-since',
     'x-requested-with',
 ]
-
-# Aceita qualquer header extra que comece com x- (garantia adicional)
-CORS_ALLOW_HEADERS_REGEX = r'^x-.*$'
 
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -139,6 +136,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
+
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://portal-dce-ufvjm-beryl.vercel.app')
 
 # ==========================================
