@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export', // Reativado para permitir que o Django sirva os arquivos estáticos da pasta 'out'
+  // output: 'export', // Desativado para a Vercel gerenciar as rotas nativamente
   trailingSlash: true,
 
   reactCompiler: true, 
