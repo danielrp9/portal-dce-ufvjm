@@ -67,7 +67,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#F4F6F8] text-neutral-900 selection:bg-[#0073B7] selection:text-white font-sans antialiased pb-20 relative overflow-hidden">
       
-      {/* Elementos de Fundo - Suavizados para conforto visual */}
+      {/* Elementos de Fundo */}
       <div className="absolute top-[-10%] left-[-10%] w-[1000px] h-[1000px] bg-[#0073B7]/6 blur-[180px] rounded-full pointer-events-none -z-10"></div>
       <div className="absolute top-[20%] right-[-10%] w-[800px] h-[800px] bg-[#8CC63F]/5 blur-[160px] rounded-full pointer-events-none -z-10"></div>
       <div className="absolute bottom-[-10%] left-[5%] w-[1200px] h-[1200px] bg-[#00AEEF]/5 blur-[200px] rounded-full pointer-events-none -z-10"></div>
@@ -176,10 +176,13 @@ export default function HomePage() {
             )}
           </section>
 
-          {/* SIDEBAR */}
+          {/* SIDEBAR COM EVENTOS EM CIMA E EDITAIS EMBAIXO */}
           <aside className="lg:col-span-4 flex flex-col gap-10">
             
-            {/* Widget: Editais */}
+            {/* 1. Agenda (Eventos) */}
+            <EventsCarousel initialEventos={eventos} />
+
+            {/* 2. Widget: Editais */}
             <div className="flex flex-col bg-[#001529] text-white rounded-[2.5rem] p-6 md:p-10 shadow-[0_40px_80px_-20px_rgba(0,21,41,0.4)] relative overflow-hidden border border-white/10 group/ed">
               <div className="absolute -top-20 -right-20 w-64 h-64 bg-[#8CC63F]/10 blur-[100px] pointer-events-none rounded-full group-hover/ed:bg-[#8CC63F]/20 transition-all duration-700"></div>
               
@@ -221,9 +224,6 @@ export default function HomePage() {
                 Ver outros Editais <ChevronRight size={16} />
               </Link>
             </div>
-
-            {/* Agenda */}
-            <EventsCarousel initialEventos={eventos} />
 
           </aside>
         </div>
