@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
-from dj_database_url import parse as db_url # Necessário: pip install dj-database-url
+from dj_database_url import parse as db_url
+from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,10 +10,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-substitua-isso-por-uma-chave-segura')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Configuração de Hosts
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 0.0.0.0 .vercel.app .pythonanywhere.com .railway.app .render.com .ngrok-free.app .ngrok.io').split()
+# Configuração de Hosts Autorizados
+ALLOWED_HOSTS = os.environ.get(
+    'ALLOWED_HOSTS', 
+    'localhost 127.0.0.1 0.0.0.0 dce.pythonanywhere.com .pythonanywhere.com .vercel.app .railway.app .render.com .ngrok-free.app .ngrok.io'
+).split()
 
 # Application definition
 INSTALLED_APPS = [
@@ -39,9 +43,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'core.middleware.DisableClientSideCachingMiddleware', # Garante que nada (incluindo WhiteNoise) cacheie o que não deve
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -49,20 +52,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.DisableClientSideCachingMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
 
-# Mapeia onde estão os arquivos estáticos internos gerados pelo Next.js (se a pasta existir)
-FRONTEND_OUT = os.path.join(BASE_DIR, '../frontend/out')
-TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
-if os.path.exists(FRONTEND_OUT):
-    TEMPLATE_DIRS.insert(0, FRONTEND_OUT)
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': TEMPLATE_DIRS,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -77,9 +75,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Database
-# No servidor, eles devem prover a variável de ambiente DATABASE_URL
-# Exemplo: postgres://usuario:senha@host:porta/nome_do_banco
+# Database Configuration
 DATABASES = {
     'default': os.environ.get('DATABASE_URL') and db_url(os.environ.get('DATABASE_URL')) or {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -102,22 +98,10 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_DIRS = []
-if os.path.exists(FRONTEND_OUT):
-    STATICFILES_DIRS.append(FRONTEND_OUT)
-
-# Correção para o WhiteNoise não ignorar pastas ocultas do compilador se houver resquícios
-WHITENOISE_ALLOW_ALL_ORIGINS = True
-
-# Armazenamento otimizado para produção e desenvolvimento local unificado
-if DEBUG:
-    # Em desenvolvimento, evita compressões rígidas que barram o carregamento imediato do runserver
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-else:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configuração de arquivos de mídia (Uploads)
 MEDIA_URL = '/media/'
@@ -125,27 +109,41 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS Config
-if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True
-    CSRF_TRUSTED_ORIGINS = [
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:8000",
-        "http://127.0.0.1:8000",
-        "https://*.ngrok-free.app",
-        "https://*.ngrok.io"
-    ]
-else:
-    if os.environ.get('CORS_ALLOW_ALL_ORIGINS', 'True') == 'True':
-        CORS_ALLOW_ALL_ORIGINS = True
-    else:
-        CORS_ALLOW_ALL_ORIGINS = False
-        CORS_ALLOWED_ORIGINS = os.environ.get('CORS_ALLOWED_ORIGINS', os.environ.get('FRONTEND_URL', 'http://localhost:3000')).split()
-    
-    CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', os.environ.get('FRONTEND_URL', 'http://localhost:3000')).split()
-    if os.environ.get('FRONTEND_URL') and os.environ.get('FRONTEND_URL') not in CSRF_TRUSTED_ORIGINS:
-        CSRF_TRUSTED_ORIGINS.append(os.environ.get('FRONTEND_URL'))
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+# Libera TODOS os headers padrão + o header customizado 'x-control-cache'
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'x-control-cache',
+    'cache-control',
+    'pragma',
+    'expires',
+    'x-requested-with',
+]
+
+# Aceita qualquer header extra que comece com x- (garantia adicional)
+CORS_ALLOW_HEADERS_REGEX = r'^x-.*$'
+
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.vercel.app",
+    "https://dce.pythonanywhere.com",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://portal-dce-ufvjm-beryl.vercel.app')
+
+# ==========================================
+# Configurações de Apps de Terceiros
+# ==========================================
 
 CKEDITOR_CONFIGS = {
     'default': {
@@ -164,5 +162,3 @@ REST_FRAMEWORK = {
         'rest_framework.filters.OrderingFilter',
     ],
 }
-
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://portal-dce-ufvjm.vercel.app')
