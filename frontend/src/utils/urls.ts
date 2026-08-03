@@ -35,3 +35,8 @@ export function getMediaUrl(path: string | null | undefined): string {
   
   return normalizedPath;
 }
+
+export function getAdminUrl(): string {
+  const backendOrigin = getBaseBackendUrl();
+  return backendOrigin ? `${backendOrigin}/admin/` : '/admin/';
+}
